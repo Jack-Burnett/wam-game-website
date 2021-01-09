@@ -1,6 +1,10 @@
 
 const { gql } = require('apollo-server-express');
 
+const { Pool, Client } = require('pg')
+
+const pool = new Pool()
+
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
 // your data.
@@ -18,6 +22,7 @@ const typeDefs = gql`
   # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
     books: [Book]
+    test: [Book]
   }
 `;
 
@@ -41,6 +46,11 @@ const books = [
 const resolvers = {
     Query: {
       books: () => books,
+      test: async () => {
+        const res = await pool.query('SELECT NOW()')
+        console.log(res.rows[0]);
+        return books
+      }
     },
   };
 
