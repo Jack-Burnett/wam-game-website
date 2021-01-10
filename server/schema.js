@@ -9,47 +9,69 @@ const pool = new Pool()
 // that together define the "shape" of queries that are executed against
 // your data.
 const typeDefs = gql`
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
 
-  # This "Book" type defines the queryable fields for every book in our data source.
-  type Book {
-    title: String
-    author: String
+  type User {
+      username: String
+      activeGames: [Game]
+      pastGames: [Game]
+  }
+
+  type Player {
+    user: User
+    uuid: Int
+  }
+
+  type Invite {
+      hm: String
+  }
+
+  enum State {
+      WAITING_PLAYER_1
+      WAITING_PLAYER_2
+      WAITING_BOTH
+      FINISHED
+  }
+
+  type Game {
+    uuid: ID
+    player1: User
+    player2: User
+    turn: Int
+    state: State
+
+    data: String
   }
 
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each. In this
   # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
-    books: [Book]
-    test: [Book]
+    me: User
+    game(id: Int): Game
   }
 `;
-
-const books = [
-    {
-      title: 'The Awakening',
-      author: 'Kate Chopin',
-    },
-    {
-      title: 'City of Glass',
-      author: 'Paul Auster',
-    },,
-    {
-      title: 'Butts',
-      author: 'Prankster',
-    },
-  ];
 
 // Resolvers define the technique for fetching the types defined in the
 // schema. This resolver retrieves books from the "books" array above.
 const resolvers = {
     Query: {
-      books: () => books,
-      test: async () => {
-        const res = await pool.query('SELECT NOW()')
-        console.log(res.rows[0]);
-        return books
+      me: () => {
+        return {
+            activeGames: [
+                {
+                    player1: { "username" : "Jack"},
+                    player2: { "username" : "BadGuy"},
+                    turn: 2,
+                    state: "WAITING_PLAYER_1"
+                },
+                {
+                    player1: { "username" : "Jack"},
+                    player2: { "username" : "Mean Chris"},
+                    turn: 3,
+                    state: "WAITING_BOTH"
+                }
+            ]
+        }
       }
     },
   };

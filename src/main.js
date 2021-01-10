@@ -1,7 +1,6 @@
 import App from './App.svelte';
-import Game from './Game.svelte';
 
-const app = new Game({
+const app = new App({
 	target: document.body,
 	props: {
 

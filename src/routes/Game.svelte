@@ -1,7 +1,7 @@
 <script>
 	import { tweened } from 'svelte/motion';
-	import Piece from './Piece.svelte'
-	import Match from './state.js'
+	import Piece from '../game/Piece.svelte'
+	import Match from '../game/state.js'
 
 	let rows = 5
 	let columns = 5

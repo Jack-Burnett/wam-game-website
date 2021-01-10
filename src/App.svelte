@@ -1,78 +1,52 @@
 <script>
-	import { element } from "svelte/internal";
-	import Element from './Element.svelte'
-	import Promise from './Promise.svelte'
-	import Random from "seedrandom";
-	var rng = Random('hello..');
-	console.log(rng()); 
-	// public vars
-	export let name = 'Default Value';
-	export let src;
-	// private var
-	let count = 0;
-	// Reactive value
-	$: doubled = count * 2;
-    // reactive funtion :o
-	$: { console.log(`the count is ${count}`); }
+	import { Router, Link, Route } from "svelte-routing";
+	import Home from "./routes/Home.svelte";
+	import About from "./routes/oldApp.svelte";
+	import Blog from "./routes/Game.svelte";
+  
+	export let url = "";
 
-	let things = [
-		{id : 1, name: "Bandit Keith"},
-		{id : 2, name: "Jane Doe"},
-	]
-	
-	function handleClick() {
-		count += 1;
-	}
-	
-	// proper array updates
-	let numbers = [1, 2, 3, 4];
-	function addNumber() {
-		numbers = [...numbers, numbers.length + 1];
-	}
+	import { ApolloClient, InMemoryCache } from "@apollo/client";
+	import { setClient } from "svelte-apollo";
 
-	let obj = {
-		'text' : 'third'
-	}
-</script>
+	// 1. Create an Apollo client and pass it to all child components
+	//    (uses svelte's built-in context)
+	const client = new ApolloClient({
+		uri: 'http://localhost:4000/graphql',
+  		cache: new InMemoryCache()
+	});
+	setClient(client);
+  </script>
+  
+  <Router url="{url}">
+	<div class="container mx-auto bg-purple-300 p-5">
+		<nav class="flex justify-between">
+			<div>
+				<a>Logo</a>
+			</div>
+			<ul class="flex flex-row">
+				<li class="pr-5">
+					<Link to="/">Home</Link>
+				</li>
+				<li class="pr-5">
+					<Link to="about">About</Link>
+				</li>
+				<li class="pr-5">
+					<Link to="blog">Blog</Link>
+				</li>
+			</ul>
+		</nav>	
+	</div>
+	<div class="container mx-auto p-5">
+	  <!--<Route path="blog/:id" component="{BlogPost}" />-->
+	  <Route path="blog" component="{Blog}" />
+	  <Route path="about" component="{About}" />
+	  <Route path="/"><Home /></Route>
+	</div>
+  </Router>
 
-<main>
-	<h1>Hello {name} {doubled}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-	<img src={src} alt="frog">
-	<button on:click={handleClick}>{count}</button>
-	<button on:click={addNumber}>{numbers.join(' + ')}</button>
-	<Promise />
-	<Element text='yolo'/>
-	<Element text='yolo'/>
-	<!-- Lets us pass in many values at once-->
-	<Element {...obj}/>
-	<ul>
-	<!-- Brackets specify what identifies it, useful when removing or updating-->
-	{#each things as thing (thing.id)}
-	<li>{thing.name}</li>
-	{/each}
-	</ul>
-
-</main>
-
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+<style global lang="postcss" >
+	@tailwind base;
+	@tailwind components;
+	@tailwind utilities;
 </style>
