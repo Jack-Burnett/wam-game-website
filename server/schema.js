@@ -2,7 +2,7 @@
 const { gql } = require('apollo-server-express');
 
 const { Pool, Client } = require('pg')
-const { createUser } = require('./dao')
+const { createUser, login } = require('./dao')
 
 const pool = new Pool()
 
@@ -18,24 +18,25 @@ const typeDefs = gql`
   }
 
   input UserInput {
-      username: String
-      password: String
+      username: String!
+      password: String!
   }
 
   input InviteInput {
-    inviter: Int
-    invitee: Int
+    inviter: Int!
+    invitee: Int!
   }
 
     input InviteResponse {
-        inviteId: Int
-        accepted: Boolean
+        inviteId: Int!
+        accepted: Boolean!
     }
   
   type Mutation {
-      createUser(input: UserInput): User
-      invite(input: InviteInput): Invite
-      acceptInvite(input: InviteResponse): Game
+      createUser(input: UserInput!): User!
+      invite(input: InviteInput!): Invite!
+      acceptInvite(input: InviteResponse!): Game!
+      login(username: String, password: String): LoginResult
   }
 
   type Invite {
@@ -49,6 +50,13 @@ const typeDefs = gql`
       WAITING_PLAYER_2
       WAITING_BOTH
       FINISHED
+  }
+
+  type LoginResult {
+      success: Boolean!
+      user: User
+      token: String
+      error: String
   }
 
   type Game {
@@ -76,7 +84,10 @@ const resolvers = {
     Mutation: {
         createUser: async (_, {input}) => {
             return await createUser(input.username, input.password)
-        } 
+        },
+        login: async(_, {username, password}) => {
+            return await login(username, password)
+        }
     },
     Query: {
       me: () => {
