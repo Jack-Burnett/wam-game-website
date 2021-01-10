@@ -2,6 +2,7 @@
 const { gql } = require('apollo-server-express');
 
 const { Pool, Client } = require('pg')
+const { createUser } = require('./dao')
 
 const pool = new Pool()
 
@@ -16,13 +17,31 @@ const typeDefs = gql`
       pastGames: [Game]
   }
 
-  type Player {
-    user: User
-    uuid: Int
+  input UserInput {
+      username: String
+      password: String
+  }
+
+  input InviteInput {
+    inviter: Int
+    invitee: Int
+  }
+
+    input InviteResponse {
+        inviteId: Int
+        accepted: Boolean
+    }
+  
+  type Mutation {
+      createUser(input: UserInput): User
+      invite(input: InviteInput): Invite
+      acceptInvite(input: InviteResponse): Game
   }
 
   type Invite {
-      hm: String
+    uuid: ID
+    inviter: User
+    invitee: User
   }
 
   enum State {
@@ -54,6 +73,11 @@ const typeDefs = gql`
 // Resolvers define the technique for fetching the types defined in the
 // schema. This resolver retrieves books from the "books" array above.
 const resolvers = {
+    Mutation: {
+        createUser: async (_, {input}) => {
+            return await createUser(input.username, input.password)
+        } 
+    },
     Query: {
       me: () => {
         return {
