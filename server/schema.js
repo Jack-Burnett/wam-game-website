@@ -23,20 +23,20 @@ const typeDefs = gql`
   }
 
   input InviteInput {
-    inviter: Int!
-    invitee: Int!
+    inviter: String!
+    invitee: String!
   }
 
-    input InviteResponse {
-        inviteId: Int!
-        accepted: Boolean!
-    }
+  input InviteResponse {
+    inviteId: String!
+    accepted: Boolean!
+  }
   
   type Mutation {
-      createUser(input: UserInput!): User!
-      invite(input: InviteInput!): Invite!
-      acceptInvite(input: InviteResponse!): Game!
-      login(username: String, password: String): LoginResult
+    createUser(input: UserInput!): SignupResult!
+    sendInvite(input: InviteInput!): Invite!
+    respondToInvite(input: InviteResponse!): Game!
+    login(username: String!, password: String!): LoginResult!
   }
 
   type Invite {
@@ -50,6 +50,13 @@ const typeDefs = gql`
       WAITING_PLAYER_2
       WAITING_BOTH
       FINISHED
+  }
+  
+  type SignupResult {
+      success: Boolean!
+      user: User
+      token: String
+      error: String
   }
 
   type LoginResult {
@@ -87,6 +94,12 @@ const resolvers = {
         },
         login: async(_, {username, password}) => {
             return await login(username, password)
+        },
+        sendInvite: async(_, {input}) => {
+            return await sendInvite(input.inviter, input.invitee)
+        },
+        respondToInvite: async(_, {input}) => {
+            return await login(input.inviteId, input.accepted)
         }
     },
     Query: {

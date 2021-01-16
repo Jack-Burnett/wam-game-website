@@ -5,7 +5,8 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "node server/app.js",
-    "start-old": "sirv public"
+    "start-old": "sirv public",
+    "test": "npx mocha"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^16.0.0",
@@ -25,17 +26,20 @@
     "@apollo/client": "^3.3.6",
     "apollo-client": "^2.6.10",
     "apollo-server-express": "^2.19.1",
+    "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^15.4.0",
     "graphql-tag": "^2.11.0",
     "jsonwebtoken": "^8.5.1",
+    "mocha": "^8.2.1",
     "pg": "^8.5.1",
     "react": "^17.0.1",
     "seedrandom": "^3.0.5",
     "sirv-cli": "^1.0.0",
     "svelte-apollo": "^0.4.0",
     "svelte-routing": "^1.5.0",
+    "svelte-simple-modal": "^0.6.1",
     "uuid": "^8.3.2"
   }
 }

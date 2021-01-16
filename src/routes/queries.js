@@ -4,13 +4,17 @@ const HOME_PAGE = gql`
     query HOME_PAGE {
         me {
             activeGames {
-                player1
-                player2
+                player1 {
+                    username
+                }
+                player2 {
+                    username
+                }
                 turn
-                status
+                state
             }
         }
     }
 `
 
-export default HOME_PAGE
+export { HOME_PAGE }

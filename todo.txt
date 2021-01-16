@@ -1,0 +1,10 @@
+Password hashing
+Login / Create Account modal form
+Hook form up to do account creates
+Hook form up to do logins
+Save login to local storage
+Authorise invite requests
+
+
+
+Prevent creating duplicate user creation

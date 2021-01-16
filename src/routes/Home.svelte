@@ -1,26 +1,6 @@
 <script>
 	import { query } from "svelte-apollo";
-	//import { HOME_PAGE } from "./queries";
-	import { gql } from '@apollo/client';
-import App from "../App.svelte";
-
-	const HOME_PAGE = gql`
-		query HOME_PAGE {
-			me {
-				activeGames {
-					uuid
-					player1 {
-						username
-					}
-					player2 {
-						username
-					}
-					turn
-					state
-				}
-			}
-		}
-	`
+	import { HOME_PAGE } from "./queries";
 	
 	const homeData = query(HOME_PAGE);
 </script>

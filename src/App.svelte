@@ -5,6 +5,8 @@
 	import Blog from "./routes/Game.svelte";
   
 	export let url = "";
+	
+	import UserInfo from './UserInfo.svelte';
 
 	import { ApolloClient, InMemoryCache } from "@apollo/client";
 	import { setClient } from "svelte-apollo";
@@ -18,6 +20,7 @@
 	setClient(client);
   </script>
   
+  <!-- https://github.com/EmilTholin/svelte-routing -->
   <Router url="{url}">
 	<div class="container mx-auto bg-purple-300 p-5">
 		<nav class="flex justify-between">
@@ -35,6 +38,7 @@
 					<Link to="blog">Blog</Link>
 				</li>
 			</ul>
+			<UserInfo />
 		</nav>	
 	</div>
 	<div class="container mx-auto p-5">

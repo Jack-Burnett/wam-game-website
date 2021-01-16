@@ -44,7 +44,6 @@ export default {
 				// enable run-time checks when not in production
 				dev: !production
 			},
-			/*
 			preprocess: sveltePreprocess({
 				sourceMap: !production,
 				postcss: {
@@ -53,8 +52,7 @@ export default {
 						require("autoprefixer")
 					],
 				},
-			}),
-			*/
+			})
 		}),
 		// we'll extract any component CSS out into
 		// a separate file - better for performance
@@ -67,7 +65,7 @@ export default {
 		// https://github.com/rollup/plugins/tree/master/packages/commonjs
 		resolve({
 			browser: true,
-			dedupe: ['svelte']
+			dedupe: ['svelte', 'svelte/transition', 'svelte/internal']
 		}),
 		commonjs(),
 
