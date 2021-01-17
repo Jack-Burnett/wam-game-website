@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import { getClient } from "svelte-apollo";
 
     
 const { subscribe, set, update } = writable({
@@ -7,8 +8,6 @@ const { subscribe, set, update } = writable({
 	username: localStorage.getItem("username") || "",
 	token: localStorage.getItem("token") || "",
 });
-
-
 
 export const currentUser = {
 	subscribe,
@@ -21,6 +20,8 @@ export const currentUser = {
 			username: "",
 			token: ""
 		})
+		// Forces all queries to refetch
+		getClient().resetStore()
 	},
 	login: (username, token) => {
 		localStorage.setItem("isLoggedIn", true)
@@ -31,5 +32,6 @@ export const currentUser = {
 			username: username,
 			token: token
 		})
+		getClient().resetStore()
 	}
 };

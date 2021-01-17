@@ -85,5 +85,32 @@ async function createUser(username, password) {
     }
 }
 
+async function getUsers(userSearchInput) {
+    const res = await pool.query(
+        'SELECT * FROM users WHERE username LIKE $1 AND username NOT <currentuser>',
+         [userSearchInput.startsWith]
+    )
+    if (res.rows.length !== 0) {
+        user = res.rows[0]
+        const match = await bcrypt.compare(password, user.password);
+        if (match) {
+            var token = jwt.sign({ uuid: user.user_uuid, username: user.username}, 'encryption_key');
+            return {
+                success: true,
+                token: token,
+                user: {
+                    username: user.username,
+                    uuid: user.uuid
+                },
+            }
+        }
+    }
+    return {
+        success: false,
+        error: "Login failed"
+    }
+}
+
 exports.createUser = createUser
 exports.login = login
+exports.getUsers = getUsers

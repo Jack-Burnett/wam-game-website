@@ -3,21 +3,15 @@
 	import Home from "./routes/Home.svelte";
 	import About from "./routes/oldApp.svelte";
 	import Blog from "./routes/Game.svelte";
-  
-	export let url = "";
 	
 	import UserInfo from './UserInfo.svelte';
 
-	import { ApolloClient, InMemoryCache } from "@apollo/client";
+	import { client} from "./configureApollo.js"
 	import { setClient } from "svelte-apollo";
-
-	// 1. Create an Apollo client and pass it to all child components
-	//    (uses svelte's built-in context)
-	const client = new ApolloClient({
-		uri: 'http://localhost:4000/graphql',
-  		cache: new InMemoryCache()
-	});
 	setClient(client);
+	
+	export let url = "";
+
   </script>
   
   <!-- https://github.com/EmilTholin/svelte-routing -->

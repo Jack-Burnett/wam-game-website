@@ -11,7 +11,8 @@ Prevent creating duplicate user creation DONE
 Persist login on registration also DONE
 
 
-
+Send auth to server DONE
+Home page to also list other people so you can send invites to them
 Authorise invite requests
 Refactor DAO into 2 classes
 
@@ -19,4 +20,3 @@ Games table in DB
 Games page, with working links from home + reporting
 Actual responses to home page query, stop mocking
 Home page to also link your current invites
-Home page to also list other people so you can send invites to them

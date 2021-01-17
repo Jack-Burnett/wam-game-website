@@ -2,7 +2,7 @@
 const { gql } = require('apollo-server-express');
 
 const { Pool, Client } = require('pg')
-const { createUser, login } = require('./dao')
+const { createUser, login, getUsers } = require('./dao')
 
 const pool = new Pool()
 
@@ -76,12 +76,15 @@ const typeDefs = gql`
     data: String
   }
 
-  # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
     me: User
     game(id: Int): Game
+    users(startswith: String): User
+  }
+
+  input UserSearchInput {
+    startsWith: String
+    excludeSelf: Boolean
   }
 `;
 
@@ -103,17 +106,22 @@ const resolvers = {
         }
     },
     Query: {
-      me: () => {
+      users: (_, {input}) => {
+        print()
+        getUsers(input)
+      },
+
+      me: (_, _params, context) => {
         return {
             activeGames: [
                 {
-                    player1: { "username" : "Jack"},
+                    player1: { "username" : context.user},
                     player2: { "username" : "BadGuy"},
                     turn: 2,
                     state: "WAITING_PLAYER_1"
                 },
                 {
-                    player1: { "username" : "Jack"},
+                    player1: { "username" : context.user},
                     player2: { "username" : "Mean Chris"},
                     turn: 3,
                     state: "WAITING_BOTH"
