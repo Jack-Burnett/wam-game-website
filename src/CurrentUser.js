@@ -2,10 +2,13 @@ import { writable } from 'svelte/store';
 
     
 const { subscribe, set, update } = writable({
-	isLoggedIn: localStorage.getItem("isLoggedIn") || false,
+	// Stored as string so need to parse to boolean
+	isLoggedIn: JSON.parse(localStorage.getItem("isLoggedIn")) || false,
 	username: localStorage.getItem("username") || "",
 	token: localStorage.getItem("token") || "",
 });
+
+
 
 export const currentUser = {
 	subscribe,

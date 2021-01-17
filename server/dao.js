@@ -36,6 +36,28 @@ async function login(username, password) {
 }
 
 async function createUser(username, password) {
+    if (username.length > 100 || username.length < 4) {
+        return {
+            success: false,
+            error: "Username must be between 4 and 100 characters"
+        }
+    }
+    if (password.length > 50 || password.length < 4) {
+        return {
+            success: false,
+            error: "Password must be between 4 and 100 characters"
+        }
+    }
+    const res = await pool.query(
+        'SELECT * FROM users WHERE username = $1',
+         [username]
+    )
+    if (res.rows.length !== 0) {
+        return {
+            success: false,
+            error: "There is already an account with that username"
+        }
+    }
     
     const hash = await bcrypt.hash(password, saltRounds)
     try {

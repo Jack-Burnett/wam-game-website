@@ -23,7 +23,7 @@
 
     // Follows structure of server errrors to allow identical handling
     function localError(message) {
-        resonse = Promise.resolve(
+        return Promise.resolve(
             {
                 data: {
                     login: {
@@ -36,14 +36,19 @@
     }
 
     async function submit() {
+        console.log(createNew)
         if (createNew) {
+            console.log(password)
+            console.log(confirmPassword)
+            console.log(password != confirmPassword)
             if (password != confirmPassword) {
                 response = localError("Password and confirm are not equal")
+                return
             }
             try {
                 response = signup({ variables: { username, password } });
             } catch (error) {
-                response = localError("Password and confirm are not equal")
+                response = localError(error)
             }
         } else {
             try {
@@ -99,7 +104,22 @@
             <input id="confirm" type="password" bind:value={confirmPassword} class="w-full rounded-md border-2 border-gray-800">
         {/if}
     </div>
-    <div class="flex flex-row-reverse">
+    <div class="flex flex-row items-end">
+        {#await response}
+            <p>...waiting</p>
+        {:then data}
+            {#if data}
+                {#if data.data.login.success}
+                    <p class="text-green-500">{#if createNew}Registration Success{:else}Login Success{/if}</p>
+                {:else}
+                    <p class="text-red-500">{data.data.login.error}</p>
+                {/if}
+            {/if}
+        {:catch error}
+            <p class="text-red-500">{error.message}</p>
+        {/await}
+        <!-- This is a spacer-->
+        <div class="flex-grow"></div>
         <button on:click="{submit}" class="mt-3 justify-center bg-blue-500 font-bold text-white px-4 py-3 rounded transition duration-300 ease-in-out hover:bg-blue-600">
             {#if createNew}
                 Register
@@ -108,17 +128,4 @@
             {/if}
         </button>
     </div>
-    {#await response}
-        <p>...waiting</p>
-    {:then data}
-        {#if data}
-            {#if data.data.login.success}
-                <p>Login Success</p>
-            {:else}
-                <p>{data.data.login.error}</p>
-            {/if}
-        {/if}
-    {:catch error}
-        <p style="color: red">{error.message}</p>
-    {/await}
 </div>
