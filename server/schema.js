@@ -121,7 +121,9 @@ const resolvers = {
         // Authorised
         sendInvite: async(_, {input}, context) => {
           if (context.user != input.inviter) {
-            // Bad
+            return {
+              errorMessage: "You cannot send invites on someone elses behalf"
+            }
           }
           return await sendInvite(input.inviter, input.invitee)
         },

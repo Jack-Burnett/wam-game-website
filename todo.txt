@@ -15,7 +15,7 @@ Send auth to server DONE
 Home page to also list other people so you can send invites to them DONE
 Actually perform DB logic for invites DONE
 Send invites via website DONE
-Authorise invite requests
+Authorise invite requests DONE
 
 Refactor DAO into 2 classes
 Games table in DB
