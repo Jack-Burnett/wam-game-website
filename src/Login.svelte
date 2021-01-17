@@ -53,19 +53,19 @@
         } else {
             try {
                 response = login({ variables: { username, password } });
-                response.then(
-                    data => {
-                        if (data.data.login.success) {  
-                            console.log(data.data.login.token);
-                            currentUser.login(username, data.data.login.token)
-                            close();
-                        }
-                    }
-                )
             } catch (error) {
-                // TODO
+                response = localError(error)
             }
         }
+        // If you login/register, close the login dialog and update current user
+        response.then(
+            data => {
+                if (data.data.login.success) {  
+                    currentUser.login(username, data.data.login.token)
+                    close();
+                }
+            }
+        )
     }
 </script> 
 

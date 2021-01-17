@@ -4,13 +4,14 @@ Hook form up to do account creates DONE
 Hook form up to do logins DONE
 Save login to local storage DONE
 
-
 Logout DONE
+Actually verify password and confirm different DONE
+Better errors for login/registration failures (and styling) DONE
+Prevent creating duplicate user creation DONE
+Persist login on registration also DONE
 
-Actually verify password and confirm different
-Persist login on registration also
-Better errors for login/registration failures (and styling)
-Prevent creating duplicate user creation
+
+
 Authorise invite requests
 Refactor DAO into 2 classes
 
