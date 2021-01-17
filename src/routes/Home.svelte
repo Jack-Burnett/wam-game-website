@@ -1,19 +1,27 @@
 <script>
 	import { query } from "svelte-apollo";
 	import { HOME_PAGE } from "./queries";
+	import { SEND_INVITE } from "../mutations";
+	import { currentUser} from "../CurrentUser.js"
+	import { mutation } from "svelte-apollo";
 	
 	const homeData = query(HOME_PAGE);
+    const sendInvite = mutation(SEND_INVITE);
+
+	function challenge(user) {
+		sendInvite({ variables: { inviter: currentUser.getUser().uuid, invitee: user.uuid } } )
+	}
 </script>
 
 <main>
-	<h2 class="text-2xl"> Your active games </h2>
-	<div class="flex flex-row flex-wrap">
 		{#if $homeData.loading}
 			Loading...
 		{:else if $homeData.error}
 			<li>ERROR: {$homeData.error.message}</li>
 		{:else}
+			<h2 class="text-2xl"> Your active games </h2>
 			{#if $homeData.data.me.activeGames.length > 0}
+				<div class="flex flex-row flex-wrap">
 				{#each $homeData.data.me.activeGames as game}
 					<div class="flex flex-row rounded-md border border-indigo-600 p-5 m-3">
 						<div class="w-40 h-40 rounded-md border border-indigo-600" ></div>
@@ -39,9 +47,20 @@
 						</div>
 					</div>
 				{/each}
+			</div>
 			{:else}
 				You don't have any active games currently!
 			{/if}
+			<h2 class="text-2xl"> Challenge someone </h2>
+			<div class="flex flex-row flex-wrap">
+				{#each $homeData.data.users as user}
+					<div class="flex-column rounded-md border border-indigo-600 p-5 m-3">
+						<p class="text-center">{user.username}</p>
+						<button
+						 	on:click="{challenge(user)}"
+							class="justify-center bg-blue-500 font-bold text-white px-4 py-1 rounded transition duration-300 ease-in-out hover:bg-blue-600">Challenge</button>
+					</div>
+				{/each}
+			</div>
 		{/if}
-	</div>
 </main>

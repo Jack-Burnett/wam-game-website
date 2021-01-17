@@ -61,7 +61,7 @@
         response.then(
             data => {
                 if (data.data.login.success) {  
-                    currentUser.login(username, data.data.login.token)
+                    currentUser.login(username, data.data.login.user.uuid, data.data.login.token)
                     close();
                 }
             }

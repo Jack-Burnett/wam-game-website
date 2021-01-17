@@ -14,6 +14,10 @@ const HOME_PAGE = gql`
                 state
             }
         }
+        users (search: {startsWith: "", excludeSelf: true}) {
+            uuid
+            username
+        }
     }
 `
 

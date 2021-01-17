@@ -24,7 +24,7 @@ async function login(username, password) {
                 token: token,
                 user: {
                     username: user.username,
-                    uuid: user.uuid
+                    uuid: user.user_uuid
                 },
             }
         }
@@ -73,7 +73,7 @@ async function createUser(username, password) {
             token: token,
             user: {
                 username: user.username,
-                uuid: user.uuid
+                uuid: user.user_uuid
             },
         }
     } catch (err) {
@@ -85,32 +85,39 @@ async function createUser(username, password) {
     }
 }
 
-async function getUsers(userSearchInput) {
+async function getUsers(startsWith = "", excludeUuid = "NONE") {
     const res = await pool.query(
-        'SELECT * FROM users WHERE username LIKE $1 AND username NOT <currentuser>',
-         [userSearchInput.startsWith]
+        'SELECT * FROM users WHERE username LIKE $1 AND user_uuid != $2 LIMIT 30',
+         [startsWith + "%", excludeUuid]
     )
-    if (res.rows.length !== 0) {
-        user = res.rows[0]
-        const match = await bcrypt.compare(password, user.password);
-        if (match) {
-            var token = jwt.sign({ uuid: user.user_uuid, username: user.username}, 'encryption_key');
-            return {
-                success: true,
-                token: token,
-                user: {
-                    username: user.username,
-                    uuid: user.uuid
-                },
-            }
+    response = res.rows.map(row => {
+        return {
+            username: row.username,
+            uuid: row.user_uuid
         }
-    }
-    return {
-        success: false,
-        error: "Login failed"
+    })
+    return response
+}
+
+async function sendInvite(inviter, invitee) {
+    try {
+        const res = await pool.query(
+            'INSERT INTO invites (invite_uuid, inviter_uuid, invitee_uuid) VALUES ($1, $2, $3) RETURNING *',
+                [uuidv4(), inviter, invitee]
+        )
+        const invite = res.rows[0]
+        return {
+            uuid: invite.invite_uuid
+        }
+    } catch (err) {
+        console.log(err.stack)
+        return {
+            errorMessage: "Something went wrong"
+        }
     }
 }
 
 exports.createUser = createUser
 exports.login = login
 exports.getUsers = getUsers
+exports.sendInvite = sendInvite

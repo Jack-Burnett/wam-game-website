@@ -6,6 +6,9 @@ const LOGIN = gql`
       success
       token
       error
+      user {
+        uuid
+      }
     }
   }
 `;
@@ -17,8 +20,25 @@ const SIGNUP = gql`
       success
       token
       error
+      user {
+        uuid
+      }
     }
   }
 `;
 
-export { LOGIN, SIGNUP }
+const SEND_INVITE = gql`
+  mutation invite($inviter: String!, $invitee: String!) {
+     # Alias to login so the responses can be treated the same :)
+    sendInvite(input: { inviter: $inviter, invitee: $invitee }) {
+      ...on Invite {
+        uuid
+      }
+      ...on Error {
+        errorMessage
+      }
+    }
+  }
+`;
+
+export { LOGIN, SIGNUP, SEND_INVITE }

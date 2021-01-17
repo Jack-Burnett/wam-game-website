@@ -2,7 +2,7 @@
 const { gql } = require('apollo-server-express');
 
 const { Pool, Client } = require('pg')
-const { createUser, login, getUsers } = require('./dao')
+const { createUser, login, getUsers, sendInvite } = require('./dao')
 
 const pool = new Pool()
 
@@ -13,6 +13,7 @@ const typeDefs = gql`
 
   type User {
       username: String
+      uuid: String
       activeGames: [Game]
       pastGames: [Game]
   }
@@ -34,14 +35,22 @@ const typeDefs = gql`
   
   type Mutation {
     createUser(input: UserInput!): SignupResult!
-    sendInvite(input: InviteInput!): Invite!
+    sendInvite(input: InviteInput!): MaybeInvite!
     respondToInvite(input: InviteResponse!): Game!
     login(username: String!, password: String!): LoginResult!
   }
 
+  type Error {
+    errorMessage: String
+  }
+  
+  union MaybeInvite = Invite | Error
+
   type Invite {
     uuid: ID
+    # TODO not implemented
     inviter: User
+    # TODO not implemented
     invitee: User
   }
 
@@ -79,36 +88,54 @@ const typeDefs = gql`
   type Query {
     me: User
     game(id: Int): Game
-    users(startswith: String): User
+    users(search: UserSearchInput): [User]
   }
 
   input UserSearchInput {
-    startsWith: String
-    excludeSelf: Boolean
+    startsWith: String = ""
+    excludeSelf: Boolean = false
   }
 `;
 
 // Resolvers define the technique for fetching the types defined in the
 // schema. This resolver retrieves books from the "books" array above.
 const resolvers = {
+    MaybeInvite: {
+      __resolveType(obj, context, info){
+        if(obj.errorMessage){
+          return "Error";
+        }
+
+        return "Invite";
+      },
+    },
     Mutation: {
+        // Not authorised
         createUser: async (_, {input}) => {
             return await createUser(input.username, input.password)
         },
         login: async(_, {username, password}) => {
             return await login(username, password)
         },
-        sendInvite: async(_, {input}) => {
-            return await sendInvite(input.inviter, input.invitee)
+
+        // Authorised
+        sendInvite: async(_, {input}, context) => {
+          if (context.user != input.inviter) {
+            // Bad
+          }
+          return await sendInvite(input.inviter, input.invitee)
         },
         respondToInvite: async(_, {input}) => {
             return await login(input.inviteId, input.accepted)
         }
     },
     Query: {
-      users: (_, {input}) => {
-        print()
-        getUsers(input)
+      users: (_, {search}, context) => {
+        
+        return getUsers(
+          startsWith = search.startsWith,
+          excludeUuid = search.excludeSelf ? context.user : "NONE"
+        );
       },
 
       me: (_, _params, context) => {
@@ -129,7 +156,7 @@ const resolvers = {
             ]
         }
       }
-    },
+    }
   };
 
   exports.typeDefs = typeDefs
