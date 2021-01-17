@@ -21,12 +21,29 @@
         createNew = !createNew
     }
 
+    // Follows structure of server errrors to allow identical handling
+    function localError(message) {
+        resonse = Promise.resolve(
+            {
+                data: {
+                    login: {
+                        success: false,
+                        error: message
+                    }
+                }
+            }
+        )
+    }
+
     async function submit() {
         if (createNew) {
+            if (password != confirmPassword) {
+                response = localError("Password and confirm are not equal")
+            }
             try {
                 response = signup({ variables: { username, password } });
             } catch (error) {
-                // TODO
+                response = localError("Password and confirm are not equal")
             }
         } else {
             try {

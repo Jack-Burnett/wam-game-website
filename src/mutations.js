@@ -12,7 +12,8 @@ const LOGIN = gql`
 
 const SIGNUP = gql`
   mutation signup($username: String!, $password: String!) {
-    createUser(input: { username: $username, password: $password }) {
+     # Alias to login so the responses can be treated the same :)
+    login: createUser(input: { username: $username, password: $password }) {
       success
       token
       error

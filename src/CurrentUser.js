@@ -14,9 +14,9 @@ export const currentUser = {
 		localStorage.setItem("username", "")
 		localStorage.setItem("token", "")
 		set({
-			isLoggedIn: true,
-			username: username,
-			token: token
+			isLoggedIn: false,
+			username: "",
+			token: ""
 		})
 	},
 	login: (username, token) => {
