@@ -2,6 +2,7 @@ var dao = require('./dao');
 
 var jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
 const saltRounds = 10;
 
 async function login(username, password) {
@@ -46,7 +47,7 @@ async function createUser(username, password) {
         }
     }
     
-    const uuid = uuid4()
+    const uuid = uuidv4()
     const hash = await bcrypt.hash(password, saltRounds)
 
     user = await dao.insert_user(uuid, username, hash)

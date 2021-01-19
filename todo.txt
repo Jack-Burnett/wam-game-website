@@ -21,7 +21,6 @@ Games table in DB
 Ability to accept invites and that creates a Game
 Games page, with working links from home + reporting
 Actual responses to home page query, stop mocking
+
 Home page to also link your current invites
-
-
 No feedback when invite sent

@@ -1,5 +1,5 @@
 const { createUser, login, getUsers } = require('./users')
-const { sendInvite } = require('./invites')
+const { sendInvite, respondToInvite } = require('./invites')
 
 // Resolvers define the technique for fetching the types defined in the
 // schema. This resolver retrieves books from the "books" array above.
@@ -31,8 +31,8 @@ const resolvers = {
           }
           return await sendInvite(input.inviter, input.invitee)
         },
-        respondToInvite: async(_, {input}) => {
-            return await login(input.inviteId, input.accepted)
+        respondToInvite: async(_, {input}, context) => {
+            return await respondToInvite(input.inviteUuid, input.accepted, context)
         }
     },
     Query: {

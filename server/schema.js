@@ -23,15 +23,22 @@ const typeDefs = gql`
   }
 
   input InviteResponse {
-    inviteId: String!
+    inviteUuid: String!
     accepted: Boolean!
   }
   
   type Mutation {
     createUser(input: UserInput!): SignupResult!
     sendInvite(input: InviteInput!): MaybeInvite!
-    respondToInvite(input: InviteResponse!): Game!
+    respondToInvite(input: InviteResponse!): InviteResponseResult!
     login(username: String!, password: String!): LoginResult!
+  }
+
+  type InviteResponseResult {
+    success: Boolean
+    error: String
+    gameCreated: Boolean
+    game: Game
   }
 
   type Error {
