@@ -1,5 +1,6 @@
 const { createUser, login, getUsers } = require('./users')
 const { sendInvite, respondToInvite } = require('./invites')
+const { get_user_by_uuid, get_active_games_for_user } = require('./dao')
 
 // Resolvers define the technique for fetching the types defined in the
 // schema. This resolver retrieves books from the "books" array above.
@@ -45,21 +46,40 @@ const resolvers = {
       },
 
       me: (_, _params, context) => {
-        return {
-            activeGames: [
-                {
-                    player1: { "username" : context.user},
-                    player2: { "username" : "BadGuy"},
-                    turn: 2,
-                    state: "WAITING_PLAYER_1"
-                },
-                {
-                    player1: { "username" : context.user},
-                    player2: { "username" : "Mean Chris"},
-                    turn: 3,
-                    state: "WAITING_BOTH"
-                }
-            ]
+        return get_user_by_uuid(context.user)
+      }
+    },
+    User: {
+      activeGames: (data) => {
+        console.log("woof")
+        console.log(data)
+        return get_active_games_for_user(data.user_uuid)
+      }
+    },
+    Game: {
+      uuid: (data) => {
+        return data.game_uuid
+      },
+      player1: (data) => {
+        return get_user_by_uuid(data.player1)
+      },
+      player2: (data) => {
+        return get_user_by_uuid(data.player2)
+      },
+      turn: (data) => {
+        console.log("meow")
+        console.log(data)
+        return Math.min(data.player1_turns.length, data.player2_turns.length) + 1
+      },
+      state: (data) => {
+        if (data.waiting_player1 && data.waiting_player2) {
+          return "WAITING_BOTH"
+        } else if(data.waiting_player1) {
+          return "WAITING_PLAYER_1"
+        } else if(data.waiting_player2) {
+          return "WAITING_PLAYER_1"
+        } else {
+          return "FINISHED"
         }
       }
     }

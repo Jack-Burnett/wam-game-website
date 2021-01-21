@@ -17,10 +17,12 @@ Send invites via website DONE
 Authorise invite requests DONE
 
 Refactor DAO into 2 classes DONE
-Games table in DB
-Ability to accept invites and that creates a Game
-Games page, with working links from home + reporting
+Games table in DB DONE
+Ability to accept invites and that creates a Game DONE
+Write resolvers for Game
 Actual responses to home page query, stop mocking
 
+Games page, with working links from home + reporting
 Home page to also link your current invites
 No feedback when invite sent
+Should only be able to accept games you are the invitee of

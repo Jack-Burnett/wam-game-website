@@ -47,18 +47,16 @@ async function respondToInvite(invite_uuid, accepted, context) {
         game_uuid: uuidv4(),
         player1: invite.inviter_uuid,
         player2: invite.invitee_uuid,
-        player1Turns: [],
-        player2Turns: [],
-        waitingPlayer1: true,
-        waitingPlayer2: true
+        player1_turns: [],
+        player2_turns: [],
+        waiting_player1: true,
+        waiting_player2: true
     }
     await dao.upsert_game(game)
     return {
         success: true,
         gameCreated: true,
-        game: {
-            uuid: game.game_uuid
-        }
+        game: game
     }
 }
 
