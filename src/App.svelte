@@ -2,7 +2,7 @@
 	import { Router, Link, Route } from "svelte-routing";
 	import Home from "./routes/Home.svelte";
 	import About from "./routes/oldApp.svelte";
-	import Blog from "./routes/Game.svelte";
+	import Game from "./routes/Game.svelte";
 	
 	import UserInfo from './UserInfo.svelte';
 
@@ -37,9 +37,11 @@
 	</div>
 	<div class="container mx-auto p-5">
 	  <!--<Route path="blog/:id" component="{BlogPost}" />-->
-	  <Route path="blog" component="{Blog}" />
 	  <Route path="about" component="{About}" />
 	  <Route path="/"><Home /></Route>
+	  <Route path="game/:uuid" let:params>
+		<Game uuid="{params.uuid}" />
+	  </Route>
 	</div>
   </Router>
 

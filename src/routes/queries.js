@@ -4,6 +4,7 @@ const HOME_PAGE = gql`
     query HOME_PAGE {
         me {
             activeGames {
+                uuid
                 player1 {
                     username
                 }

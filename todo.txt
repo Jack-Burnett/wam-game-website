@@ -19,8 +19,8 @@ Authorise invite requests DONE
 Refactor DAO into 2 classes DONE
 Games table in DB DONE
 Ability to accept invites and that creates a Game DONE
-Write resolvers for Game
-Actual responses to home page query, stop mocking
+Write resolvers for Game DONE
+Actual responses to home page query, stop mocking DONE
 
 Games page, with working links from home + reporting
 Home page to also link your current invites

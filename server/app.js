@@ -7,6 +7,8 @@ const { ApolloServer } = require('apollo-server-express');
 const { typeDefs } = require('./schema');
 const { resolvers } = require('./resolvers');
 var jwt = require('jsonwebtoken');
+var path = require('path');
+
 
 function getUser(token) {
   try {
@@ -51,11 +53,16 @@ app.use(express.static('public'))
 
 server.applyMiddleware({ app });
 
-app.use((req, res) => {
-  res.status(200);
-  res.send('Hello!');
-  res.end();
-});
+//app.use((req, res) => {
+//  res.status(200);
+//  res.send('Hello!');
+//  res.end();
+//});
+
+app.get(/.*/, function (req, res) {
+  console.log(__dirname)
+  res.sendFile("./", options = { root: __dirname + '/../public' })
+})
 
 app.listen({ port: 4000 }, () =>
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)

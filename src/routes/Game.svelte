@@ -7,9 +7,14 @@
 	let columns = 5
 
 	let match = new Match()
+
+	export let uuid
 </script>
 
 <main>
+	<p>
+		{uuid}
+	</p>
 	{#each Array(rows) as _}
 	<div class="row">
 		{#each Array(columns) as _}
