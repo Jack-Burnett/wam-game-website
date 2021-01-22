@@ -10,6 +10,7 @@ const typeDefs = gql`
       uuid: String
       activeGames: [Game]
       pastGames: [Game]
+      invites: [Invite]
   }
 
   input UserInput {

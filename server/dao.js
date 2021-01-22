@@ -52,6 +52,14 @@ async function get_active_games_for_user(user_uuid) {
     return res.rows
 }
 
+async function get_invites_for_user(user_uuid) {
+    const res = await pool.query(
+        'SELECT * FROM invites WHERE inviter_uuid = $1 OR invitee_uuid = $1',
+         [user_uuid]
+    )
+    return res.rows
+}
+
 async function get_users(startsWith = "", excludeUuid = "NONE") {
     if (excludeUuid == "NONE") {
         excludeUuid = "00000000-0000-0000-0000-000000000000"
@@ -119,3 +127,4 @@ exports.delete_invite_by_uuid = delete_invite_by_uuid
 exports.get_active_games_for_user = get_active_games_for_user
 exports.upsert_game = upsert_game
 exports.get_user_by_uuid = get_user_by_uuid
+exports.get_invites_for_user = get_invites_for_user

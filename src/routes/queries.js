@@ -14,6 +14,15 @@ const HOME_PAGE = gql`
                 turn
                 state
             }
+            invites {
+                uuid
+                inviter {
+                    username
+                }
+                invitee {
+                    username
+                }
+            }
         }
         users (search: {startsWith: "", excludeSelf: true}) {
             uuid
