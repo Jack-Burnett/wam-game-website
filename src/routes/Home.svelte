@@ -1,17 +1,10 @@
 <script>
 	import { query } from "svelte-apollo";
 	import { HOME_PAGE } from "./queries";
-	import { SEND_INVITE } from "../mutations";
-	import { currentUser} from "../CurrentUser.js"
-	import { mutation } from "svelte-apollo";
+	import Challenge from "./Challenge.svelte";
 	import { Link } from "svelte-routing";
 	
 	const homeData = query(HOME_PAGE);
-    const sendInvite = mutation(SEND_INVITE);
-
-	function challenge(user) {
-		sendInvite({ variables: { inviter: currentUser.getUser().uuid, invitee: user.uuid } } )
-	}
 </script>
 
 <main>
@@ -57,12 +50,7 @@
 			<h2 class="text-2xl"> Challenge someone </h2>
 			<div class="flex flex-row flex-wrap">
 				{#each $homeData.data.users as user}
-					<div class="flex-column rounded-md border border-indigo-600 p-5 m-3">
-						<p class="text-center">{user.username}</p>
-						<button
-						 	on:click="{challenge(user)}"
-							class="justify-center bg-blue-500 font-bold text-white px-4 py-1 rounded transition duration-300 ease-in-out hover:bg-blue-600">Challenge</button>
-					</div>
+					<Challenge {user} />
 				{/each}
 			</div>
 		{/if}

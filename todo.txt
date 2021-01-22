@@ -22,7 +22,14 @@ Ability to accept invites and that creates a Game DONE
 Write resolvers for Game DONE
 Actual responses to home page query, stop mocking DONE
 
-Games page, with working links from home + reporting
+Games page, with working links from home + reporting DONE
+Links to site currently don't resolve DONE
+No feedback when invite sent DONE
 Home page to also link your current invites
-No feedback when invite sent
 Should only be able to accept games you are the invitee of
+
+Graphics
+Game logic
+Game rendering logic
+Move submission
+Move submission UI
