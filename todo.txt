@@ -33,3 +33,13 @@ Game logic
 Game rendering logic
 Move submission
 Move submission UI
+
+Nice looking navbar
+
+GAME logic
+Correct move resolution
+Correct rotation resolution
+Correct wizard resolution
+Correct sword kill resolution
+Correct archery resolution
+TESTS

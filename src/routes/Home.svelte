@@ -2,6 +2,7 @@
 	import { query } from "svelte-apollo";
 	import { HOME_PAGE } from "./queries";
 	import Challenge from "./Challenge.svelte";
+	import Invite from "./Invite.svelte";
 	import { Link } from "svelte-routing";
 	
 	const homeData = query(HOME_PAGE);
@@ -49,18 +50,13 @@
 			{/if}
 			{#if $homeData.data.me.invites.length > 0}
 				<h2 class="text-2xl"> Invites </h2>
-				{#each $homeData.data.me.invites as invite}
-					<p>{invite.uuid}</p>
-					<p>{invite.inviter.username}</p>
-					<p>{invite.invitee.username}</p>
-				{/each}
+				<div class="flex flex-row flex-wrap">
+					{#each $homeData.data.me.invites as invite}
+						<Invite {invite} />
+					{/each}
+				</div>
 
 			{/if}
-			<div class="flex flex-row flex-wrap">
-				{#each $homeData.data.users as user}
-					<Challenge {user} />
-				{/each}
-			</div>
 			<h2 class="text-2xl"> Challenge someone </h2>
 			<div class="flex flex-row flex-wrap">
 				{#each $homeData.data.users as user}
