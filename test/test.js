@@ -366,6 +366,83 @@ describe('Game', function() {
     
     });
 
+    it('knights cant move swords into swords', function() {
+
+      let game = new Game([
+        { x: 1, y: 2, type: "Warrior", player: 1 },
+        { x: 2, y: 2, type: "Sword", player: 1 },
+        { x: 3, y: 3, type: "Warrior", player: 2 },
+        { x: 3, y: 2, type: "Sword", player: 2 },
+        { x: 0, y: 4, type: "Archer", player: 2 }
+      ])
+
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  .  .
+        .  W1 S1 S2 .
+        .  .  .  W2 .
+        A2 .  .  .  .
+        `)
+      )
+      move1 = { type: "Warrior", player: 1, action: "MOVE_RIGHT" }
+      move2 = { type: "Archer", player: 2, action: "MOVE_RIGHT" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  .  .
+        .  W1 S1 S2 .
+        .  .  .  W2 .
+        .  A2 .  .  .
+        `)
+      )
+    
+    });
+
+    
+    it('two swords cant be moved into the same space at once', function() {
+
+      let game = new Game([
+        { x: 0, y: 2, type: "Warrior", player: 1 },
+        { x: 1, y: 2, type: "Sword", player: 1 },
+        { x: 3, y: 3, type: "Warrior", player: 2 },
+        { x: 3, y: 2, type: "Sword", player: 2 },
+        { x: 0, y: 4, type: "Archer", player: 2 }
+      ])
+
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  .  .
+        W1 S1 .  S2 .
+        .  .  .  W2 .
+        A2 .  .  .  .
+        `)
+      )
+      move1 = { type: "Warrior", player: 1, action: "MOVE_RIGHT" }
+      move2 = { type: "Warrior", player: 2, action: "MOVE_LEFT" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  .  .
+        W1 S1 .  S2 .
+        .  .  .  W2 .
+        A2 .  .  .  .
+        `)
+      )
+    
+    });
+
 
   });
 });

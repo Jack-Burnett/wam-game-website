@@ -105,7 +105,8 @@ class Game {
             // If two pieces try and move to the same place, do nothing!
             if (target1.x == target2.x && target1.y == target2.y) {
                 console.log("nope.avi")
-                return
+                isPiece1Moving = false
+                isPiece2Moving = false
             }
         }
         console.log(isPiece1Moving)
@@ -120,6 +121,39 @@ class Game {
         if (isPiece2Moving && !isPiece1Moving) {
             if (piece1.x == target2.x && piece1.y == target2.y) {
                 isPiece2Moving = false;
+            }
+        }
+        // If warriors are involved, have to repeat a lot of the logic but for their swords
+        const sword1 = this.getSwordForPlayer(1)
+        const sword2 = this.getSwordForPlayer(2)
+        // If two warriors try and move their swords to the same place, do nothing!
+        if (piece1.type == "Warrior" && piece2.type == "Warrior" && isPiece1Moving && isPiece2Moving) {
+            const swordTarget1 = this.getTargetSpace(sword1, action1)
+            const swordTarget2 = this.getTargetSpace(sword2, action2)
+            if (swordTarget1.x == swordTarget2.x && swordTarget1.y == swordTarget2.y) {
+                isPiece1Moving = false
+                isPiece2Moving = false
+            }
+        }
+        // If piece 1 is moving and 2 is not, need to collide piece 1s sword with piece 2s sword
+        if (piece1.type == "Warrior" && isPiece1Moving) {
+            console.log("ONCE")
+            if (!isPiece2Moving || piece2.type != "Warrior") {
+                console.log("TWICE")
+                const swordTarget1 = this.getTargetSpace(sword1, action1)
+                if (swordTarget1.x == sword2.x && swordTarget1.y == sword2.y) {
+                    console.log("THRICE")
+                    isPiece1Moving = false
+                }
+            }
+        }
+        // If piece 2 is moving and 1 is not, need to collide piece 2s sword with piece 1s sword
+        if (piece2.type == "Warrior" && isPiece2Moving) {
+            if (!isPiece1Moving || piece1.type != "Warrior") {
+                const swordTarget2 = this.getTargetSpace(sword2, action2)
+                if (swordTarget2.x == sword1.x && swordTarget2.y == sword1.y) {
+                    isPiece2Moving = false
+                }
             }
         }
         console.log(isPiece1Moving)
@@ -164,7 +198,14 @@ class Game {
     }
     
     getSword(warrior) {
-        return this.pieces.find(piece => piece.player == warrior.player && piece.type == "Sword")
+        if(warrior.type == "Warrior") {
+            return this.pieces.find(piece => piece.player == warrior.player && piece.type == "Sword")
+        } else {
+            return undefined
+        }
+    }
+    getSwordForPlayer(player) {
+        return this.pieces.find(piece => piece.player == player && piece.type == "Sword")
     }
     
     inBounds(point) {
