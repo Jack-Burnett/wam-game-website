@@ -69,14 +69,21 @@ class Game {
                 return { x: piece.x, y: piece.y + 1}
             case "MOVE_UP":
                 return { x: piece.x, y: piece.y - 1}
+            case "MOVE_DOWN_LEFT":
+                return { x: piece.x - 1, y: piece.y + 1}
+            case "MOVE_DOWN_RIGHT":
+                return { x: piece.x + 1, y: piece.y + 1}
+            case "MOVE_UP_LEFT":
+                return { x: piece.x - 1, y: piece.y - 1}
+            case "MOVE_UP_RIGHT":
+                return { x: piece.x + 1, y: piece.y - 1}
         }
+        
     }
     
     applyMovements(action1, action2) {
         const piece1 = this.getPieceForAction(action1)
         const piece2 = this.getPieceForAction(action2)
-        console.log(piece1)
-        console.log(piece2)
 
         let isPiece1Moving = this.isMove(action1)
         let isPiece2Moving = this.isMove(action2)
@@ -85,23 +92,59 @@ class Game {
         isPiece1Moving = isPiece1Moving && !this.isBlocked(piece1, action1)
         isPiece2Moving = isPiece2Moving && !this.isBlocked(piece2, action2)
     
+        // Check if other pieces are blocking
+        const blockerPieces = this.pieces.filter(piece => piece != piece1 && piece != piece2 && piece.type != "Sword")
+        
+        console.log(isPiece1Moving)
+        console.log(isPiece2Moving)
+
+        isPiece1Moving = isPiece1Moving && !blockerPieces.some(piece => target1.x == piece.x && target1.y == piece.y)
+        isPiece2Moving = isPiece2Moving && !blockerPieces.some(piece => target2.x == piece.x && target2.y == piece.y)
+        
         if (isPiece1Moving && isPiece2Moving) {
             // If two pieces try and move to the same place, do nothing!
-            if (target1 == target2) {
+            if (target1.x == target2.x && target1.y == target2.y) {
+                console.log("nope.avi")
                 return
             }
         }
-        // Apply each movement, as long as they are not blocked by pieces
-        if (isPiece1Moving) { // But ignore the other pieces existing position :o
+        console.log(isPiece1Moving)
+        console.log(isPiece2Moving)
+        // If piece 1 is moving and 2 is not, need to check collision against 2
+        if (isPiece1Moving && !isPiece2Moving) {
+            if (piece2.x == target1.x && piece2.y == target1.y) {
+                isPiece1Moving = false;
+            }
+        }
+        // If piece 2 is moving and 1 is not, need to check collision against 1
+        if (isPiece2Moving && !isPiece1Moving) {
+            if (piece1.x == target2.x && piece1.y == target2.y) {
+                isPiece2Moving = false;
+            }
+        }
+        console.log(isPiece1Moving)
+        console.log(isPiece2Moving)
+        // Apply each movement
+        if (isPiece1Moving) {
             piece1.x = target1.x
             piece1.y = target1.y
+            const sword = this.getSword(piece1)
+            if (sword != undefined) {
+                const swordTarget = this.getTargetSpace(sword, action1)
+                sword.x = swordTarget.x
+                sword.y = swordTarget.y
+            }
         }
-        if (isPiece2Moving) { // But ignore the other pieces existing position :o
+        if (isPiece2Moving) {
             piece2.x = target2.x
             piece2.y = target2.y
+            const sword = this.getSword(piece2)
+            if (sword != undefined) {
+                const swordTarget = this.getTargetSpace(sword, action2)
+                sword.x = swordTarget.x
+                sword.y = swordTarget.y
+            }
         }
-        console.log(piece1.x + " " + piece1.y)
-        console.log(piece2.x + " " + piece2.y)
     }
     
     // By walls; does not care about units
@@ -121,12 +164,7 @@ class Game {
     }
     
     getSword(warrior) {
-        const pieceOpt = this.pieces.filter(piece => piece.player == warrior.player && piece.type == "Sword")
-        if (pieceOpt.length > 0) {
-            return piece
-        } else {
-            return null
-        }
+        return this.pieces.find(piece => piece.player == warrior.player && piece.type == "Sword")
     }
     
     inBounds(point) {
@@ -138,12 +176,7 @@ class Game {
     }
     
     getPieceForAction(action) {
-        const pieceOpt = this.pieces.filter(piece => piece.player == action.player && piece.type == action.type)
-        if (pieceOpt.length > 0) {
-            return pieceOpt[0]
-        } else {
-            return null
-        }
+        return this.pieces.find(piece => piece.player == action.player && piece.type == action.type)
     }
     
     tick(action1, action2) {
@@ -154,9 +187,8 @@ class Game {
         let output = ""
         for (let y = 0; y <= LEVEL_HEIGHT; y++) {
             for (let x = 0; x <= LEVEL_WIDTH; x++) {
-                const pieceOpt = this.pieces.filter(piece => piece.x == x && piece.y == y)
-                if (pieceOpt.length > 0) {
-                    const piece = pieceOpt[0]
+                const piece = this.pieces.find(piece => piece.x == x && piece.y == y)
+                if (piece != undefined) {
                     switch(piece.type) {
                         case "Mage":
                             output += "M"
