@@ -317,12 +317,21 @@ class Game {
             sword.y = spaceAhead.y
         }
     }
+
+    applyArchery(action1, action2) {
+        const piece1 = this.getPieceForAction(action1)
+        const piece2 = this.getPieceForAction(action2)
+        let isShooting1 = this.getPieceForAction(action1) != undefined && action1.action.equals("SHOOT")
+        let isShooting2 = this.getPieceForAction(action2) != undefined && action2.action.equals("SHOOT")
+    }
     
     tick(action1, action2) {
         this.applyMovements(action1, action2)
         this.applySwordKills()
         this.applyRotation(action1, action2)
         this.applySwordKills()
+        // TODO magic
+        this.applyArchery(action1, action2)
 
         // Assert state sensible
         for (let y = 0; y <= LEVEL_HEIGHT; y++) {

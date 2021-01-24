@@ -7,6 +7,10 @@
 
 	const x = piece.x;
 	const y = piece.y;
+	const rotation = piece.rotation;
+
+	const type = piece.type;
+	const graphic = piece.type + "_" + piece.player
 
 	function handleClick() {
 		x.set(0).then(
@@ -15,12 +19,19 @@
 	}
 </script>
 
-<main class="knight" on:click={handleClick}
-style="top: {$y*79+12.5}px; left: {$x*79+12.5}px">
+<main>
+	<img class="knight" on:click={handleClick} src="../graphics/{graphic}.png" alt="{type}" width="50px" height="50px"
+		style="
+		top: {$y*79+12.5}px; 
+		left: {$x*79+12.5}px; 
+		transform: rotate({$rotation}deg);
+		position: absolute;
+		padding:0px;
+		margin:0px; " />
 </main>
 
 <style>
-	main {
+	a {
 		position: absolute;
 	
 		color: #ff3e00;

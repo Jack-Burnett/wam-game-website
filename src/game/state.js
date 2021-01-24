@@ -5,9 +5,14 @@ import { cubicOut } from 'svelte/easing';
 export default class Match {
     constructor() {
         this.pieces = [
-            new Piece(1, 1, "Knight", 1),
-            new Piece(2, 2, "Archer", 2),
-            new Piece(3, 3, "Wizard", 3)
+            new Piece(0, 0, 180, 1, "Mage", 1),
+            new Piece(2, 0, 180, 1, "Archer", 2),
+            new Piece(4, 0, 180, 1, "Warrior", 3),
+            new Piece(4, 1, 180, 1, "Sword", 4),
+            new Piece(4, 4, 0, 2, "Mage", 5),
+            new Piece(2, 4, 0, 2, "Archer", 6),
+            new Piece(0, 4, 0, 2, "Warrior", 7),
+            new Piece(0, 3, 0, 2, "Sword", 8)
         ]
         this.ticks = [
             new Tick(
@@ -37,7 +42,7 @@ export default class Match {
         this.currentPromise = Promise.resolve()
         this.ticks.forEach(
             (tick) => {
-                this.currentPromise = this.currentPromise.then(() => this.performTick(tick));
+                //this.currentPromise = this.currentPromise.then(() => this.performTick(tick));
             }
         )
     }
@@ -72,10 +77,12 @@ class Piece {
     /**
      * @param {number} x 
      * @param {number} y 
+     * @param {number} rotation
+     * @param {number} player
      * @param {string} type 
      * @param {number} id 
      */
-    constructor(x, y, type, id) {
+    constructor(x, y, rotation, player, type, id) {
         this.type = type;
         this.x = tweened(x, {
             duration: 1000,
@@ -85,6 +92,11 @@ class Piece {
             duration: 1000,
             easing: cubicOut
         });
+        this.rotation = tweened(rotation, {
+            duration: 1000,
+            easing: cubicOut
+        });
+        this.player = player
         this.id = id
 
     }

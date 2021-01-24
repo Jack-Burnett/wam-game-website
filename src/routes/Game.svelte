@@ -12,9 +12,6 @@
 </script>
 
 <main>
-	<p>
-		{uuid}
-	</p>
 	{#each Array(rows) as _}
 	<div class="row">
 		{#each Array(columns) as _}
@@ -25,6 +22,9 @@
 	{#each match.pieces as piece}
 		<Piece piece = {piece}/>
 	{/each}
+	<p>
+		{uuid}
+	</p>
 </main>
 
 <style>
