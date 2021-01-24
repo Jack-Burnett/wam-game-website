@@ -259,6 +259,48 @@ describe('Game', function() {
       )
     });
 
+
+    it('rotating a sword into someone kills them', function() {
+      console.log(`
+        ↖ ↑ ↗
+        ← · →
+        ↙ ↓ ↘
+        `)
+
+      let game = new Game([
+        { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
+        { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
+        { x: 1, y: 3, facing: "WEST", type: "Archer", player: 2 },
+      ])
+
+      assert.strictEqual(
+        state(game.render(true)),
+        state(`
+        .   .   .   .   .
+        .   .   .   .   .
+        .   .   .   .   .
+        .   A2← .   .   .
+        W1→ S1→ .   .   .
+        `)
+      )
+      move1 = { type: "Warrior", player: 1, action: "ROTATE_LEFT" }
+      move2 = { type: "Archer", player: 2, action: "ROTATE_LEFT" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render(true)),
+        state(`
+        .   .   .   .   .
+        .   .   .   .   .
+        .   .   .   .   .
+        .   S1↗ .   .   .
+        W1↗ .   .   .   .
+        `)
+      )
+    });
+
+
   });
 });
 

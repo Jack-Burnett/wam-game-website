@@ -322,6 +322,7 @@ class Game {
         this.applyMovements(action1, action2)
         this.applySwordKills()
         this.applyRotation(action1, action2)
+        this.applySwordKills()
 
         // Assert state sensible
         for (let y = 0; y <= LEVEL_HEIGHT; y++) {
