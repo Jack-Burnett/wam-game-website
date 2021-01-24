@@ -5,14 +5,14 @@ class Game {
     constructor(pieces) {
         if (pieces === undefined) {
             this.pieces = [
-                { x: 0, y: 0, type: "Mage", player: 1 },
-                { x: 2, y: 0, type: "Archer", player: 1 },
-                { x: 4, y: 0, type: "Warrior", player: 1 },
-                { x: 4, y: 1, type: "Sword", player: 1 },
-                { x: 4, y: LEVEL_HEIGHT, type: "Mage", player: 2 },
-                { x: 2, y: LEVEL_HEIGHT, type: "Archer", player: 2 },
-                { x: 0, y: LEVEL_HEIGHT, type: "Warrior", player: 2 },
-                { x: 0, y: LEVEL_HEIGHT - 1, type: "Sword", player: 2 }
+                { x: 0, y: 0, facing: "SOUTH", type: "Mage", player: 1 },
+                { x: 2, y: 0, facing: "SOUTH", type: "Archer", player: 1 },
+                { x: 4, y: 0, facing: "SOUTH", type: "Warrior", player: 1 },
+                { x: 4, y: 1, facing: "SOUTH", type: "Sword", player: 1 },
+                { x: 4, y: LEVEL_HEIGHT, facing: "NORTH", type: "Mage", player: 2 },
+                { x: 2, y: LEVEL_HEIGHT, facing: "NORTH", type: "Archer", player: 2 },
+                { x: 0, y: LEVEL_HEIGHT, facing: "NORTH", type: "Warrior", player: 2 },
+                { x: 0, y: LEVEL_HEIGHT - 1, facing: "NORTH", type: "Sword", player: 2 }
             ]
         } else {
             this.pieces = pieces
@@ -83,6 +83,7 @@ class Game {
                 isPiece2Moving = false;
             }
         }
+        // Sword logic is IMMENSELY wrong bro
         // If warriors are involved, have to repeat a lot of the logic but for their swords
         const sword1 = this.getSwordForPlayer(piece1.player)
         const sword2 = this.getSwordForPlayer(piece2.player)
@@ -96,9 +97,9 @@ class Game {
             }
         }
         // If piece 1 is moving and 2 is not, need to collide piece 1s sword with piece 2s sword
-        if (piece1.type == "Warrior" && isPiece1Moving) {
+        if (piece1.type == "Warrior" && isPiece1Moving && sword2 != undefined) {
             console.log("ONCE")
-            if (!isPiece2Moving || piece2.type != "Warrior" && sword2 != undefined) {
+            if (!isPiece2Moving || piece2.type != "Warrior") {
                 console.log("TWICE")
                 const swordTarget1 = this.getTargetSpace(sword1, action1)
                 if (swordTarget1.x == sword2.x && swordTarget1.y == sword2.y) {
@@ -195,10 +196,15 @@ class Game {
             })
         })
     }
+
+    applyRotation() {
+
+    }
     
     tick(action1, action2) {
         this.applyMovements(action1, action2)
         this.applySwordKills()
+        this.applyRotation()
 
         // Assert state sensible
         for (let y = 0; y <= LEVEL_HEIGHT; y++) {
@@ -211,7 +217,10 @@ class Game {
         }
     }
     
-    render() {
+    render(withRot) {
+        if (withRot == undefined) {
+            withRot = false
+        }
         let output = ""
         for (let y = 0; y <= LEVEL_HEIGHT; y++) {
             for (let x = 0; x <= LEVEL_WIDTH; x++) {
@@ -234,8 +243,26 @@ class Game {
                             output += "NO SUCH PIECE"
                     }
                     output += piece.player
+                    if (withRot) {
+                        const rotMap = {
+                            "NORTH": "↑",
+                            "NORTH_EAST": "↗",
+                            "EAST": "→",
+                            "SOUTH_EAST": "↘",
+                            "SOUTH": "↓",
+                            "SOUTH_WEST": "↙",
+                            "WEST": "←",
+                            "NORTH_WEST": "↖"
+                        }
+                        
+                        output += rotMap[piece.facing]
+                    }
                 } else {
-                    output += ". "
+                    if (withRot) {
+                        output += ".  "
+                    } else {
+                        output += ". "
+                    }
                 }
                 if (x != LEVEL_WIDTH) {
                     output += " "

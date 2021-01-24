@@ -43,3 +43,5 @@ Correct wizard resolution
 Correct sword kill resolution
 Correct archery resolution
 TESTS
+
+issuing orders for dead units could legit happen so should NOT crash when it does :sweatsmile:
