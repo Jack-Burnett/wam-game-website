@@ -442,6 +442,228 @@ describe('Game', function() {
       )
     
     });
+    
+    it('prevented sword moves do not block other moves', function() {
+
+      let game = new Game([
+        { x: 3, y: 3, type: "Warrior", player: 2 },
+        { x: 4, y: 2, type: "Sword", player: 2 },
+        { x: 4, y: 4, type: "Archer", player: 1 }
+      ])
+
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  .  .
+        .  .  .  .  S2
+        .  .  .  W2 .
+        .  .  .  .  A1
+        `)
+      )
+      move1 = { type: "Warrior", player: 2, action: "MOVE_RIGHT" }
+      move2 = { type: "Archer", player: 1, action: "MOVE_UP" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  .  .
+        .  .  .  .  S2
+        .  .  .  W2 A1
+        .  .  .  .  .
+        `)
+      )
+    
+    });
+    
+    it('moving a sword into an enemy kills them', function() {
+
+      let game = new Game([
+        { x: 3, y: 3, type: "Warrior", player: 2 },
+        { x: 3, y: 2, type: "Sword", player: 2 },
+        { x: 3, y: 1, type: "Archer", player: 1 },
+        { x: 0, y: 4, type: "Mage", player: 1 }
+      ])
+
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  A1 .
+        .  .  .  S2 .
+        .  .  .  W2 .
+        M1 .  .  .  .
+        `)
+      )
+      move1 = { type: "Mage", player: 1, action: "MOVE_RIGHT" }
+      move2 = { type: "Warrior", player: 2, action: "MOVE_UP" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  S2 .
+        .  .  .  W2 .
+        .  .  .  .  .
+        .  M1 .  .  .
+        `)
+      )
+    
+    });
+    
+    it('moving into a sword kills you', function() {
+
+      let game = new Game([
+        { x: 3, y: 3, type: "Warrior", player: 2 },
+        { x: 3, y: 2, type: "Sword", player: 2 },
+        { x: 3, y: 1, type: "Archer", player: 1 },
+        { x: 0, y: 4, type: "Mage", player: 1 }
+      ])
+
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  A1 .
+        .  .  .  S2 .
+        .  .  .  W2 .
+        M1 .  .  .  .
+        `)
+      )
+      move1 = { type: "Mage", player: 1, action: "MOVE_RIGHT" }
+      move2 = { type: "Archer", player: 1, action: "MOVE_DOWN" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  .  .
+        .  .  .  S2 .
+        .  .  .  W2 .
+        .  M1 .  .  .
+        `)
+      )
+    
+    });
+    
+    it('moving into a sword as it moves kills you', function() {
+
+      let game = new Game([
+        { x: 3, y: 3, type: "Warrior", player: 2 },
+        { x: 3, y: 2, type: "Sword", player: 2 },
+        { x: 3, y: 0, type: "Archer", player: 2 }
+      ])
+
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  A2 .
+        .  .  .  .  .
+        .  .  .  S2 .
+        .  .  .  W2 .
+        .  .  .  .  .
+        `)
+      )
+      move1 = { type: "Warrior", player: 2, action: "MOVE_UP" }
+      move2 = { type: "Archer", player: 2, action: "MOVE_DOWN" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  S2 .
+        .  .  .  W2 .
+        .  .  .  .  .
+        .  .  .  .  .
+        `)
+      )
+    
+    });
+
+    it('killing a warrior removes their sword', function() {
+
+      let game = new Game([
+        { x: 3, y: 3, type: "Warrior", player: 2 },
+        { x: 3, y: 2, type: "Sword", player: 2 },
+        { x: 1, y: 3, type: "Warrior", player: 1 },
+        { x: 2, y: 3, type: "Sword", player: 1 },
+        { x: 0, y: 0, type: "Archer", player: 2 }
+      ])
+
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        A2 .  .  .  .
+        .  .  .  .  .
+        .  .  .  S2 .
+        .  W1 S1 W2 .
+        .  .  .  .  .
+        `)
+      )
+      move1 = { type: "Warrior", player: 1, action: "MOVE_RIGHT" }
+      move2 = { type: "Archer", player: 2, action: "MOVE_DOWN" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        A2 .  .  .  .
+        .  .  .  .  .
+        .  .  W1 S1 .
+        .  .  .  .  .
+        `)
+      )
+    
+    });
+    
+    it('can kill whilst dying', function() {
+
+      let game = new Game([
+        { x: 3, y: 3, type: "Warrior", player: 2 },
+        { x: 3, y: 2, type: "Sword", player: 2 },
+        { x: 1, y: 3, type: "Warrior", player: 1 },
+        { x: 2, y: 3, type: "Sword", player: 1 },
+        { x: 3, y: 1, type: "Archer", player: 2 }
+      ])
+
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  A2 .
+        .  .  .  S2 .
+        .  W1 S1 W2 .
+        .  .  .  .  .
+        `)
+      )
+      move1 = { type: "Warrior", player: 1, action: "MOVE_RIGHT" }
+      move2 = { type: "Archer", player: 2, action: "MOVE_DOWN" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render()),
+        state(`
+        .  .  .  .  .
+        .  .  .  .  .
+        .  .  .  .  .
+        .  .  W1 S1 .
+        .  .  .  .  .
+        `)
+      )
+    
+    });
 
 
   });

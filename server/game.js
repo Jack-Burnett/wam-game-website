@@ -5,54 +5,14 @@ class Game {
     constructor(pieces) {
         if (pieces === undefined) {
             this.pieces = [
-                {
-                    x: 0,
-                    y: 0,
-                    type: "Mage",
-                    player: 1
-                },
-                {
-                    x: 2,
-                    y: 0,
-                    type: "Archer",
-                    player: 1
-                },
-                {
-                    x: 4,
-                    y: 0,
-                    type: "Warrior",
-                    player: 1
-                },
-                {
-                    x: 4,
-                    y: 1,
-                    type: "Sword",
-                    player: 1
-                },
-                {
-                    x: 4,
-                    y: LEVEL_HEIGHT,
-                    type: "Mage",
-                    player: 2
-                },
-                {
-                    x: 2,
-                    y: LEVEL_HEIGHT,
-                    type: "Archer",
-                    player: 2
-                },
-                {
-                    x: 0,
-                    y: LEVEL_HEIGHT,
-                    type: "Warrior",
-                    player: 2
-                },
-                {
-                    x: 0,
-                    y: LEVEL_HEIGHT - 1,
-                    type: "Sword",
-                    player: 2
-                }
+                { x: 0, y: 0, type: "Mage", player: 1 },
+                { x: 2, y: 0, type: "Archer", player: 1 },
+                { x: 4, y: 0, type: "Warrior", player: 1 },
+                { x: 4, y: 1, type: "Sword", player: 1 },
+                { x: 4, y: LEVEL_HEIGHT, type: "Mage", player: 2 },
+                { x: 2, y: LEVEL_HEIGHT, type: "Archer", player: 2 },
+                { x: 0, y: LEVEL_HEIGHT, type: "Warrior", player: 2 },
+                { x: 0, y: LEVEL_HEIGHT - 1, type: "Sword", player: 2 }
             ]
         } else {
             this.pieces = pieces
@@ -124,8 +84,8 @@ class Game {
             }
         }
         // If warriors are involved, have to repeat a lot of the logic but for their swords
-        const sword1 = this.getSwordForPlayer(1)
-        const sword2 = this.getSwordForPlayer(2)
+        const sword1 = this.getSwordForPlayer(piece1.player)
+        const sword2 = this.getSwordForPlayer(piece2.player)
         // If two warriors try and move their swords to the same place, do nothing!
         if (piece1.type == "Warrior" && piece2.type == "Warrior" && isPiece1Moving && isPiece2Moving) {
             const swordTarget1 = this.getTargetSpace(sword1, action1)
@@ -138,7 +98,7 @@ class Game {
         // If piece 1 is moving and 2 is not, need to collide piece 1s sword with piece 2s sword
         if (piece1.type == "Warrior" && isPiece1Moving) {
             console.log("ONCE")
-            if (!isPiece2Moving || piece2.type != "Warrior") {
+            if (!isPiece2Moving || piece2.type != "Warrior" && sword2 != undefined) {
                 console.log("TWICE")
                 const swordTarget1 = this.getTargetSpace(sword1, action1)
                 if (swordTarget1.x == sword2.x && swordTarget1.y == sword2.y) {
@@ -148,7 +108,7 @@ class Game {
             }
         }
         // If piece 2 is moving and 1 is not, need to collide piece 2s sword with piece 1s sword
-        if (piece2.type == "Warrior" && isPiece2Moving) {
+        if (piece2.type == "Warrior" && isPiece2Moving && sword1 != undefined) {
             if (!isPiece1Moving || piece1.type != "Warrior") {
                 const swordTarget2 = this.getTargetSpace(sword2, action2)
                 if (swordTarget2.x == sword1.x && swordTarget2.y == sword1.y) {
@@ -219,9 +179,36 @@ class Game {
     getPieceForAction(action) {
         return this.pieces.find(piece => piece.player == action.player && piece.type == action.type)
     }
+
+    applySwordKills() {
+        const swords = this.pieces.filter(piece => piece.type == "Sword") 
+        const units = this.pieces.filter(piece => piece.type != "Sword")
+        swords.forEach(sword => {
+            units.forEach(unit => {
+                if (sword.x == unit.x && sword.y == unit.y) {
+                    this.pieces = this.pieces.filter(elem => elem != unit)
+                    if (unit.type == "Warrior") {
+                        sword = this.getSwordForPlayer(unit.player)
+                        this.pieces = this.pieces.filter(elem => elem != sword)
+                    }
+                }
+            })
+        })
+    }
     
     tick(action1, action2) {
         this.applyMovements(action1, action2)
+        this.applySwordKills()
+
+        // Assert state sensible
+        for (let y = 0; y <= LEVEL_HEIGHT; y++) {
+            for (let x = 0; x <= LEVEL_WIDTH; x++) {
+                const pieces = this.pieces.filter(piece => piece.x == x && piece.y == y)
+                if(pieces.length > 1) {
+                    throw new Error("Too many pieces sharing a space")
+                }
+            }
+        }
     }
     
     render() {
