@@ -216,23 +216,105 @@ class Game {
         }
         return rots[rot1]
     }
+    
+    getFacingVector(facing) {
+        const rotMap = {
+            "NORTH": {x: 0, y: -1},
+            "NORTH_EAST": {x: +1, y: -1},
+            "EAST": {x: +1, y: 0},
+            "SOUTH_EAST": {x: +1, y: +1},
+            "SOUTH": {x: 0, y: +1},
+            "SOUTH_WEST": {x: -1, y: +1},
+            "WEST": {x: -1, y: 0},
+            "NORTH_WEST": {x: -1, y: -1}
+        }
+        const vector = rotMap[facing]
+        return vector
+    }
+
+    getSpaceAhead(piece, targetRot) {
+        const facingVector = this.getFacingVector(targetRot)
+        return {x : piece.x + facingVector.x, y: piece.y + facingVector.y}
+    }
+
+    rotationBlockedByWall(action) {
+        const piece = this.getPieceForAction(action)
+        let targetRot = this.getTargetRotation(piece, action)
+        if (piece.type == "Warrior") {
+            const spaceAhead = this.getSpaceAhead(piece, targetRot)
+            if (!this.inBounds(spaceAhead) ) {
+                return true
+            }
+        }
+        return false
+    }
 
     applyRotation(action1, action2) {
         const piece1 = this.getPieceForAction(action1)
         const piece2 = this.getPieceForAction(action2)
-        const isRotating1 = this.getPieceForAction(action1) != undefined && action1.action.startsWith("ROTATE")
-        const isRotating2 = this.getPieceForAction(action2) != undefined && action2.action.startsWith("ROTATE")
+        let isRotating1 = this.getPieceForAction(action1) != undefined && action1.action.startsWith("ROTATE")
+        let isRotating2 = this.getPieceForAction(action2) != undefined && action2.action.startsWith("ROTATE")
         
-        console.log("ROTS")
-        console.log(isRotating1)
-        console.log(isRotating2)
+        isRotating1 = isRotating1 && !this.rotationBlockedByWall(action1)
+        isRotating2 = isRotating2 && !this.rotationBlockedByWall(action2)
+        // Prevent both swords being moved into one place at once
+        if (isRotating2 && isRotating2) {
+            let targetRot1 = this.getTargetRotation(piece1, action1)
+            let targetRot2 = this.getTargetRotation(piece2, action2)
+            const spaceAhead1 = this.getSpaceAhead(piece1, targetRot1)
+            const spaceAhead2 = this.getSpaceAhead(piece2, targetRot2)
+            if (spaceAhead1.x == spaceAhead2.x && spaceAhead1.y == spaceAhead2.y ) {
+                isRotating1 = false
+                isRotating2 = false
+            }
+        }
+        // Prevent sword being rotated into another sword
         if (isRotating1) {
             let targetRot = this.getTargetRotation(piece1, action1)
-            piece1.facing = targetRot
+            if (piece1.type == "Warrior") {
+                const spaceAhead = this.getSpaceAhead(piece1, targetRot)
+                const pieceAhead = this.pieces.find(piece => piece.x == spaceAhead.x && piece.y == spaceAhead.y)
+                if (pieceAhead != undefined && pieceAhead.type == "Sword") {
+                    // Unless that sword is moving...
+                    if (isRotating2 && piece2.type == "Warrior") {
+
+                    } else {
+                        isRotating1 = false
+                    }
+                }
+            }
         }
         if (isRotating2) {
             let targetRot = this.getTargetRotation(piece2, action2)
-            piece2.facing = targetRot
+            if (piece2.type == "Warrior") {
+                const spaceAhead = this.getSpaceAhead(piece2, targetRot)
+                const pieceAhead = this.pieces.find(piece => piece.x == spaceAhead.x && piece.y == spaceAhead.y)
+                if (pieceAhead != undefined && pieceAhead.type == "Sword") {
+                    if (isRotating1 && piece1.type == "Warrior") {
+
+                    } else {
+                        isRotating2 = false
+                    }
+                }
+            }
+        }
+        if (isRotating1) {
+            this.doRotate(piece1, action1)
+        }
+        if (isRotating2) {
+            this.doRotate(piece2, action2)
+        }
+    }
+
+    doRotate(piece, action) {
+        let targetRot = this.getTargetRotation(piece, action)
+        piece.facing = targetRot
+        const sword = this.getSword(piece)
+        if (sword != undefined) {
+            const spaceAhead = this.getSpaceAhead(piece, targetRot)
+            sword.facing = targetRot
+            sword.x = spaceAhead.x
+            sword.y = spaceAhead.y
         }
     }
     

@@ -9,7 +9,7 @@ function state(s) {
 describe('Game', function() {
   describe('#new()', function() {
     
-    it('rot', function() {
+    it('basic rotation works', function() {
       console.log(`
         ↖ ↑ ↗
         ← · →
@@ -48,7 +48,216 @@ describe('Game', function() {
       )
     
     });
+    
+    it('warriors swords move as they rotate', function() {
+      console.log(`
+        ↖ ↑ ↗
+        ← · →
+        ↙ ↓ ↘
+        `)
 
+      let game = new Game([
+        { x: 2, y: 3, facing: "NORTH_WEST", type: "Warrior", player: 1 },
+        { x: 1, y: 2, facing: "NORTH_WEST", type: "Sword", player: 1 },
+        { x: 4, y: 4, facing: "NORTH", type: "Warrior", player: 2 },
+        { x: 4, y: 3, facing: "NORTH", type: "Sword", player: 2 }
+      ])
+
+      assert.strictEqual(
+        state(game.render(true)),
+        state(`
+        .   .   .   .   .
+        .   .   .   .   .
+        .   S1↖ .   .   .
+        .   .   W1↖ .   S2↑
+        .   .   .   .   W2↑
+        `)
+      )
+      move1 = { type: "Warrior", player: 1, action: "ROTATE_RIGHT" }
+      move2 = { type: "Warrior", player: 2, action: "ROTATE_LEFT" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render(true)),
+        state(`
+        .   .   .   .   .
+        .   .   .   .   .
+        .   .   S1↑ .   .
+        .   .   W1↑ S2↖ .
+        .   .   .   .   W2↖
+        `)
+      )
+    
+    });
+
+    it('swords cannot rotate into walls', function() {
+      console.log(`
+        ↖ ↑ ↗
+        ← · →
+        ↙ ↓ ↘
+        `)
+
+      let game = new Game([
+        { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
+        { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
+        { x: 4, y: 4, facing: "NORTH", type: "Warrior", player: 2 },
+        { x: 4, y: 3, facing: "NORTH", type: "Sword", player: 2 }
+      ])
+
+      assert.strictEqual(
+        state(game.render(true)),
+        state(`
+        .   .   .   .   .
+        .   .   .   .   .
+        .   .   .   .   .
+        .   .   .   .   S2↑
+        W1→ S1→ .   .   W2↑
+        `)
+      )
+      move1 = { type: "Warrior", player: 1, action: "ROTATE_RIGHT" }
+      move2 = { type: "Warrior", player: 2, action: "ROTATE_RIGHT" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render(true)),
+        state(`
+        .   .   .   .   .
+        .   .   .   .   .
+        .   .   .   .   .
+        .   .   .   .   S2↑
+        W1→ S1→ .   .   W2↑
+        `)
+      )
+    
+    });
+    
+    it('swords cannot rotate into swords', function() {
+      console.log(`
+        ↖ ↑ ↗
+        ← · →
+        ↙ ↓ ↘
+        `)
+
+      let game = new Game([
+        { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
+        { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
+        { x: 2, y: 3, facing: "WEST", type: "Warrior", player: 2 },
+        { x: 1, y: 3, facing: "WEST", type: "Sword", player: 2 },
+        { x: 4, y: 4, facing: "NORTH", type: "Mage", player: 2 }
+      ])
+
+      assert.strictEqual(
+        state(game.render(true)),
+        state(`
+        .   .   .   .   .
+        .   .   .   .   .
+        .   .   .   .   .
+        .   S2← W2← .   .
+        W1→ S1→ .   .   M2↑
+        `)
+      )
+      move1 = { type: "Warrior", player: 1, action: "ROTATE_LEFT" }
+      move2 = { type: "Mage", player: 2, action: "ROTATE_LEFT" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render(true)),
+        state(`
+        .   .   .   .   .
+        .   .   .   .   .
+        .   .   .   .   .
+        .   S2← W2← .   .
+        W1→ S1→ .   .   M2↖
+        `)
+      )
+    
+    });
+    
+    it('swords can simoultaneously rotate into a space as it is rotated out of', function() {
+      console.log(`
+        ↖ ↑ ↗
+        ← · →
+        ↙ ↓ ↘
+        `)
+
+      let game = new Game([
+        { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
+        { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
+        { x: 2, y: 3, facing: "WEST", type: "Warrior", player: 2 },
+        { x: 1, y: 3, facing: "WEST", type: "Sword", player: 2 }
+      ])
+
+      assert.strictEqual(
+        state(game.render(true)),
+        state(`
+        .   .   .   .   .
+        .   .   .   .   .
+        .   .   .   .   .
+        .   S2← W2← .   .
+        W1→ S1→ .   .   .
+        `)
+      )
+      move1 = { type: "Warrior", player: 1, action: "ROTATE_LEFT" }
+      move2 = { type: "Warrior", player: 2, action: "ROTATE_RIGHT" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render(true)),
+        state(`
+        .   .   .   .   .
+        .   .   .   .   .
+        .   S2↖ .   .   .
+        .   S1↗ W2↖ .   .
+        W1↗ .   .   .   .
+        `)
+      )
+    });
+
+    
+    it('attempting to rotate two swords into the same space at once should not rotate either', function() {
+      console.log(`
+        ↖ ↑ ↗
+        ← · →
+        ↙ ↓ ↘
+        `)
+
+      let game = new Game([
+        { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
+        { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
+        { x: 2, y: 2, facing: "WEST", type: "Warrior", player: 2 },
+        { x: 1, y: 2, facing: "WEST", type: "Sword", player: 2 }
+      ])
+
+      assert.strictEqual(
+        state(game.render(true)),
+        state(`
+        .   .   .   .   .
+        .   .   .   .   .
+        .   S2← W2← .   .
+        .   .   .   .   .
+        W1→ S1→ .   .   .
+        `)
+      )
+      move1 = { type: "Warrior", player: 1, action: "ROTATE_LEFT" }
+      move2 = { type: "Warrior", player: 2, action: "ROTATE_LEFT" }
+    
+      game.tick(move1, move2)
+      
+      assert.strictEqual(
+        state(game.render(true)),
+        state(`
+        .   .   .   .   .
+        .   .   .   .   .
+        .   S2← W2← .   .
+        .   .   .   .   .
+        W1→ S1→ .   .   .
+        `)
+      )
+    });
 
   });
 });
