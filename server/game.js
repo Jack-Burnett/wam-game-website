@@ -197,14 +197,49 @@ class Game {
         })
     }
 
-    applyRotation() {
+    getTargetRotation(piece, action) {
+        const rots = [
+            "NORTH", "NORTH_EAST", "EAST", "SOUTH_EAST", "SOUTH", "SOUTH_WEST", "WEST", "NORTH_WEST"
+        ]
+        let rot1 = rots.indexOf(piece.facing)
+        if (action.action == "ROTATE_RIGHT") {
+            rot1++
+            if(rot1 == 8) {
+                rot1 = 0
+            }
+        }
+        if (action.action == "ROTATE_LEFT") {
+            rot1--
+            if(rot1 == -1) {
+                rot1 = 7
+            }
+        }
+        return rots[rot1]
+    }
 
+    applyRotation(action1, action2) {
+        const piece1 = this.getPieceForAction(action1)
+        const piece2 = this.getPieceForAction(action2)
+        const isRotating1 = this.getPieceForAction(action1) != undefined && action1.action.startsWith("ROTATE")
+        const isRotating2 = this.getPieceForAction(action2) != undefined && action2.action.startsWith("ROTATE")
+        
+        console.log("ROTS")
+        console.log(isRotating1)
+        console.log(isRotating2)
+        if (isRotating1) {
+            let targetRot = this.getTargetRotation(piece1, action1)
+            piece1.facing = targetRot
+        }
+        if (isRotating2) {
+            let targetRot = this.getTargetRotation(piece2, action2)
+            piece2.facing = targetRot
+        }
     }
     
     tick(action1, action2) {
         this.applyMovements(action1, action2)
         this.applySwordKills()
-        this.applyRotation()
+        this.applyRotation(action1, action2)
 
         // Assert state sensible
         for (let y = 0; y <= LEVEL_HEIGHT; y++) {
