@@ -16,10 +16,10 @@ export default class Match {
         console.log(game)
     
         const move1 = { facing: "NORTH", type: "Mage", player: 1, action: "MOVE_DOWN" }
-        const move2 = { facing: "NORTH", type: "Archer", player: 2, action: "MOVE_RIGHT" }
+        const move2 = { facing: "NORTH", type: "Mage", player: 2, action: "MOVE_UP" }
         this.ticks = [ 
             game.tick(move1, move2),
-            game.tick(move1, move2),
+            game.tick({ facing: "NORTH", type: "Mage", player: 1, action: "ROTATE_RIGHT" }, move2),
             game.tick(move1, move2),
             game.tick(move1, move2)
         ]
@@ -66,9 +66,11 @@ export default class Match {
                 console.log(piece)
                 if (!piece) return
                 if (move instanceof Die) {
-                    return piece.opacity.update(x => 0);
+                    console.log("YOU SHALL DIE WORM")
+                    console.log(move)
+                    return piece.opacity.set(0);
                 } else if (move instanceof Face) {
-                    return piece.rotation.set(this.toRotation(facing));
+                    return piece.rotation.set(this.toRotation(move.facing));
                 } else if (move instanceof Move) {
                     return Promise.all(
                         [ piece.x.set(move.x), piece.y.set(move.y) ]

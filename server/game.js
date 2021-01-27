@@ -144,13 +144,13 @@ class Game {
         console.log(isPiece1Moving)
         console.log(isPiece2Moving)
         // If piece 1 is moving and 2 is not, need to check collision against 2
-        if (isPiece1Moving && !isPiece2Moving) {
+        if (isPiece1Moving && piece2 && !isPiece2Moving) {
             if (piece2.x == target1.x && piece2.y == target1.y) {
                 isPiece1Moving = false;
             }
         }
         // If piece 2 is moving and 1 is not, need to check collision against 1
-        if (isPiece2Moving && !isPiece1Moving) {
+        if (isPiece2Moving && piece1 && !isPiece1Moving) {
             if (piece1.x == target2.x && piece1.y == target2.y) {
                 isPiece2Moving = false;
             }
@@ -261,19 +261,23 @@ class Game {
     }
 
     applySwordKills() {
+        const events = []
         const swords = this.pieces.filter(piece => piece.type == "Sword") 
         const units = this.pieces.filter(piece => piece.type != "Sword")
         swords.forEach(sword => {
             units.forEach(unit => {
                 if (sword.x == unit.x && sword.y == unit.y) {
                     this.pieces = this.pieces.filter(elem => elem != unit)
+                    events.push(new Die(unit.id))
                     if (unit.type == "Warrior") {
                         sword = this.getSwordForPlayer(unit.player)
                         this.pieces = this.pieces.filter(elem => elem != sword)
+                        events.push(new Die(sword.id))
                     }
                 }
             })
         })
+        return new Simoultaneous(events);
     }
 
     getTargetRotation(piece, action) {
@@ -377,12 +381,16 @@ class Game {
                 }
             }
         }
+        const events = []
         if (isRotating1) {
             this.doRotate(piece1, action1)
+            events.push(new Face(piece1.id, piece1.facing))
         }
         if (isRotating2) {
             this.doRotate(piece2, action2)
+            events.push(new Face(piece2.id, piece2.facing))
         }
+        return new Simoultaneous(events);
     }
 
     doRotate(piece, action) {
@@ -456,9 +464,9 @@ class Game {
         const all_events = []
 
         all_events.push ( this.applyMovements(action1, action2) )
-        this.applySwordKills()
-        this.applyRotation(action1, action2)
-        this.applySwordKills()
+        all_events.push ( this.applySwordKills() )
+        all_events.push ( this.applyRotation(action1, action2) )
+        all_events.push ( this.applySwordKills() )
         // TODO magic
         this.applyArchery(action1, action2)
 

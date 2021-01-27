@@ -11,16 +11,14 @@
 
 	const type = piece.type.toLowerCase();
 	const graphic = piece.type.toLowerCase() + "_" + piece.player
+	const isSword = type == "sword"
+	console.log(type)
+	console.log("IS SWORD " + isSword)
 
-	function handleClick() {
-		x.set(0).then(
-			() => { y.set(4) }
-		)
-	}
 </script>
 
 <main>
-	<img class="knight" on:click={handleClick} src="../graphics/{graphic}.png" alt="{type}" width="50px" height="50px"
+	<img class="knight" src="../graphics/{graphic}.png" alt="{type}" width="50px" height="50px"
 		style="
 		top: {$y*79+12.5}px; 
 		left: {$x*79+12.5}px; 
@@ -28,5 +26,6 @@
 		position: absolute;
 		padding:0px;
 		opacity: {$opacity};
+		z-index: {isSword ? -100 : 100};
 		margin:0px; " />
 </main>
