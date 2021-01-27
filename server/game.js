@@ -1,18 +1,82 @@
-LEVEL_WIDTH = 4
-LEVEL_HEIGHT = 4
+const LEVEL_WIDTH = 4
+const LEVEL_HEIGHT = 4
+
+const Facing = {
+    SOUTH: "SOUTH",
+    NORTH: "NORTH",
+    EAST: "EAST",
+    WEST: "WEST",
+    NORTH_EAST: "NORTH_EAST",
+    NORTH_WEST: "NORTH_WEST",
+    SOUTH_EAST: "SOUTH_EAST",
+    SOUTH_WEST: "SOUTH_WEST"
+}
+
+const Player = {
+    PLAYER1: 1,
+    PLAYER2: 2
+}
+
+const PieceType = {
+    WARRIOR: "Warrior",
+    MAGE: "Mage",
+    ARCHER: "Archer",
+    SWORD: "Sword"
+}
+
+class Move {
+    constructor(piece, x, y) {
+        this.piece = piece
+        this.x = x
+        this.y = y
+    }
+}
+
+class Die {
+    constructor(piece) {
+        this.piece = piece
+    }
+}
+
+class Face {
+    constructor(piece, facing) {
+        this.piece = piece
+        this.facing = facing
+    }
+}
+
+// Several simoulatenous things that happen
+class Simoultaneous {
+    constructor(events) {
+        this.events = events
+    }
+}
+
+class Piece {
+    constructor(x, y, facing, type, player) {
+        this.x = x;
+        this.y = y;
+        this.facing = facing;
+        console.log("fuck")
+        console.log(type)
+        this.type = type;
+        this.player = player
+        this.id = type.toLowerCase() + "_" + player;
+    }
+}
 
 class Game {
     constructor(pieces) {
         if (pieces === undefined) {
             this.pieces = [
-                { x: 0, y: 0, facing: "SOUTH", type: "Mage", player: 1 },
-                { x: 2, y: 0, facing: "SOUTH", type: "Archer", player: 1 },
-                { x: 4, y: 0, facing: "SOUTH", type: "Warrior", player: 1 },
-                { x: 4, y: 1, facing: "SOUTH", type: "Sword", player: 1 },
-                { x: 4, y: LEVEL_HEIGHT, facing: "NORTH", type: "Mage", player: 2 },
-                { x: 2, y: LEVEL_HEIGHT, facing: "NORTH", type: "Archer", player: 2 },
-                { x: 0, y: LEVEL_HEIGHT, facing: "NORTH", type: "Warrior", player: 2 },
-                { x: 0, y: LEVEL_HEIGHT - 1, facing: "NORTH", type: "Sword", player: 2 }
+                new Piece(0, 0, Facing.SOUTH, PieceType.MAGE, Player.PLAYER1),
+                new Piece(2, 0, Facing.SOUTH, PieceType.ARCHER, Player.PLAYER1),
+                new Piece(4, 0, Facing.SOUTH, PieceType.WARRIOR, Player.PLAYER1),
+                new Piece(4, 1, Facing.SOUTH, PieceType.SWORD, Player.PLAYER1),
+                new Piece(4, LEVEL_HEIGHT, Facing.NORTH, PieceType.MAGE, Player.PLAYER2),
+                new Piece(2, LEVEL_HEIGHT, Facing.NORTH, PieceType.ARCHER, Player.PLAYER2),
+                new Piece(0, LEVEL_HEIGHT, Facing.NORTH, PieceType.WARRIOR, Player.PLAYER2),
+                new Piece(0, LEVEL_HEIGHT - 1, Facing.NORTH, PieceType.SWORD, Player.PLAYER2)
             ]
         } else {
             this.pieces = pieces
@@ -45,12 +109,20 @@ class Game {
         const piece1 = this.getPieceForAction(action1)
         const piece2 = this.getPieceForAction(action2)
 
-        let isPiece1Moving = this.isMove(action1)
-        let isPiece2Moving = this.isMove(action2)
-        const target1 = this.getTargetSpace(piece1, action1)
-        const target2 = this.getTargetSpace(piece2, action2)
-        isPiece1Moving = isPiece1Moving && !this.isBlocked(piece1, action1)
-        isPiece2Moving = isPiece2Moving && !this.isBlocked(piece2, action2)
+        let isPiece1Moving = piece1 && this.isMove(action1)
+        let isPiece2Moving = piece2 && this.isMove(action2)
+        
+        let target1 = undefined;
+        let target2 = undefined;
+
+        if (isPiece1Moving) {
+            target1 = this.getTargetSpace(piece1, action1)
+            isPiece1Moving = isPiece1Moving && !this.isBlocked(piece1, action1)
+        }
+        if (isPiece2Moving) {
+            target2 = this.getTargetSpace(piece2, action2)
+            isPiece2Moving = isPiece2Moving && !this.isBlocked(piece2, action2)
+        }
     
         // Check if other pieces are blocking
         const blockerPieces = this.pieces.filter(piece => piece != piece1 && piece != piece2 && piece.type != "Sword")
@@ -85,10 +157,10 @@ class Game {
         }
         // Sword logic is IMMENSELY wrong bro
         // If warriors are involved, have to repeat a lot of the logic but for their swords
-        const sword1 = this.getSwordForPlayer(piece1.player)
-        const sword2 = this.getSwordForPlayer(piece2.player)
+        const sword1 = piece1 == undefined ? undefined : this.getSwordForPlayer(piece1.player)
+        const sword2 = piece2 == undefined ? undefined : this.getSwordForPlayer(piece2.player)
         // If two warriors try and move their swords to the same place, do nothing!
-        if (piece1.type == "Warrior" && piece2.type == "Warrior" && isPiece1Moving && isPiece2Moving) {
+        if (isPiece1Moving && isPiece2Moving && piece1.type == "Warrior" && piece2.type == "Warrior") {
             const swordTarget1 = this.getTargetSpace(sword1, action1)
             const swordTarget2 = this.getTargetSpace(sword2, action2)
             if (swordTarget1.x == swordTarget2.x && swordTarget1.y == swordTarget2.y) {
@@ -97,7 +169,7 @@ class Game {
             }
         }
         // If piece 1 is moving and 2 is not, need to collide piece 1s sword with piece 2s sword
-        if (piece1.type == "Warrior" && isPiece1Moving && sword2 != undefined) {
+        if (isPiece1Moving && piece1.type == "Warrior" && sword2 != undefined) {
             console.log("ONCE")
             if (!isPiece2Moving || piece2.type != "Warrior") {
                 console.log("TWICE")
@@ -109,7 +181,7 @@ class Game {
             }
         }
         // If piece 2 is moving and 1 is not, need to collide piece 2s sword with piece 1s sword
-        if (piece2.type == "Warrior" && isPiece2Moving && sword1 != undefined) {
+        if (isPiece2Moving && piece2.type == "Warrior" && sword1 != undefined) {
             if (!isPiece1Moving || piece1.type != "Warrior") {
                 const swordTarget2 = this.getTargetSpace(sword2, action2)
                 if (swordTarget2.x == sword1.x && swordTarget2.y == sword1.y) {
@@ -120,26 +192,33 @@ class Game {
         console.log(isPiece1Moving)
         console.log(isPiece2Moving)
         // Apply each movement
+
+        const events = []
         if (isPiece1Moving) {
             piece1.x = target1.x
             piece1.y = target1.y
+            events.push(new Move(piece1.id, piece1.x, piece1.y));
             const sword = this.getSword(piece1)
             if (sword != undefined) {
                 const swordTarget = this.getTargetSpace(sword, action1)
                 sword.x = swordTarget.x
                 sword.y = swordTarget.y
+                events.push(new Move(sword.id, sword.x, sword.y));
             }
         }
         if (isPiece2Moving) {
             piece2.x = target2.x
             piece2.y = target2.y
+            events.push(new Move(piece2.id, piece2.x, piece2.y));
             const sword = this.getSword(piece2)
             if (sword != undefined) {
                 const swordTarget = this.getTargetSpace(sword, action2)
                 sword.x = swordTarget.x
                 sword.y = swordTarget.y
+                events.push(new Move(sword.id, sword.x, sword.y));
             }
         }
+        return new Simoultaneous(events)
     }
     
     // By walls; does not care about units
@@ -321,12 +400,62 @@ class Game {
     applyArchery(action1, action2) {
         const piece1 = this.getPieceForAction(action1)
         const piece2 = this.getPieceForAction(action2)
-        let isShooting1 = this.getPieceForAction(action1) != undefined && action1.action.equals("SHOOT")
-        let isShooting2 = this.getPieceForAction(action2) != undefined && action2.action.equals("SHOOT")
+        let isShooting1 = piece1 != undefined && action1.action == ("SHOOT")
+        let isShooting2 = piece2 != undefined && action2.action == ("SHOOT")
+
+        let dead = []
+
+        if (isShooting1) {
+            console.log("henlo i am shoting")
+            const vector = this.getFacingVector(piece1.facing)
+            let x = piece1.x, y = piece1.y;
+            console.log (x + ", "+ y)
+            
+            console.log ( x >= 0)
+            console.log (x <= LEVEL_WIDTH)
+            console.log (  y >= 0 )
+            console.log (  y <= LEVEL_HEIGHT)
+
+            console.log ( x >= 0 && x < LEVEL_WIDTH && y >= 0 && y < LEVEL_HEIGHT)
+            console.log (vector.x + " VECT " + vector.y)
+            for (let x = piece1.x, y = piece1.y; x >= 0 && x <= LEVEL_WIDTH && y >= 0 && y <= LEVEL_HEIGHT; x += vector.x, y += vector.y) {
+                console.log (x + ", "+ y)
+                const piece = this.pieces.find(piece => piece.x == x && piece.y == y)
+                if (piece == undefined) {
+                    continue
+                }
+                if (piece == piece1) {
+                    continue
+                }
+                if (piece.type == "sword") {
+                    break
+                }
+                // if vectors sum to 0 they are facing opposite directions - aka BLOCK
+                const pieceVector = this.getFacingVector(piece.facing)
+                console.log(pieceVector)
+                console.log(vector)
+                if (pieceVector.x + vector.x == 0 && pieceVector.y + vector.y == 0) {
+                    break
+                }
+                dead.push(piece)
+                break
+            }
+        }
+        for (const piece in dead) {
+            console.log(piece)
+            this.pieces = this.pieces.filter(elem => elem != piece)
+            if (piece.type == "Warrior") {
+                sword = this.getSwordForPlayer(piece.player)
+                this.pieces = this.pieces.filter(elem => elem != sword)
+            }
+        }
     }
     
     tick(action1, action2) {
-        this.applyMovements(action1, action2)
+        // List of Simoultaneous sets of event
+        const all_events = []
+
+        all_events.push ( this.applyMovements(action1, action2) )
         this.applySwordKills()
         this.applyRotation(action1, action2)
         this.applySwordKills()
@@ -342,6 +471,8 @@ class Game {
                 }
             }
         }
+
+        return all_events
     }
     
     render(withRot) {
@@ -404,3 +535,8 @@ class Game {
 }
 
 exports.Game = Game
+exports.Facing = Facing
+exports.Move = Move
+exports.Die = Die
+exports.Face = Face
+exports.Simoultaneous = Simoultaneous

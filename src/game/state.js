@@ -1,70 +1,78 @@
 import { writable } from 'svelte/store';
 import { tweened } from 'svelte/motion';
 import { cubicOut } from 'svelte/easing';
+import { Game, Facing, Simoultaneous, Move, Face, Die } from '../../server/game.js'
 
 export default class Match {
     constructor() {
-        this.pieces = [
-            new Piece(0, 0, 180, 1, "Mage", 1),
-            new Piece(2, 0, 180, 1, "Archer", 2),
-            new Piece(4, 0, 180, 1, "Warrior", 3),
-            new Piece(4, 1, 180, 1, "Sword", 4),
-            new Piece(4, 4, 0, 2, "Mage", 5),
-            new Piece(2, 4, 0, 2, "Archer", 6),
-            new Piece(0, 4, 0, 2, "Warrior", 7),
-            new Piece(0, 3, 0, 2, "Sword", 8)
+        let game = new Game()
+        this.pieces = game.pieces.map(p => {
+            console.log(p)
+            console.log(p.id)
+            console.log(p.type)
+            return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id)
+        })
+        
+        console.log(game)
+    
+        const move1 = { facing: "NORTH", type: "Mage", player: 1, action: "MOVE_DOWN" }
+        const move2 = { facing: "NORTH", type: "Archer", player: 2, action: "MOVE_RIGHT" }
+        this.ticks = [ 
+            game.tick(move1, move2),
+            game.tick(move1, move2),
+            game.tick(move1, move2),
+            game.tick(move1, move2)
         ]
-        this.ticks = [
-            new Tick(
-                [
-                    new Move(Action.EAST, 1),
-                    new Move(Action.WEST, 2)
-                ]
-            ),
-            new Tick(
-                [
-                    new Move(Action.NORTH, 1),
-                    new Move(Action.SOUTH, 2)
-                ]
-            ),
-            new Tick(
-                [
-                    new Move(Action.EAST, 1)
-                ]
-            ),
-            new Tick(
-                [
-                    new Move(Action.EAST, 1),
-                    new Move(Action.SOUTH, 3)
-                ]
-            )
-        ]
+
+        
+        console.log("TICKS")
+        
+        console.log(this.ticks)
         this.currentPromise = Promise.resolve()
         this.ticks.forEach(
             (tick) => {
-                //this.currentPromise = this.currentPromise.then(() => this.performTick(tick));
+                tick.forEach(
+                    simoultaneous => {
+                        console.log("TIK")
+                        console.log(simoultaneous)
+                        this.currentPromise = this.currentPromise.then(() => this.performTick(simoultaneous));
+                    }
+                )
             }
         )
     }
 
+    toRotation(facing) {
+        switch (facing) {
+            case Facing.NORTH: return 0;
+            case Facing.NORTH_EAST: return 45;
+            case Facing.EAST: return 90;
+            case Facing.SOUTH_EAST: return 135;
+            case Facing.SOUTH: return 180;
+            case Facing.SOUTH_WEST: return 225;
+            case Facing.WEST: return 270;
+            case Facing.NORTH_WEST: return 315;
+        }
+    }
+
     performTick(tick) {
-        let promiseSet = tick.moves.map(
+        console.log(tick)
+        let promiseSet = tick.events.map(
             // Need to combine moves into a simoultaneous set of promises
             // THEN combine those into a chain of promises across all ticks
             (move) => {
                 // Get piece with given ID
                 let piece = this.pieces.find(piece => piece.id == move.piece);
-                switch (move.action) {
-                    case Action.EAST: 
-                        return piece.x.update(x => x + 1);
-                    case Action.WEST: 
-                        return piece.x.update(x => x - 1); 
-                    case Action.NORTH: 
-                        return piece.y.update(y => y - 1); 
-                    case Action.SOUTH: 
-                        return piece.y.update(y => y + 1); 
-                    default: 
-                        return piece.y.update(y => y + 1);
+                console.log(piece)
+                if (!piece) return
+                if (move instanceof Die) {
+                    return piece.opacity.update(x => 0);
+                } else if (move instanceof Face) {
+                    return piece.rotation.set(this.toRotation(facing));
+                } else if (move instanceof Move) {
+                    return Promise.all(
+                        [ piece.x.set(move.x), piece.y.set(move.y) ]
+                    )
                 }
             }
         );
@@ -96,39 +104,12 @@ class Piece {
             duration: 1000,
             easing: cubicOut
         });
+        this.opacity = tweened(1, {
+            duration: 1000,
+            easing: cubicOut
+        });
         this.player = player
         this.id = id
 
-    }
-}
-
-let Action = {
-    EAST: 1,
-    WEST: 2,
-    NORTH: 3,
-    SOUTH: 4,
-    NORTH_EAST: 5,
-    NORTH_WEST: 6,
-    SOUTH_EAST: 7,
-    SOUTH_WEST: 8,
-    ROTATE_CW: 9,
-    ROTATE_CCW: 10,
-    SHOOT: 11
-}
-// order;
-// move -> check death -> push -> shoot
-
-// A piece doing a thing
-class Move {
-    constructor(action, piece) {
-        this.action = action
-        this.piece = piece
-    }
-}
-
-// Several simoulatenous things that happen
-class Tick {
-    constructor(moves) {
-        this.moves = moves
     }
 }

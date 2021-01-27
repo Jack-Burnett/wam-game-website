@@ -9,6 +9,7 @@
 	let match = new Match()
 
 	export let uuid
+
 </script>
 
 <main>
