@@ -57,8 +57,6 @@ class Piece {
         this.x = x;
         this.y = y;
         this.facing = facing;
-        console.log("fuck")
-        console.log(type)
         this.type = type;
         this.player = player
         this.id = type.toLowerCase() + "_" + player;
@@ -126,9 +124,6 @@ class Game {
     
         // Check if other pieces are blocking
         const blockerPieces = this.pieces.filter(piece => piece != piece1 && piece != piece2 && piece.type != "Sword")
-        
-        console.log(isPiece1Moving)
-        console.log(isPiece2Moving)
 
         isPiece1Moving = isPiece1Moving && !blockerPieces.some(piece => target1.x == piece.x && target1.y == piece.y)
         isPiece2Moving = isPiece2Moving && !blockerPieces.some(piece => target2.x == piece.x && target2.y == piece.y)
@@ -136,13 +131,10 @@ class Game {
         if (isPiece1Moving && isPiece2Moving) {
             // If two pieces try and move to the same place, do nothing!
             if (target1.x == target2.x && target1.y == target2.y) {
-                console.log("nope.avi")
                 isPiece1Moving = false
                 isPiece2Moving = false
             }
         }
-        console.log(isPiece1Moving)
-        console.log(isPiece2Moving)
         // If piece 1 is moving and 2 is not, need to check collision against 2
         if (isPiece1Moving && piece2 && !isPiece2Moving) {
             if (piece2.x == target1.x && piece2.y == target1.y) {
@@ -170,12 +162,9 @@ class Game {
         }
         // If piece 1 is moving and 2 is not, need to collide piece 1s sword with piece 2s sword
         if (isPiece1Moving && piece1.type == "Warrior" && sword2 != undefined) {
-            console.log("ONCE")
             if (!isPiece2Moving || piece2.type != "Warrior") {
-                console.log("TWICE")
                 const swordTarget1 = this.getTargetSpace(sword1, action1)
                 if (swordTarget1.x == sword2.x && swordTarget1.y == sword2.y) {
-                    console.log("THRICE")
                     isPiece1Moving = false
                 }
             }
@@ -189,8 +178,6 @@ class Game {
                 }
             }
         }
-        console.log(isPiece1Moving)
-        console.log(isPiece2Moving)
         // Apply each movement
 
         const events = []
@@ -381,28 +368,34 @@ class Game {
                 }
             }
         }
-        const events = []
+        let events = []
         if (isRotating1) {
-            this.doRotate(piece1, action1)
-            events.push(new Face(piece1.id, piece1.facing))
+            console.log("ROTATE 1")
+            events = events.concat ( this.doRotate(piece1, action1) )
         }
         if (isRotating2) {
-            this.doRotate(piece2, action2)
-            events.push(new Face(piece2.id, piece2.facing))
+            console.log("ROTATE 2")
+            events = events.concat ( this.doRotate(piece2, action2) )
         }
+        console.log(events);
         return new Simoultaneous(events);
     }
 
     doRotate(piece, action) {
+        const events = []
         let targetRot = this.getTargetRotation(piece, action)
         piece.facing = targetRot
+        events.push(new Face(piece.id, piece.facing))
         const sword = this.getSword(piece)
         if (sword != undefined) {
             const spaceAhead = this.getSpaceAhead(piece, targetRot)
             sword.facing = targetRot
             sword.x = spaceAhead.x
             sword.y = spaceAhead.y
+            events.push(new Face(sword.id, sword.facing))
+            events.push(new Move(sword.id, sword.x, sword.y))
         }
+        return events
     }
 
     applyArchery(action1, action2) {

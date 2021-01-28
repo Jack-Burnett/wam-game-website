@@ -7,34 +7,23 @@ export default class Match {
     constructor() {
         let game = new Game()
         this.pieces = game.pieces.map(p => {
-            console.log(p)
-            console.log(p.id)
-            console.log(p.type)
             return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id)
         })
-        
-        console.log(game)
     
-        const move1 = { facing: "NORTH", type: "Mage", player: 1, action: "MOVE_DOWN" }
-        const move2 = { facing: "NORTH", type: "Mage", player: 2, action: "MOVE_UP" }
+        const move1 = { type: "Mage", player: 1, action: "MOVE_DOWN" }
+        const move2 = { type: "Mage", player: 2, action: "MOVE_UP" }
         this.ticks = [ 
             game.tick(move1, move2),
-            game.tick({ facing: "NORTH", type: "Mage", player: 1, action: "ROTATE_RIGHT" }, move2),
+            game.tick({ type: "Mage", player: 1, action: "ROTATE_LEFT" }, { type: "Warrior", player: 2, action: "ROTATE_RIGHT" }),
             game.tick(move1, move2),
             game.tick(move1, move2)
         ]
 
-        
-        console.log("TICKS")
-        
-        console.log(this.ticks)
         this.currentPromise = Promise.resolve()
         this.ticks.forEach(
             (tick) => {
                 tick.forEach(
                     simoultaneous => {
-                        console.log("TIK")
-                        console.log(simoultaneous)
                         this.currentPromise = this.currentPromise.then(() => this.performTick(simoultaneous));
                     }
                 )
@@ -56,18 +45,14 @@ export default class Match {
     }
 
     performTick(tick) {
-        console.log(tick)
         let promiseSet = tick.events.map(
             // Need to combine moves into a simoultaneous set of promises
             // THEN combine those into a chain of promises across all ticks
             (move) => {
                 // Get piece with given ID
                 let piece = this.pieces.find(piece => piece.id == move.piece);
-                console.log(piece)
                 if (!piece) return
                 if (move instanceof Die) {
-                    console.log("YOU SHALL DIE WORM")
-                    console.log(move)
                     return piece.opacity.set(0);
                 } else if (move instanceof Face) {
                     return piece.rotation.set(this.toRotation(move.facing));

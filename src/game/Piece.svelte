@@ -6,14 +6,9 @@
 	const rotation = piece.rotation;
 	const opacity = piece.opacity;
 
-	console.log("bloop")
-	console.log(piece.type)
-
 	const type = piece.type.toLowerCase();
 	const graphic = piece.type.toLowerCase() + "_" + piece.player
 	const isSword = type == "sword"
-	console.log(type)
-	console.log("IS SWORD " + isSword)
 
 </script>
 
