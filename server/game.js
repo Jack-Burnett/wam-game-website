@@ -483,16 +483,17 @@ class Game {
             if (move.action == undefined) {
                 throw Error(`Move ${index+1} has no action`)
             }
-            console.log(Object.values(PieceType))
             if (!Object.values(PieceType).includes(move.type)) {
-               throw Error(`Move ${index+1} has an invalid piece type`)
+               throw Error(`Move ${index+1} has an invalid piece type: ${move.type}`)
             }
             if (!Object.values(MoveType).includes(move.action)) {
-               throw Error(`Move ${index+1} has an invalid action type`)
+               throw Error(`Move ${index+1} has an invalid action type: ${move.action}`)
             }
         })
+        // TODO
         // No commands for dead pieces
         // No duplicate commands!!
+        // No commands for pieces that are not able to do that thing!
     }
     
     tick(action1, action2) {

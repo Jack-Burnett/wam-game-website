@@ -11,7 +11,7 @@
 	
 	const gameData = query(GAME, {
 		variables: { uuid },
-    	pollInterval: 500
+    	// pollInterval: 5000
 	});
 
 	const Relationship = {
@@ -48,11 +48,14 @@
 	const personalState = derived(
 		[gameData, relationship],
 		([$gameData, $relationship]) => {
-			console.log(":)")
 			if (!$gameData.data || $relationship == Relationship.UNKNOWN) {
 				return PersonalState.UNKNOWN
 			}
+			console.log("Player1 " +  $gameData.data.game.player1.username)
+			console.log("Player2 " +  $gameData.data.game.player2.username)
+			console.log("And you are " +  $relationship)
 			const state = $gameData.data.game.state
+			console.log("And state is " +  state)
 			if ( $relationship == Relationship.PLAYER1) {
 				if (state == "WAITING_PLAYER_1" || state == "WAITING_BOTH") {
 					return PersonalState.AWAITING_YOU
@@ -66,6 +69,7 @@
 				if (state == "WAITING_PLAYER_2" || state == "WAITING_BOTH") {
 					return PersonalState.AWAITING_YOU
 				} else if (state == "WAITING_PLAYER_1") {
+					console.log("AWAITING THEM")
 					return PersonalState.AWAITING_THEM
 				} else if (state == "FINISHED") {
 					return PersonalState.FINISHED
@@ -105,7 +109,7 @@
 		<div class = "flex flex-row">
 			<Board match={match} />
 			{#if $personalState == PersonalState.AWAITING_YOU}
-				<Inputs />
+				<Inputs game_uuid = {uuid} relationship = {relationship} />
 			{:else if $personalState == PersonalState.AWAITING_THEM}
 				<p>Waiting for your opponent to take their turn...</p>
 			{:else if $personalState == PersonalState.FINISHED}

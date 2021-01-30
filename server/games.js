@@ -9,7 +9,6 @@ async function submit_move(game_uuid, player, move) {
             game : updated
         }
     } catch (error) {
-        console.log("henlo")
         return {
             success: false,
             error: error.message

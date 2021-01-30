@@ -98,21 +98,18 @@ const resolvers = {
         } else if(data.waiting_player1) {
           return "WAITING_PLAYER_1"
         } else if(data.waiting_player2) {
-          return "WAITING_PLAYER_1"
+          return "WAITING_PLAYER_2"
         } else {
           return "FINISHED"
         }
       },
       data: (input) => {
-        console.log("fetch data")
-        console.log(input)
-        console.log(input.player1_turns)
         
         const completeTurns = Math.min(input.player1_turns.length, input.player2_turns.length)
         let data = []
         for (let i = 0; i < completeTurns; i++) {
           let datum = {
-            move1: input.player1_turns[i], 
+            move1: input.player1_turns[i],
             move2: input.player2_turns[i]
           }
           data = [...data, datum]

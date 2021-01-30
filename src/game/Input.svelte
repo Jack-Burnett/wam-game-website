@@ -23,9 +23,9 @@
     ]
 
     let character_options = [
-        { symbol: "💂", action: "WARRIOR" },
-        { symbol: "🧝", action: "ROGUE" },
-        { symbol: "🧙‍♂️", action: "MAGE" }
+        { symbol: "💂", action: "Warrior" },
+        { symbol: "🧝", action: "Archer" },
+        { symbol: "🧙‍♂️", action: "Mage" }
     ]
 
     export let selected_piece;

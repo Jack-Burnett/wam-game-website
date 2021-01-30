@@ -2,17 +2,47 @@
 <script>
     import Input from '../game/Input.svelte'
     
+    import { SUBMIT_MOVE } from "../mutations";
+    import { mutation } from "svelte-apollo";
+    
+	const Relationship = {
+		PLAYER1: "Player1",
+		PLAYER2: "Player2",
+		NEITHER: "Neither",
+		UNKNOWN: "Unknown"
+	}
+	
+    export let game_uuid;
+    export let relationship;
+	const submitMove = mutation(SUBMIT_MOVE);
+	let mutationResult = null;
+
+    async function submit() {
+        let player = 0
+        if ($relationship == Relationship.PLAYER1) {
+            player = 1
+        }
+        if ($relationship == Relationship.PLAYER2) {
+            player = 2
+        }
+        console.log(game_uuid)
+        console.log($relationship)
+        mutationResult = await submitMove(
+            { variables: {
+                game_uuid: game_uuid,
+                player: player,
+                move: JSON.stringify(moves)
+            }  }
+        )
+        console.log(mutationResult)
+    }
+    
     let moves = [
         { type: "Warrior", action: "MOVE_DOWN" },
         { type: "Warrior", action: "MOVE_DOWN" },
         { type: "Warrior", action: "MOVE_DOWN" },
         { type: "Warrior", action: "MOVE_DOWN" }
     ]
-
-    function submit() {
-        console.log(moves[0])
-        console.log(moves[3])
-    }
     
 </script>
 

@@ -15,9 +15,6 @@ export default class Match {
             let game = new Game()
             game.pieces.forEach(gamePiece => {
                 const uiPiece = this.pieces.find(p => p.id == gamePiece.id)
-                console.log("mm")
-                console.log(gamePiece)
-                console.log(uiPiece)
                 uiPiece.x.set(gamePiece.x, {duration: 0})
                 uiPiece.y.set(gamePiece.y, {duration: 0})
                 uiPiece.rotation.set(this.toRotation(gamePiece.facing), {duration: 0})

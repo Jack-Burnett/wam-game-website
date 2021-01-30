@@ -29,7 +29,6 @@ const SIGNUP = gql`
 
 const SEND_INVITE = gql`
   mutation invite($inviter: String!, $invitee: String!) {
-     # Alias to login so the responses can be treated the same :)
     sendInvite(input: { inviter: $inviter, invitee: $invitee }) {
       ...on Invite {
         uuid
@@ -41,4 +40,17 @@ const SEND_INVITE = gql`
   }
 `;
 
-export { LOGIN, SIGNUP, SEND_INVITE }
+const SUBMIT_MOVE = gql`
+  mutation makeMove($game_uuid: ID!, $player:Int!, $move: String!) {
+    submitMove( game_uuid: $game_uuid, player: $player, move: $move ) {
+      success
+      error
+      game {
+        uuid
+        data
+      }
+    }
+  }
+`;
+
+export { LOGIN, SIGNUP, SEND_INVITE, SUBMIT_MOVE }
