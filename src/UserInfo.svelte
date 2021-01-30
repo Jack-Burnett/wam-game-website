@@ -3,7 +3,7 @@
     import Modal from 'svelte-simple-modal';
     import { currentUser } from "./CurrentUser.js"
 
-    function logout() {currentUser
+    function logout() {
         currentUser.logout()
     }
 </script>

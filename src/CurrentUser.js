@@ -24,7 +24,7 @@ export const currentUser = {
 			token: ""
 		})
 		// Forces all queries to refetch
-		getClient().resetStore()
+		// getClient().resetStore()
 	},
 	login: (username, uuid, token) => {
 		localStorage.setItem("isLoggedIn", true)

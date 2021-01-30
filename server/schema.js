@@ -6,9 +6,10 @@ const { gql } = require('apollo-server-express');
 const typeDefs = gql`
 
   type User {
+      uuid: ID
       username: String
-      uuid: String
       activeGames: [Game]
+      # Not implemented
       pastGames: [Game]
       invites: [Invite]
   }
@@ -89,7 +90,7 @@ const typeDefs = gql`
 
   type Query {
     me: User
-    game(id: Int): Game
+    game(uuid: ID): Game
     users(search: UserSearchInput): [User]
   }
 

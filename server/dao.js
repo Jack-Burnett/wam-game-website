@@ -15,6 +15,18 @@ async function get_user_by_username(username) {
     }
 }
 
+async function get_game_by_uuid(uuid) {
+    const res = await pool.query(
+        'SELECT * FROM games WHERE game_uuid = $1',
+         [uuid]
+    )
+    if (res.rows.length !== 0) {
+        return res.rows[0]
+    } else {
+        return null
+    }
+}
+
 async function get_user_by_uuid(uuid) {
     const res = await pool.query(
         'SELECT * FROM users WHERE user_uuid = $1',
@@ -128,3 +140,4 @@ exports.get_active_games_for_user = get_active_games_for_user
 exports.upsert_game = upsert_game
 exports.get_user_by_uuid = get_user_by_uuid
 exports.get_invites_for_user = get_invites_for_user
+exports.get_game_by_uuid = get_game_by_uuid

@@ -15,7 +15,7 @@ async function login(username, password) {
             token: token,
             user: {
                 username: user.username,
-                uuid: user.user_uuid
+                user_uuid: user.user_uuid
             },
         }
     } else {
@@ -58,7 +58,7 @@ async function createUser(username, password) {
             token: token,
             user: {
                 username: user.username,
-                uuid: user.user_uuid
+                user_uuid: user.user_uuid
             },
         }
     } else {
@@ -74,7 +74,7 @@ async function getUsers(startsWith = "", excludeUuid = "NONE") {
     response = users.map(row => {
         return {
             username: row.username,
-            uuid: row.user_uuid
+            user_uuid: row.user_uuid
         }
     })
     return response

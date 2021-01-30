@@ -31,14 +31,16 @@ const HOME_PAGE = gql`
     }
 `
 
-const HOME_PAGE = gql`
-    query GAME {
-        game {
+const GAME = gql`
+    query GAME($uuid: ID!) {
+        game(uuid: $uuid) {
             uuid
             player1 {
+                uuid
                 username
             }
             player2 {
+                uuid
                 username
             }
             turn
@@ -47,4 +49,4 @@ const HOME_PAGE = gql`
     }
 `
 
-export { HOME_PAGE }
+export { HOME_PAGE, GAME }
