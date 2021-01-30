@@ -11,6 +11,7 @@
 	
 	const gameData = query(GAME, {
 		variables: { uuid },
+    	pollInterval: 500
 	});
 
 	const Relationship = {
@@ -19,8 +20,16 @@
 		NEITHER: "Neither",
 		UNKNOWN: "Unknown"
 	}
+
+	const PersonalState = {
+		AWAITING_YOU: "You",
+		AWAITING_THEM: "Them",
+		FINISHED: "Finished",
+		NOT_INVOLVED: "Irrelevant",
+		UNKNOWN: "Unknown"
+	}
 	
-	export const relationship = derived(
+	const relationship = derived(
 		[gameData, currentUser],
 		([$gameData, $currentUser]) => {
 			if (!$gameData.data) {
@@ -35,16 +44,8 @@
 			return Relationship.NEITHER
 		}
 	);
-
-	const PersonalState = {
-		AWAITING_YOU: "You",
-		AWAITING_THEM: "Them",
-		FINISHED: "Finished",
-		NOT_INVOLVED: "Irrelevant",
-		UNKNOWN: "Unknown"
-	}
 	
-	export const personalState = derived(
+	const personalState = derived(
 		[gameData, relationship],
 		([$gameData, $relationship]) => {
 			console.log(":)")
@@ -79,8 +80,18 @@
 			}
 		}
 	);
+	
+	const actions = derived(
+		[gameData],
+		([$gameData]) => {
+			if (!$gameData.data) {
+				return []
+			}
+			return JSON.parse($gameData.data.game.data)
+		}
+	);
 
-	let match = new Match()
+	let match = new Match(actions)
 
 </script>
 
@@ -92,7 +103,7 @@
 	{:else}
 		<h2 class="text-2xl mb-5"> {$gameData.data.game.player1.username} vs {$gameData.data.game.player2.username} </h2>
 		<div class = "flex flex-row">
-			<Board />
+			<Board match={match} />
 			{#if $personalState == PersonalState.AWAITING_YOU}
 				<Inputs />
 			{:else if $personalState == PersonalState.AWAITING_THEM}

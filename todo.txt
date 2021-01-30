@@ -25,19 +25,19 @@ Actual responses to home page query, stop mocking DONE
 Games page, with working links from home + reporting DONE
 Links to site currently don't resolve DONE
 No feedback when invite sent DONE
-Home page to also link your current invites
+Home page to also link your current invites DONE
 Should only be able to accept games you are the invitee of
 
-Graphics
+Graphics DONE
 Game logic
 Game rendering logic
-Move submission
-Move submission UI
+Move submission UI DONE
+Move submission handlers
 
 Nice looking navbar
 
 GAME logic
-Correct move resolution
+Correct move resolution 
 Correct rotation resolution
 Correct wizard resolution
 Correct sword kill resolution

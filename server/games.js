@@ -1,16 +1,20 @@
 var dao = require('./dao');
 
-async function sendInvite(inviter, invitee) {
-    invite = await dao.insert_invite(inviter, invitee)
-    if (invite != null) {
+async function submit_move(game_uuid, player, move) {
+    try {
+        const updated = await dao.submit_move(game_uuid, player, move)
+        console.log(updated)
         return {
-            uuid: invite.invite_uuid
+            success: true,
+            game : updated
         }
-    } else {
+    } catch (error) {
+        console.log("henlo")
         return {
-            errorMessage: "Something went wrong"
+            success: false,
+            error: error.message
         }
     }
 }
 
-exports.sendInvite = sendInvite
+exports.submit_move = submit_move

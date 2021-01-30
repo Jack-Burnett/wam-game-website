@@ -3,31 +3,58 @@ import { cubicOut } from 'svelte/easing';
 import { Game, Facing, Simoultaneous, Move, Face, Die } from '../../server/game.js'
 
 export default class Match {
-    constructor() {
-        let game = new Game()
-        this.pieces = game.pieces.map(p => {
+    constructor(actions) {
+        this.pieces = new Game().pieces.map(p => {
             return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id)
         })
-    
-        const move1 = { type: "Mage", player: 1, action: "MOVE_DOWN" }
-        const move2 = { type: "Mage", player: 2, action: "MOVE_UP" }
-        this.ticks = [ 
-            game.tick(move1, move2),
-            game.tick({ type: "Mage", player: 1, action: "ROTATE_LEFT" }, { type: "Warrior", player: 2, action: "ROTATE_RIGHT" }),
-            game.tick(move1, move2),
-            game.tick(move1, move2)
-        ]
 
         this.currentPromise = Promise.resolve()
-        this.ticks.forEach(
-            (tick) => {
-                tick.forEach(
-                    simoultaneous => {
-                        this.currentPromise = this.currentPromise.then(() => this.performTick(simoultaneous));
-                    }
-                )
-            }
-        )
+        
+        let unsubscribeStore = actions.subscribe((currentValue) => {
+            // Reset
+            let game = new Game()
+            game.pieces.forEach(gamePiece => {
+                const uiPiece = this.pieces.find(p => p.id == gamePiece.id)
+                console.log("mm")
+                console.log(gamePiece)
+                console.log(uiPiece)
+                uiPiece.x.set(gamePiece.x, {duration: 0})
+                uiPiece.y.set(gamePiece.y, {duration: 0})
+                uiPiece.rotation.set(this.toRotation(gamePiece.facing), {duration: 0})
+                uiPiece.opacity.set(1)
+            })
+            
+            this.currentPromise = Promise.resolve()
+
+            console.log("RESET")
+
+            let ticks = []
+            currentValue.forEach(
+                (hm) => {
+                    ticks.push(game.tick(hm.move1, hm.move2))
+                }
+            )
+            
+            ticks.forEach(
+                (tick) => {
+                    tick.forEach(
+                        simoultaneous => {
+                            this.currentPromise = this.currentPromise.then(() => this.performTick(simoultaneous));
+                        }
+                    )
+                }
+            )
+        })
+
+        //const move1 = { type: "Mage", player: 1, action: "MOVE_DOWN" }
+        //const move2 = { type: "Mage", player: 2, action: "MOVE_UP" }
+        //this.ticks = [ 
+        //    game.tick(move1, move2),
+        //    game.tick({ type: "Mage", player: 1, action: "ROTATE_LEFT" }, { type: "Warrior", player: 2, action: "ROTATE_RIGHT" }),
+        //    game.tick(move1, move2),
+        //    game.tick(move1, move2)
+        //]
+
     }
 
     toRotation(facing) {

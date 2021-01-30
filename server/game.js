@@ -24,6 +24,20 @@ const PieceType = {
     SWORD: "Sword"
 }
 
+const MoveType = {
+    MOVE_LEFT: "MOVE_LEFT",
+    MOVE_RIGHT: "MOVE_RIGHT",
+    MOVE_DOWN: "MOVE_DOWN",
+    MOVE_UP: "MOVE_UP",
+    MOVE_DOWN_LEFT: "MOVE_DOWN_LEFT",
+    MOVE_DOWN_RIGHT: "MOVE_DOWN_RIGHT",
+    MOVE_UP_LEFT: "MOVE_UP_LEFT",
+    MOVE_UP_RIGHT: "MOVE_UP_RIGHT",
+    ROTATE_LEFT: "ROTATE_LEFT",
+    ROTATE_RIGHT: "ROTATE_RIGHT",
+    SHOOT: "SHOOT"
+}
+
 class Move {
     constructor(piece, x, y) {
         this.piece = piece
@@ -327,8 +341,9 @@ class Game {
         
         isRotating1 = isRotating1 && !this.rotationBlockedByWall(action1)
         isRotating2 = isRotating2 && !this.rotationBlockedByWall(action2)
+        
         // Prevent both swords being moved into one place at once
-        if (isRotating2 && isRotating2) {
+        if (isRotating1 && isRotating2) {
             let targetRot1 = this.getTargetRotation(piece1, action1)
             let targetRot2 = this.getTargetRotation(piece2, action2)
             const spaceAhead1 = this.getSpaceAhead(piece1, targetRot1)
@@ -450,6 +465,34 @@ class Game {
                 this.pieces = this.pieces.filter(elem => elem != sword)
             }
         }
+    }
+
+    validate(moves) {
+        console.log(moves)
+        if (!Array.isArray(moves)) {
+            throw Error("Moves must be an array")
+        }
+        if (moves.length != 4) {
+            throw Error("Moves must contain 4 entries")
+        }
+        // Assess basic validity of each move
+        moves.forEach((move, index) => {
+            if (move.type == undefined) {
+               throw Error(`Move ${index+1} has no piece`)
+            }
+            if (move.action == undefined) {
+                throw Error(`Move ${index+1} has no action`)
+            }
+            console.log(Object.values(PieceType))
+            if (!Object.values(PieceType).includes(move.type)) {
+               throw Error(`Move ${index+1} has an invalid piece type`)
+            }
+            if (!Object.values(MoveType).includes(move.action)) {
+               throw Error(`Move ${index+1} has an invalid action type`)
+            }
+        })
+        // No commands for dead pieces
+        // No duplicate commands!!
     }
     
     tick(action1, action2) {

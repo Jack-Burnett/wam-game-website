@@ -1,5 +1,6 @@
 const { createUser, login, getUsers } = require('./users')
 const { sendInvite, respondToInvite } = require('./invites')
+const { submit_move } = require('./games')
 const { get_user_by_uuid, get_active_games_for_user, get_invites_for_user, get_game_by_uuid } = require('./dao')
 
 // Resolvers define the technique for fetching the types defined in the
@@ -34,6 +35,9 @@ const resolvers = {
         },
         respondToInvite: async(_, {input}, context) => {
             return await respondToInvite(input.inviteUuid, input.accepted, context)
+        },
+        submitMove: async(_, {game_uuid, player, move}, context) => {
+          return await submit_move(game_uuid, player, move)
         }
     },
     Query: {
@@ -98,7 +102,25 @@ const resolvers = {
         } else {
           return "FINISHED"
         }
+      },
+      data: (input) => {
+        console.log("fetch data")
+        console.log(input)
+        console.log(input.player1_turns)
+        
+        const completeTurns = Math.min(input.player1_turns.length, input.player2_turns.length)
+        let data = []
+        for (let i = 0; i < completeTurns; i++) {
+          let datum = {
+            move1: input.player1_turns[i], 
+            move2: input.player2_turns[i]
+          }
+          data = [...data, datum]
+        }
+
+        return JSON.stringify(data)
       }
+      
     }
   };
 

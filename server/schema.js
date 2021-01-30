@@ -34,12 +34,18 @@ const typeDefs = gql`
     sendInvite(input: InviteInput!): MaybeInvite!
     respondToInvite(input: InviteResponse!): InviteResponseResult!
     login(username: String!, password: String!): LoginResult!
+    submitMove(game_uuid: ID!, player:Int!, move: String!): SubmitMoveResult!
+  }
+  
+  type SubmitMoveResult {
+    success: Boolean!
+    error: String
+    game: Game
   }
 
   type InviteResponseResult {
     success: Boolean
     error: String
-    gameCreated: Boolean
     game: Game
   }
 

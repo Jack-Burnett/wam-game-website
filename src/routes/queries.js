@@ -45,6 +45,7 @@ const GAME = gql`
             }
             turn
             state
+            data
         }
     }
 `

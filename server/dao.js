@@ -1,7 +1,74 @@
+const { validate } = require('graphql');
 const { Pool } = require('pg')
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4, validate: validateUuid } = require('uuid');
+const { Game } = require('./game')
 
 const pool = new Pool()
+
+async function submit_move(game_uuid, player, moveString) {
+    if (!validateUuid(game_uuid)) {
+        throw Error("Bad Game UUID")
+    }
+    // note: we don't try/catch this because if connecting throws an exception
+    // we don't need to dispose of the client (it will be undefined)
+    const client = await pool.connect()
+    try {
+        await client.query('BEGIN')
+        const queryText = 'SELECT * FROM games WHERE game_uuid = $1 FOR UPDATE'
+        const gameRes = await client.query(queryText, [game_uuid])
+        if (gameRes.rows.length !== 1) {
+            throw Error("No game with that UUID exists")
+        }
+        let {player1, player2, player1_turns, player2_turns, waiting_player1, waiting_player2 } = gameRes.rows[0]
+        if (player != 1 && player != 2){
+            throw Error("Player must be either 1 or 2")
+        }
+        if (player == 1 && !waiting_player1) {
+            throw Error("This game is not waiting for input from player 1")
+        }
+        if (player == 2 && !waiting_player2) {
+            throw Error("This game is not waiting for input from player 2")
+        }
+        // TODO Should verify u are that player here
+        const completeTurns = Math.min(player1_turns.length, player2_turns.length)
+
+        const game = new Game()
+        for (let i = 0; i < completeTurns; i++) {
+            game.tick(player1_turns[i], player2_turns[i])
+        }
+
+        const moves = JSON.parse(moveString)
+        moves.forEach((move, index) => {
+            move.player = player
+        })
+        // Throws if invalid
+        game.validate(moves)
+
+
+        // only do on correct player
+        if (player == 1) {
+            player1_turns = [...player1_turns, ...moves]
+        }
+        if (player == 2) {
+            player2_turns = [...player2_turns, ...moves]
+        }
+        // TODO check for end
+        waiting_player1 = player1_turns.length <= player2_turns.length
+        waiting_player2 = player2_turns.length <= player1_turns.length
+
+        const updateQuery = 'UPDATE games SET player1_turns = $2, player2_turns = $3, waiting_player1 = $4, waiting_player2 = $5 WHERE game_uuid = $1 RETURNING *'
+        const updateValues = [game_uuid, player1_turns, player2_turns, waiting_player1, waiting_player2]
+        const updatedGame = await client.query(updateQuery, updateValues)
+        await client.query('COMMIT')
+        return updatedGame.rows[0]
+
+    } catch (e) {
+        await client.query('ROLLBACK')
+        throw e
+    } finally {
+        client.release()
+    }
+}
 
 async function get_user_by_username(username) {
     const res = await pool.query(
@@ -141,3 +208,4 @@ exports.upsert_game = upsert_game
 exports.get_user_by_uuid = get_user_by_uuid
 exports.get_invites_for_user = get_invites_for_user
 exports.get_game_by_uuid = get_game_by_uuid
+exports.submit_move = submit_move

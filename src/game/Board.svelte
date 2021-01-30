@@ -1,11 +1,10 @@
 <script>
 	import Piece from './Piece.svelte'
-	import Match from './state.js'
 
-	let rows = 5
-	let columns = 5
+	const rows = 5
+	const columns = 5
 
-	let match = new Match()
+	export let match
 </script>
 
 <main>

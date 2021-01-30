@@ -274,8 +274,8 @@ describe('Game', function() {
         .  .  .  .  .
         `)
       )
-      move1 = { facing: "NORTH", type: "Mage", player: 1, action: "MOVE_DOWN_RIGHT" }
-      move2 = { facing: "NORTH", type: "Archer", player: 2, action: "MOVE_UP_LEFT" }
+      move1 = { type: "Mage", player: 1, action: "MOVE_DOWN_RIGHT" }
+      move2 = { type: "Archer", player: 2, action: "MOVE_UP_LEFT" }
     
       game.tick(move1, move2)
       
