@@ -1,4 +1,3 @@
-import { writable } from 'svelte/store';
 import { tweened } from 'svelte/motion';
 import { cubicOut } from 'svelte/easing';
 import { Game, Facing, Simoultaneous, Move, Face, Die } from '../../server/game.js'
@@ -59,6 +58,7 @@ export default class Match {
                 } else if (move instanceof Move) {
                     return Promise.all(
                         [ piece.x.set(move.x), piece.y.set(move.y) ]
+                        // [ piece.x.set(move.x, {duration: 0}), piece.y.set(move.y, {duration: 0}) ]
                     )
                 }
             }
@@ -80,19 +80,19 @@ class Piece {
     constructor(x, y, rotation, player, type, id) {
         this.type = type;
         this.x = tweened(x, {
-            duration: 1000,
+            duration: 700,
             easing: cubicOut
         });
         this.y = tweened(y, {
-            duration: 1000,
+            duration: 700,
             easing: cubicOut
         });
         this.rotation = tweened(rotation, {
-            duration: 1000,
+            duration: 700,
             easing: cubicOut
         });
         this.opacity = tweened(1, {
-            duration: 1000,
+            duration: 700,
             easing: cubicOut
         });
         this.player = player
