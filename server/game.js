@@ -56,9 +56,10 @@ class Move {
 }
 
 class Shoot {
-    constructor(from, to, victim) {
+    constructor(from, to, direction, victim) {
         this.from = from
         this.to = to
+        this.direction = direction
         this.victim = victim
     }
 }
@@ -480,7 +481,7 @@ class Game {
             if (victim != undefined) {
                 dead.push(victim)
             }
-            events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, victim == undefined ? undefined : victim.id))
+            events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing, victim == undefined ? undefined : victim.id))
         }
         if (isShooting2) {
             const shotSpace = this.getShotSpace(piece2)
@@ -488,7 +489,7 @@ class Game {
             if (victim != undefined) {
                 dead.push(victim)
             }
-            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, victim == undefined ? undefined : victim.id))
+            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.direction, victim == undefined ? undefined : victim.id))
         }
         dead.forEach(piece => {
                 this.pieces = this.pieces.filter(elem => elem != piece)
@@ -498,7 +499,7 @@ class Game {
                 }
             }
         )
-        return events
+        return new Simoultaneous(events);
     }
     
     // Knowing where the spell is hitting, what is that piece (if it is pushable)
@@ -675,4 +676,5 @@ exports.Facing = Facing
 exports.Move = Move
 exports.Die = Die
 exports.Face = Face
+exports.Shoot = Shoot
 exports.Simoultaneous = Simoultaneous

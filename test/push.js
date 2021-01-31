@@ -9,12 +9,7 @@ function state(s) {
 describe('Game', function() {
   describe('#new()', function() {
     
-    it('pushing works', function() {
-      console.log(`
-        ↖ ↑ ↗
-        ← · →
-        ↙ ↓ ↘
-        `)
+    it('pushing a mage while their pushing', function() {
 
       let game = new Game([
         { x: 4, y: 0, facing: "WEST", type: "Archer", player: 1 },
@@ -33,7 +28,7 @@ describe('Game', function() {
         .   .   M1↑ .   .
         `)
       )
-      move1 = { type: "Mage", player: 1, action: "PUSH_UP" }
+      move1 = { type: "Mage", player: 1, action: "PUSH_DOWN" }
       move2 = { type: "Mage", player: 2, action: "PUSH_DOWN_LEFT" }
     
       game.tick(move1, move2)
@@ -42,15 +37,58 @@ describe('Game', function() {
         state(game.render(true)),
         state(`
         .   .   M2→ .   .
-        .   .   A2← A1← .
+        .   .   .   A1← .
         .   .   .   .   .
-        .   .   .   .   .
+        .   .   A2← .   .
         .   .   M1↑ .   .
         `)
       )
     
     });
     
+  });
+  
+  it('mutual push', function() {
+    console.log(`
+      ↖ ↑ ↗
+      ← · →
+      ↙ ↓ ↘
+      `)
+
+    let game = new Game([
+      { x: 2, y: 4, facing: "NORTH", type: "Mage", player: 1 },
+      { x: 2, y: 0, facing: "EAST", type: "Mage", player: 2 },
+      { x: 4, y: 0, facing: "WEST", type: "Archer", player: 1 }
+    ])
+
+    assert.strictEqual(
+      state(game.render(true)),
+      state(`
+      .   .   M2→ .   A1←
+      .   .   .   .   .
+      .   .   .   .   .
+      .   .   .   .   .
+      .   .   M1↑ .   .
+      `)
+    )
+    move1 = { type: "Mage", player: 1, action: "PUSH_DOWN" }
+    move2 = { type: "Mage", player: 2, action: "PUSH_DOWN_LEFT" }
+  
+    game.tick(move1, move2)
+
+    console.log(game.render(true))
+    
+    assert.strictEqual(
+      state(game.render(true)),
+      state(`
+      .   .   .   .   .
+      .   .   M2→ A1← .
+      .   .   .   .   .
+      .   .   .   .   .
+      .   .   M1↑ .   .
+      `)
+    )
+  
   });
   
 });

@@ -42,10 +42,10 @@ Nice looking navbar
 GAME logic
 Correct move resolution DONE
 Correct rotation resolution DONE
-Correct wizard resolution
+Correct wizard resolution DONE
 Correct sword kill resolution DONE
 Correct archery resolution DONE
 Winning logic
-TESTS
+tests
 
 issuing orders for dead units could legit happen so should NOT crash when it does :sweatsmile: DONE

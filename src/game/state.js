@@ -1,25 +1,28 @@
 import { tweened } from 'svelte/motion';
 import { cubicOut } from 'svelte/easing';
-import { Game, Facing, Simoultaneous, Move, Face, Die } from '../../server/game.js'
+import { writable, get } from 'svelte/store';
+
+import { Game, Facing, Shoot, Simoultaneous, Move, Face, Die } from '../../server/game.js'
 
 export default class Match {
     constructor(actions) {
-        this.pieces = new Game().pieces.map(p => {
-            return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id)
-        })
+        this.pieces = writable([]);
+        this.pieces.set(
+            new Game().pieces.map(p => {
+                return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id)
+            })
+        )
 
         this.currentPromise = Promise.resolve()
         
         let unsubscribeStore = actions.subscribe((currentValue) => {
             // Reset
             let game = new Game()
-            game.pieces.forEach(gamePiece => {
-                const uiPiece = this.pieces.find(p => p.id == gamePiece.id)
-                uiPiece.x.set(gamePiece.x, {duration: 0})
-                uiPiece.y.set(gamePiece.y, {duration: 0})
-                uiPiece.rotation.set(this.toRotation(gamePiece.facing), {duration: 0})
-                uiPiece.opacity.set(1)
-            })
+            this.pieces.set(
+                new Game().pieces.map(p => {
+                    return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id)
+                })
+            )
             
             this.currentPromise = Promise.resolve()
 
@@ -73,8 +76,8 @@ export default class Match {
             // THEN combine those into a chain of promises across all ticks
             (move) => {
                 // Get piece with given ID
-                let piece = this.pieces.find(piece => piece.id == move.piece);
-                if (!piece) return
+                let piece = get(this.pieces).find(piece => piece.id == move.piece);
+                console.log(move)
                 if (move instanceof Die) {
                     return piece.opacity.set(0);
                 } else if (move instanceof Face) {
@@ -84,6 +87,24 @@ export default class Match {
                         [ piece.x.set(move.x), piece.y.set(move.y) ]
                         // [ piece.x.set(move.x, {duration: 0}), piece.y.set(move.y, {duration: 0}) ]
                     )
+                } else if (move instanceof Shoot) {
+                    let victim = get(this.pieces).find(piece => piece.id == move.victim);
+                    let arrow = new Piece(move.from.x, move.from.y, this.toRotation(move.direction), 1, "Arrow", "arrow")
+                    if (victim) {
+                        this.pieces.update(pieces => [...pieces, arrow ])
+                        return Promise.all(
+                            [ arrow.x.set(move.to.x), arrow.y.set(move.to.y) ]
+                        ).then(
+                            (_) => {
+                                this.pieces.update(pieces => pieces.filter(item => item !== arrow))
+                                return victim.opacity.set(0)
+                            }
+                        )
+                    }
+                    console.log(move)
+                } else {
+                    
+                    console.log("lol who da fuck")
                 }
             }
         );

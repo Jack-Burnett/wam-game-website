@@ -5,6 +5,7 @@
 	const columns = 5
 
 	export let match
+	let pieces = match.pieces
 </script>
 
 <main>
@@ -15,7 +16,7 @@
 		{/each}
 	</div>
 	{/each}
-	{#each match.pieces as piece}
+	{#each $pieces as piece}
 		<Piece piece = {piece}/>
 	{/each}
 </main>
