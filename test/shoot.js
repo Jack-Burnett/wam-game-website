@@ -10,12 +10,6 @@ describe('Game', function() {
   describe('#new()', function() {
     
     it('shooting works', function() {
-      console.log(`
-        ↖ ↑ ↗
-        ← · →
-        ↙ ↓ ↘
-        `)
-
       let game = new Game([
         { x: 2, y: 4, facing: "NORTH", type: "Archer", player: 1 },
         { x: 2, y: 0, facing: "EAST", type: "Mage", player: 2 },
@@ -53,12 +47,6 @@ describe('Game', function() {
     });
     
     it('swords block arrows', function() {
-      console.log(`
-        ↖ ↑ ↗
-        ← · →
-        ↙ ↓ ↘
-        `)
-
       let game = new Game([
         { x: 2, y: 4, facing: "NORTH", type: "Archer", player: 1 },
         { x: 2, y: 0, facing: "EAST", type: "Mage", player: 2 },
@@ -98,12 +86,6 @@ describe('Game', function() {
     });
     
     it('facing blocks arrows', function() {
-      console.log(`
-        ↖ ↑ ↗
-        ← · →
-        ↙ ↓ ↘
-        `)
-
       let game = new Game([
         { x: 2, y: 4, facing: "NORTH", type: "Archer", player: 1 },
         { x: 2, y: 0, facing: "SOUTH", type: "Mage", player: 2 },
@@ -140,12 +122,6 @@ describe('Game', function() {
     });
     
     it('getting shot twice', function() {
-      console.log(`
-        ↖ ↑ ↗
-        ← · →
-        ↙ ↓ ↘
-        `)
-
       let game = new Game([
         { x: 2, y: 4, facing: "NORTH", type: "Archer", player: 1 },
         { x: 0, y: 0, facing: "SOUTH_EAST", type: "Archer", player: 2 },
@@ -184,12 +160,6 @@ describe('Game', function() {
   });
   
   it('can shoot as you get shot', function() {
-    console.log(`
-      ↖ ↑ ↗
-      ← · →
-      ↙ ↓ ↘
-      `)
-
     let game = new Game([
       { x: 2, y: 4, facing: "NORTH", type: "Archer", player: 1 },
       { x: 2, y: 2, facing: "EAST", type: "Archer", player: 2 },

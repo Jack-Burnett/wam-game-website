@@ -35,7 +35,16 @@ const MoveType = {
     MOVE_UP_RIGHT: "MOVE_UP_RIGHT",
     ROTATE_LEFT: "ROTATE_LEFT",
     ROTATE_RIGHT: "ROTATE_RIGHT",
-    SHOOT: "SHOOT"
+    SHOOT: "SHOOT",
+    
+    PUSH_LEFT: "PUSH_LEFT",
+    PUSH_RIGHT: "PUSH_RIGHT",
+    PUSH_DOWN: "PUSH_DOWN",
+    PUSH_UP: "PUSH_UP",
+    PUSHDOWN_LEFT: "PUSH_DOWN_LEFT",
+    PUSH_DOWN_RIGHT: "PUSH_DOWN_RIGHT",
+    PUSH_UP_LEFT: "PUSH_UP_LEFT",
+    PUSH_UP_RIGHT: "PUSH_UP_RIGHT"
 }
 
 class Move {
@@ -441,8 +450,6 @@ class Game {
         const vector = this.getFacingVector(shooter.facing)
         
         const target = this.pieces.find(p => p.x == shotSpace.x && p.y == shotSpace.y)
-        console.log("TARGET " + target)
-        console.log(target)
         if (target == undefined) {
             return undefined
         }
@@ -493,6 +500,62 @@ class Game {
         )
         return events
     }
+    
+    // Knowing where the spell is hitting, what is that piece (if it is pushable)
+    getMagicVictim(shooter, shotSpace) {
+        const vector = this.getFacingVector(shooter.facing)
+        
+        const target = this.pieces.find(p => p.x == shotSpace.x && p.y == shotSpace.y)
+        console.log("TARGET " + target)
+        console.log(target)
+        if (target == undefined) {
+            return undefined
+        }
+        // TODO idk maybe you should be able to push swords
+        if (target.type == "Sword") {
+            return undefined
+        }
+        return target
+    }
+
+    pushToMove(push_action) {
+        return push_action.replace("PUSH", "MOVE")
+    }
+
+    applyMagic(action1, action2) {
+        const piece1 = this.getPieceForAction(action1)
+        const piece2 = this.getPieceForAction(action2)
+        let isPushing1 = piece1 != undefined && action1.action.startsWith("PUSH")
+        let isPushing2 = piece2 != undefined && action2.action.startsWith("PUSH")
+
+        let pushed1 = undefined
+        let pushed2 = undefined
+
+        if (isPushing1) {
+            const shotSpace = this.getShotSpace(piece1)
+            const victim = this.getMagicVictim(piece1, shotSpace)
+            pushed1 = victim
+        }
+        if (isPushing2) {
+            const shotSpace = this.getShotSpace(piece2)
+            const victim = this.getMagicVictim(piece2, shotSpace)
+            pushed2 = victim
+        }
+
+        let push1 = { type: "NO", player: 0, action: "NOOP" }
+        let push2 = { type: "NO", player: 0, action: "NOOP" }
+        if (pushed1) {
+            push1 = { type: pushed1.type, player: pushed1.player, action: this.pushToMove(action1.action) }
+            console.log("PUSH1")
+            console.log(push1)
+        }
+        if (pushed2) {
+            push2 = { type: pushed2.type, player: pushed2.player, action: this.pushToMove(action2.action) }
+            console.log("PUSH2")
+            console.log(push2)
+        }
+        return this.applyMovements(push1, push2)
+    }
 
     validate(moves) {
         console.log(moves)
@@ -531,8 +594,9 @@ class Game {
         all_events.push ( this.applySwordKills() )
         all_events.push ( this.applyRotation(action1, action2) )
         all_events.push ( this.applySwordKills() )
-        // TODO magic
-        this.applyArchery(action1, action2)
+        all_events.push ( this.applyMagic(action1, action2) )
+        all_events.push ( this.applySwordKills())
+        all_events.push ( this.applyArchery(action1, action2) )
 
         // Assert state sensible
         for (let y = 0; y <= LEVEL_HEIGHT; y++) {

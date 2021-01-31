@@ -44,7 +44,7 @@ Correct move resolution DONE
 Correct rotation resolution DONE
 Correct wizard resolution
 Correct sword kill resolution DONE
-Correct archery resolution
+Correct archery resolution DONE
 Winning logic
 TESTS
 
