@@ -30,18 +30,22 @@ Should only be able to accept games you are the invitee of
 
 Graphics DONE
 Game logic
-Game rendering logic
+Game rendering logic DONE
 Move submission UI DONE
-Move submission handlers
+Move submission handlers DONE
+Improve move submission UI
+Refresh board when moves change (and periodically)
+Archery rendering
 
 Nice looking navbar
 
 GAME logic
-Correct move resolution 
-Correct rotation resolution
+Correct move resolution DONE
+Correct rotation resolution DONE
 Correct wizard resolution
-Correct sword kill resolution
+Correct sword kill resolution DONE
 Correct archery resolution
+Winning logic
 TESTS
 
-issuing orders for dead units could legit happen so should NOT crash when it does :sweatsmile:
+issuing orders for dead units could legit happen so should NOT crash when it does :sweatsmile: DONE

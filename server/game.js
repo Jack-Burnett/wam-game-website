@@ -46,6 +46,14 @@ class Move {
     }
 }
 
+class Shoot {
+    constructor(from, to, victim) {
+        this.from = from
+        this.to = to
+        this.victim = victim
+    }
+}
+
 class Die {
     constructor(piece) {
         this.piece = piece
@@ -385,14 +393,11 @@ class Game {
         }
         let events = []
         if (isRotating1) {
-            console.log("ROTATE 1")
             events = events.concat ( this.doRotate(piece1, action1) )
         }
         if (isRotating2) {
-            console.log("ROTATE 2")
             events = events.concat ( this.doRotate(piece2, action2) )
         }
-        console.log(events);
         return new Simoultaneous(events);
     }
 
@@ -413,6 +418,45 @@ class Game {
         return events
     }
 
+    // Returns the space that was hit
+    // Could be a piece bit could also be the board edge :)
+    getShotSpace(shooter) {
+        const vector = this.getFacingVector(shooter.facing)
+        let x = shooter.x, y = shooter.y
+        for (; x >= 0 && x <= LEVEL_WIDTH && y >= 0 && y <= LEVEL_HEIGHT; x += vector.x, y += vector.y) {
+            const piece = this.pieces.find(piece => piece.x == x && piece.y == y)
+            if (piece == undefined) {
+                continue
+            }
+            if (piece == shooter) {
+                continue
+            }
+            break
+        }
+        return {x: x, y: y}
+    }
+
+    // Knowing the shooter is shooting at a given space, do they kill the thing in it?
+    getShotVictim(shooter, shotSpace) {
+        const vector = this.getFacingVector(shooter.facing)
+        
+        const target = this.pieces.find(p => p.x == shotSpace.x && p.y == shotSpace.y)
+        console.log("TARGET " + target)
+        console.log(target)
+        if (target == undefined) {
+            return undefined
+        }
+        if (target.type == "Sword") {
+            return undefined
+        }
+        // if vectors sum to 0 they are facing opposite directions - aka BLOCK
+        const pieceVector = this.getFacingVector(target.facing)
+        if (pieceVector.x + vector.x == 0 && pieceVector.y + vector.y == 0) {
+            return undefined
+        }
+        return target
+    }
+
     applyArchery(action1, action2) {
         const piece1 = this.getPieceForAction(action1)
         const piece2 = this.getPieceForAction(action2)
@@ -421,50 +465,33 @@ class Game {
 
         let dead = []
 
-        if (isShooting1) {
-            console.log("henlo i am shoting")
-            const vector = this.getFacingVector(piece1.facing)
-            let x = piece1.x, y = piece1.y;
-            console.log (x + ", "+ y)
-            
-            console.log ( x >= 0)
-            console.log (x <= LEVEL_WIDTH)
-            console.log (  y >= 0 )
-            console.log (  y <= LEVEL_HEIGHT)
+        let events = []
 
-            console.log ( x >= 0 && x < LEVEL_WIDTH && y >= 0 && y < LEVEL_HEIGHT)
-            console.log (vector.x + " VECT " + vector.y)
-            for (let x = piece1.x, y = piece1.y; x >= 0 && x <= LEVEL_WIDTH && y >= 0 && y <= LEVEL_HEIGHT; x += vector.x, y += vector.y) {
-                console.log (x + ", "+ y)
-                const piece = this.pieces.find(piece => piece.x == x && piece.y == y)
-                if (piece == undefined) {
-                    continue
-                }
-                if (piece == piece1) {
-                    continue
-                }
-                if (piece.type == "sword") {
-                    break
-                }
-                // if vectors sum to 0 they are facing opposite directions - aka BLOCK
-                const pieceVector = this.getFacingVector(piece.facing)
-                console.log(pieceVector)
-                console.log(vector)
-                if (pieceVector.x + vector.x == 0 && pieceVector.y + vector.y == 0) {
-                    break
-                }
-                dead.push(piece)
-                break
+        if (isShooting1) {
+            const shotSpace = this.getShotSpace(piece1)
+            const victim = this.getShotVictim(piece1, shotSpace)
+            if (victim != undefined) {
+                dead.push(victim)
             }
+            events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, victim == undefined ? undefined : victim.id))
         }
-        for (const piece in dead) {
-            console.log(piece)
-            this.pieces = this.pieces.filter(elem => elem != piece)
-            if (piece.type == "Warrior") {
-                sword = this.getSwordForPlayer(piece.player)
-                this.pieces = this.pieces.filter(elem => elem != sword)
+        if (isShooting2) {
+            const shotSpace = this.getShotSpace(piece2)
+            const victim = this.getShotVictim(piece2, shotSpace)
+            if (victim != undefined) {
+                dead.push(victim)
             }
+            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, victim == undefined ? undefined : victim.id))
         }
+        dead.forEach(piece => {
+                this.pieces = this.pieces.filter(elem => elem != piece)
+                if (piece.type == "Warrior") {
+                    const sword = this.getSwordForPlayer(piece.player)
+                    this.pieces = this.pieces.filter(elem => elem != sword)
+                }
+            }
+        )
+        return events
     }
 
     validate(moves) {

@@ -10,12 +10,6 @@ describe('Game', function() {
   describe('#new()', function() {
     
     it('basic rotation works', function() {
-      console.log(`
-        ↖ ↑ ↗
-        ← · →
-        ↙ ↓ ↘
-        `)
-
       let game = new Game([
         { x: 2, y: 3, facing: "NORTH_WEST", type: "Mage", player: 1 },
         { x: 4, y: 4, facing: "SOUTH_EAST", type: "Mage", player: 2 }
@@ -50,11 +44,6 @@ describe('Game', function() {
     });
     
     it('warriors swords move as they rotate', function() {
-      console.log(`
-        ↖ ↑ ↗
-        ← · →
-        ↙ ↓ ↘
-        `)
 
       let game = new Game([
         { x: 2, y: 3, facing: "NORTH_WEST", type: "Warrior", player: 1 },
@@ -92,12 +81,6 @@ describe('Game', function() {
     });
 
     it('swords cannot rotate into walls', function() {
-      console.log(`
-        ↖ ↑ ↗
-        ← · →
-        ↙ ↓ ↘
-        `)
-
       let game = new Game([
         { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
         { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
@@ -134,12 +117,6 @@ describe('Game', function() {
     });
     
     it('swords cannot rotate into swords', function() {
-      console.log(`
-        ↖ ↑ ↗
-        ← · →
-        ↙ ↓ ↘
-        `)
-
       let game = new Game([
         { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
         { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
@@ -177,12 +154,6 @@ describe('Game', function() {
     });
     
     it('swords can simoultaneously rotate into a space as it is rotated out of', function() {
-      console.log(`
-        ↖ ↑ ↗
-        ← · →
-        ↙ ↓ ↘
-        `)
-
       let game = new Game([
         { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
         { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
@@ -219,12 +190,6 @@ describe('Game', function() {
 
     
     it('attempting to rotate two swords into the same space at once should not rotate either', function() {
-      console.log(`
-        ↖ ↑ ↗
-        ← · →
-        ↙ ↓ ↘
-        `)
-
       let game = new Game([
         { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
         { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
@@ -261,12 +226,6 @@ describe('Game', function() {
 
 
     it('rotating a sword into someone kills them', function() {
-      console.log(`
-        ↖ ↑ ↗
-        ← · →
-        ↙ ↓ ↘
-        `)
-
       let game = new Game([
         { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
         { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
