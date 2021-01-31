@@ -489,7 +489,7 @@ class Game {
             if (victim != undefined) {
                 dead.push(victim)
             }
-            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.direction, victim == undefined ? undefined : victim.id))
+            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing, victim == undefined ? undefined : victim.id))
         }
         dead.forEach(piece => {
                 this.pieces = this.pieces.filter(elem => elem != piece)
@@ -581,10 +581,30 @@ class Game {
                throw Error(`Move ${index+1} has an invalid action type: ${move.action}`)
             }
         })
-        // TODO
-        // No commands for dead pieces
+        moves.forEach((move, index) => {
+            const piece = this.getPieceForAction(move)
+            // No commands for dead pieces
+            if (piece == undefined) {
+                throw Error(`Cannot move a dead piece: ${move.type}`)
+            }
+            // No commands for pieces that are not able to do that thing!
+            if (move.type != "Mage" && move.action.startsWith("PUSH")) {
+                throw Error(`Only Mages can push`)
+            }
+            if (move.type != "Archer" && move.action.startsWith("SHOOT")) {
+                throw Error(`Only archers can shoot`)
+            }
+        })
         // No duplicate commands!!
-        // No commands for pieces that are not able to do that thing!
+        if (this.hasDuplicates(moves.map(move => move.action))) {
+            throw Error(`You can only issue each command once per turn`)
+        }
+    }
+
+    hasDuplicates(array) {
+        console.log(array)
+        console.log(new Set(array))
+        return (new Set(array)).size !== array.length;
     }
     
     tick(action1, action2) {

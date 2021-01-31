@@ -77,7 +77,6 @@ export default class Match {
             (move) => {
                 // Get piece with given ID
                 let piece = get(this.pieces).find(piece => piece.id == move.piece);
-                console.log(move)
                 if (move instanceof Die) {
                     return piece.opacity.set(0);
                 } else if (move instanceof Face) {
@@ -90,21 +89,21 @@ export default class Match {
                 } else if (move instanceof Shoot) {
                     let victim = get(this.pieces).find(piece => piece.id == move.victim);
                     let arrow = new Piece(move.from.x, move.from.y, this.toRotation(move.direction), 1, "Arrow", "arrow")
-                    if (victim) {
-                        this.pieces.update(pieces => [...pieces, arrow ])
-                        return Promise.all(
-                            [ arrow.x.set(move.to.x), arrow.y.set(move.to.y) ]
-                        ).then(
-                            (_) => {
-                                this.pieces.update(pieces => pieces.filter(item => item !== arrow))
+                    this.pieces.update(pieces => [...pieces, arrow ])
+                    return Promise.all(
+                        [ arrow.x.set(move.to.x), arrow.y.set(move.to.y) ]
+                    ).then(
+                        (_) => {
+                            this.pieces.update(pieces => pieces.filter(item => item !== arrow))
+                            if (victim) {
                                 return victim.opacity.set(0)
+                            } else {
+                                return Promise.resolve()
                             }
-                        )
-                    }
-                    console.log(move)
+                        }
+                    )
                 } else {
                     
-                    console.log("lol who da fuck")
                 }
             }
         );
