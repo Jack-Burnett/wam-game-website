@@ -35,6 +35,12 @@
         )
     }
 
+    function keyDown(event) {
+        if (event.keyCode == 13) {
+            submit();
+        }
+    }
+
     async function submit() {
         console.log(createNew)
         if (createNew) {
@@ -92,16 +98,16 @@
     </div>
     <div class = "flex-column">
         <label for="username" class="flex-shrink">Username</label>
-        <input id="username" bind:value={username} class="w-full rounded-md border-2 border-gray-800">
+        <input id="username" bind:value={username} class="w-full rounded-md border-2 border-gray-800" on:keydown={keyDown}>
     </div>
     <div class = "flex-column">
         <label for="password" class="flex-shrink">Password</label>
-        <input id="password" type="password" bind:value={password} class="w-full rounded-md border-2  border-gray-800">
+        <input id="password" type="password" bind:value={password} class="w-full rounded-md border-2  border-gray-800" on:keydown={keyDown}>
     </div>
     <div class = "flex-column">
         {#if createNew}
             <label for="confirm" class="flex-shrink">Confirm</label>
-            <input id="confirm" type="password" bind:value={confirmPassword} class="w-full rounded-md border-2 border-gray-800">
+            <input id="confirm" type="password" bind:value={confirmPassword} class="w-full rounded-md border-2 border-gray-800" on:keydown={keyDown}>
         {/if}
     </div>
     <div class="flex flex-row items-end">

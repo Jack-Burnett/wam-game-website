@@ -7,6 +7,12 @@ const saltRounds = 10;
 
 async function login(username, password) {
     user = await dao.get_user_by_username(username)
+    if (user == null) {
+        return {
+            success: false,
+            error: "No such user"
+        }
+    }
     const match = await bcrypt.compare(password, user.hash);
     if (match) {
         var token = jwt.sign({ uuid: user.user_uuid, username: user.username}, 'encryption_key');
