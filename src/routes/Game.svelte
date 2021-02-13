@@ -105,7 +105,7 @@
 	{:else if $gameData.error}
 		<li>ERROR: {$gameData.error.message}</li>
 	{:else}
-		<h2 class="text-2xl mb-5"> {$gameData.data.game.player1.username} vs {$gameData.data.game.player2.username} </h2>
+		<h2 class="text-2xl mb-5"> <span class="text-red-600">{$gameData.data.game.player1.username}</span> vs <span class="text-blue-600">{$gameData.data.game.player2.username}</span> </h2>
 		<div class = "flex flex-row">
 			<Board match={match} />
 			{#if $personalState == PersonalState.AWAITING_YOU}

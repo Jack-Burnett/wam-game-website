@@ -36,12 +36,12 @@
 	}
 
 	.cell {
-		color: #ff3e00;
+		color: #747474;
 		text-transform: uppercase;
 		font-size: 4em;
 		font-weight: 100;
 		border: 1px;
-		border-color: #ff3e00;
+		border-color: #747474;
 		border-style: solid;
 		width: 75px;
 		height:75px;

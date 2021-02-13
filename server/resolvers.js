@@ -90,7 +90,7 @@ const resolvers = {
         return get_user_by_uuid(data.player2)
       },
       turn: (data) => {
-        return Math.min(data.player1_turns.length, data.player2_turns.length) + 1
+        return Math.min(data.player1_turns.length / 4, data.player2_turns.length / 4) + 1
       },
       state: (data) => {
         if (data.waiting_player1 && data.waiting_player2) {
