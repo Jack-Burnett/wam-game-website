@@ -1,6 +1,13 @@
 const LEVEL_WIDTH = 4
 const LEVEL_HEIGHT = 4
 
+const Outcome = {
+    ONGOING: "ONGOING",
+    PLAYER1: "PLAYER1",
+    PLAYER2: "PLAYER2",
+    DRAW: "DRAW"
+}
+
 const Facing = {
     SOUTH: "SOUTH",
     NORTH: "NORTH",
@@ -108,8 +115,11 @@ class Game {
                 new Piece(0, LEVEL_HEIGHT, Facing.NORTH, PieceType.WARRIOR, Player.PLAYER2),
                 new Piece(0, LEVEL_HEIGHT - 1, Facing.NORTH, PieceType.SWORD, Player.PLAYER2)
             ]
+            this.ignoreWinning = false
         } else {
+            // Used for testing!
             this.pieces = pieces
+            this.ignoreWinning = true
         }
     }
     
@@ -507,8 +517,6 @@ class Game {
         const vector = this.getFacingVector(shooter.facing)
         
         const target = this.pieces.find(p => p.x == shotSpace.x && p.y == shotSpace.y)
-        console.log("TARGET " + target)
-        console.log(target)
         if (target == undefined) {
             return undefined
         }
@@ -547,19 +555,14 @@ class Game {
         let push2 = { type: "NO", player: 0, action: "NOOP" }
         if (pushed1) {
             push1 = { type: pushed1.type, player: pushed1.player, action: this.pushToMove(action1.action) }
-            console.log("PUSH1")
-            console.log(push1)
         }
         if (pushed2) {
             push2 = { type: pushed2.type, player: pushed2.player, action: this.pushToMove(action2.action) }
-            console.log("PUSH2")
-            console.log(push2)
         }
         return this.applyMovements(push1, push2)
     }
 
     validate(moves) {
-        console.log(moves)
         if (!Array.isArray(moves)) {
             throw Error("Moves must be an array")
         }
@@ -602,22 +605,56 @@ class Game {
     }
 
     hasDuplicates(array) {
-        console.log(array)
-        console.log(new Set(array))
         return (new Set(array)).size !== array.length;
+    }
+
+    hasGameEnded() {
+        // This is for tests :)
+        if (this.ignoreWinning) {
+            return false
+        }
+        return this.checkWinner() != Outcome.ONGOING 
+    }
+
+    checkWinner() {
+        const player1Pieces = this.pieces.filter(p => p.type != PieceType.SWORD && p.player == Player.PLAYER1)
+        const player2Pieces = this.pieces.filter(p => p.type != PieceType.SWORD && p.player == Player.PLAYER2)
+        console.log(player1Pieces)
+        console.log(player2Pieces)
+        const player1Win = player2Pieces.length <= 1
+        const player2Win = player1Pieces.length <= 1
+        console.log(player1Win)
+        console.log(player2Win)
+        if (player1Win && player2Win) {
+            return Outcome.DRAW
+        } else if (player1Win) {
+            return Outcome.PLAYER1
+        } else if (player2Win) {
+            return Outcome.PLAYER2
+        } else {
+            return Outcome.ONGOING
+        }
     }
     
     tick(action1, action2) {
         // List of Simoultaneous sets of event
         const all_events = []
 
-        all_events.push ( this.applyMovements(action1, action2) )
-        all_events.push ( this.applySwordKills() )
-        all_events.push ( this.applyRotation(action1, action2) )
-        all_events.push ( this.applySwordKills() )
-        all_events.push ( this.applyMagic(action1, action2) )
-        all_events.push ( this.applySwordKills())
-        all_events.push ( this.applyArchery(action1, action2) )
+        const operations = [
+            () => { return this.applyMovements(action1, action2) },
+            () => { return this.applySwordKills() },
+            () => { return this.applyRotation(action1, action2) },
+            () => { return this.applySwordKills() },
+            () => { return this.applyMagic(action1, action2) },
+            () => { return this.applySwordKills() },
+            () => { return this.applyArchery(action1, action2) }
+        ]
+        for (const operation of operations) {
+            if (this.hasGameEnded()) {
+                break
+            }
+            all_events.push (operation())
+        }
 
         // Assert state sensible
         for (let y = 0; y <= LEVEL_HEIGHT; y++) {
@@ -698,3 +735,4 @@ exports.Die = Die
 exports.Face = Face
 exports.Shoot = Shoot
 exports.Simoultaneous = Simoultaneous
+exports.Outcome = Outcome

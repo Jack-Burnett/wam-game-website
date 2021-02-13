@@ -26,26 +26,33 @@ Games page, with working links from home + reporting DONE
 Links to site currently don't resolve DONE
 No feedback when invite sent DONE
 Home page to also link your current invites DONE
-Should only be able to accept games you are the invitee of
 
 Graphics DONE
-Game logic
+Game logic DONE
 Game rendering logic DONE
 Move submission UI DONE
 Move submission handlers DONE
-Improve move submission UI
-Refresh board when moves change (and periodically)
-Archery rendering
+Archery rendering DONE
 
-Nice looking navbar
 
-GAME logic
+GAME logic DONE
 Correct move resolution DONE
 Correct rotation resolution DONE
 Correct wizard resolution DONE
 Correct sword kill resolution DONE
 Correct archery resolution DONE
-Winning logic
-tests
+tests DONE
 
 issuing orders for dead units could legit happen so should NOT crash when it does :sweatsmile: DONE
+
+
+
+Improve move submission UI
+Refresh board when moves change (and periodically)
+Nice looking navbar
+Should only be able to accept games you are the invitee of
+Winning logic
+Winning UX
+
+Live upload
+OGL integration

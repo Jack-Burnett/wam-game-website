@@ -1,7 +1,6 @@
-const { validate } = require('graphql');
 const { Pool } = require('pg')
 const { v4: uuidv4, validate: validateUuid } = require('uuid');
-const { Game } = require('./game')
+const { Game, Outcome } = require('./game')
 
 const pool = new Pool()
 
@@ -30,20 +29,8 @@ async function submit_move(game_uuid, player, moveString) {
             throw Error("This game is not waiting for input from player 2")
         }
         // TODO Should verify u are that player here
-        const completeTurns = Math.min(player1_turns.length, player2_turns.length)
-
-        const game = new Game()
-        for (let i = 0; i < completeTurns; i++) {
-            game.tick(player1_turns[i], player2_turns[i])
-        }
-
         const moves = JSON.parse(moveString)
-        moves.forEach((move, index) => {
-            move.player = player
-        })
-        // Throws if invalid
-        game.validate(moves)
-
+        validateMoves(player1_turns, player2_turns, moves, player)
 
         // only do on correct player
         if (player == 1) {
@@ -52,12 +39,28 @@ async function submit_move(game_uuid, player, moveString) {
         if (player == 2) {
             player2_turns = [...player2_turns, ...moves]
         }
-        // TODO check for end
         waiting_player1 = player1_turns.length <= player2_turns.length
         waiting_player2 = player2_turns.length <= player1_turns.length
 
-        const updateQuery = 'UPDATE games SET player1_turns = $2, player2_turns = $3, waiting_player1 = $4, waiting_player2 = $5 WHERE game_uuid = $1 RETURNING *'
-        const updateValues = [game_uuid, player1_turns, player2_turns, waiting_player1, waiting_player2]
+        // check for end
+        const outcome = checkForEnd(player1_turns, player2_turns)
+        let game_over_acknowledged_player1 = false
+        let game_over_acknowledged_player2 = false
+        let gameover = false
+        if (outcome != Outcome.ONGOING) {
+            gameover = true
+            // Current submitter should know game is over right away
+            game_over_acknowledged_player1 = player == 1
+            game_over_acknowledged_player2 = player == 2
+            waiting_player1 = false
+            waiting_player2 = false
+        }
+
+        const updateQuery = 'UPDATE games SET player1_turns = $2, player2_turns = $3, waiting_player1 = $4, waiting_player2 = $5,\
+        game_over = $6, game_over_acknowledged_player1 = $7, game_over_acknowledged_player2 = $8, outcome = $9 WHERE game_uuid = $1 RETURNING *'
+        const updateValues = [game_uuid, player1_turns, player2_turns, waiting_player1, waiting_player2, gameover,
+        game_over_acknowledged_player1, game_over_acknowledged_player2, outcome]
+        console.log(updateValues)
         const updatedGame = await client.query(updateQuery, updateValues)
         await client.query('COMMIT')
         return updatedGame.rows[0]
@@ -68,6 +71,31 @@ async function submit_move(game_uuid, player, moveString) {
     } finally {
         client.release()
     }
+}
+
+function checkForEnd(player1_turns, player2_turns) {
+    const completeTurns = Math.min(player1_turns.length, player2_turns.length)
+    const game = new Game()
+    for (let i = 0; i < completeTurns; i++) {
+        game.tick(player1_turns[i], player2_turns[i])
+    }
+    let outcome = game.checkWinner()
+    return outcome
+}
+
+function validateMoves(player1_turns, player2_turns, moves, player) {
+    const completeTurns = Math.min(player1_turns.length, player2_turns.length)
+
+    const game = new Game()
+    for (let i = 0; i < completeTurns; i++) {
+        game.tick(player1_turns[i], player2_turns[i])
+    }
+
+    moves.forEach((move, _) => {
+        move.player = player
+    })
+    // Throws if invalid
+    game.validate(moves)
 }
 
 async function get_user_by_username(username) {
@@ -186,7 +214,9 @@ async function delete_invite_by_uuid(uuid) {
 async function upsert_game(game) {
     try {
         const res = await pool.query(
-            'INSERT INTO games (game_uuid, player1, player2, player1_turns, player2_turns, waiting_player1, waiting_player2) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+            'INSERT INTO games (game_uuid, player1, player2, player1_turns, player2_turns, waiting_player1, waiting_player2, game_over,\
+                game_over_acknowledged_player1, game_over_acknowledged_player2, outcome)\
+             VALUES ($1, $2, $3, $4, $5, $6, $7, false, false, false, "ONGOING") RETURNING *',
                 [game.game_uuid, game.player1, game.player2, game.player1_turns, game.player2_turns, game.waiting_player1, game.waiting_player2]
         )
         const created = res.rows[0]

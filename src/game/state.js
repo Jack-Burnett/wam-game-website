@@ -2,7 +2,7 @@ import { tweened } from 'svelte/motion';
 import { cubicOut } from 'svelte/easing';
 import { writable, get } from 'svelte/store';
 
-import { Game, Facing, Shoot, Simoultaneous, Move, Face, Die } from '../../server/game.js'
+import { Game, Facing, Shoot, Simoultaneous, Move, Face, Die, Outcome } from '../../server/game.js'
 
 export default class Match {
     constructor(actions) {
@@ -35,6 +35,7 @@ export default class Match {
                 }
             )
             
+            console.log(ticks)
             ticks.forEach(
                 (tick) => {
                     tick.forEach(
@@ -44,16 +45,10 @@ export default class Match {
                     )
                 }
             )
-        })
 
-        //const move1 = { type: "Mage", player: 1, action: "MOVE_DOWN" }
-        //const move2 = { type: "Mage", player: 2, action: "MOVE_UP" }
-        //this.ticks = [ 
-        //    game.tick(move1, move2),
-        //    game.tick({ type: "Mage", player: 1, action: "ROTATE_LEFT" }, { type: "Warrior", player: 2, action: "ROTATE_RIGHT" }),
-        //    game.tick(move1, move2),
-        //    game.tick(move1, move2)
-        //]
+            let outcome = game.checkWinner()
+            console.log(outcome)
+        })
 
     }
 

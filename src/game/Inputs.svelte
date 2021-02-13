@@ -27,14 +27,14 @@
         }
         console.log(game_uuid)
         console.log($relationship)
-        mutationResult = await submitMove(
+        mutationResult = submitMove(
             { variables: {
                 game_uuid: game_uuid,
                 player: player,
                 move: JSON.stringify(moves)
             }  }
         )
-        console.log(mutationResult)
+        console.log(await mutationResult)
     }
     
     let moves = [
@@ -50,7 +50,31 @@
     {#each moves as move}
         <Input bind:selected_piece = {move.type} bind:selected_action = {move.action}/>
     {/each}
-    <button on:click="{submit}" class="mt-3 justify-center bg-blue-500 font-bold text-white px-4 py-3 rounded transition duration-300 ease-in-out hover:bg-blue-600">
-        Submit Moves
-    </button>
+    {#if !mutationResult}
+        <button on:click="{submit}" class="mt-3 justify-center bg-blue-500 font-bold text-white px-4 py-3 rounded transition duration-300 ease-in-out hover:bg-blue-600">
+            Submit Moves
+        </button>
+    {:else}
+        {#await mutationResult}
+            <button
+                disabled=true
+                class="mt-3 justify-center font-bold text-white px-4 py-3 rounded bg-blue-700 cursor-default">
+                Submitting...
+            </button>
+        {:then result}
+            <button on:click="{submit}" class="mt-3 justify-center bg-blue-500 font-bold text-white px-4 py-3 rounded transition duration-300 ease-in-out hover:bg-blue-600">
+                Submit Moves
+            </button>
+            {#if result.data.submitMove.success}
+                <p class="text-red-500">{result.data.submitMove.game}</p>
+            {:else}
+                <p class="text-red-500">{result.data.submitMove.error}</p>
+            {/if}
+        {:catch error}
+            <button on:click="{submit}" class="mt-3 justify-center bg-blue-500 font-bold text-white px-4 py-3 rounded transition duration-300 ease-in-out hover:bg-blue-600">
+                Submit Moves
+            </button>
+            <p class="text-red-500">{error.message}</p>
+        {/await}
+    {/if}
 </main>
