@@ -32,7 +32,7 @@
 	const relationship = derived(
 		[gameData, currentUser],
 		([$gameData, $currentUser]) => {
-			if (!$gameData.data) {
+			if (!$gameData.data || !$gameData.data.game) {
 				return Relationship.UNKNOWN
 			}
 			if ($gameData.data.game.player1.uuid == $currentUser.uuid) {
@@ -48,7 +48,7 @@
 	const personalState = derived(
 		[gameData, relationship],
 		([$gameData, $relationship]) => {
-			if (!$gameData.data || $relationship == Relationship.UNKNOWN) {
+			if (!$gameData.data || !$gameData.data.game || $relationship == Relationship.UNKNOWN) {
 				return PersonalState.UNKNOWN
 			}
 			console.log("Player1 " +  $gameData.data.game.player1.username)
@@ -88,7 +88,7 @@
 	const actions = derived(
 		[gameData],
 		([$gameData]) => {
-			if (!$gameData.data) {
+			if (!$gameData.data || !$gameData.data.game) {
 				return []
 			}
 			return JSON.parse($gameData.data.game.data)
@@ -103,20 +103,24 @@
 	{#if $gameData.loading}
 		Loading...
 	{:else if $gameData.error}
-		<li>ERROR: {$gameData.error.message}</li>
+		<p>ERROR: {$gameData.error.message}</p>
 	{:else}
-		<h2 class="text-2xl mb-5"> <span class="text-red-600">{$gameData.data.game.player1.username}</span> vs <span class="text-blue-600">{$gameData.data.game.player2.username}</span> </h2>
-		<div class = "flex flex-row">
-			<Board match={match} />
-			{#if $personalState == PersonalState.AWAITING_YOU}
-				<Inputs game_uuid = {uuid} relationship = {relationship} />
-			{:else if $personalState == PersonalState.AWAITING_THEM}
-				<p>Waiting for your opponent to take their turn...</p>
-			{:else if $personalState == PersonalState.FINISHED}
-				<p>The game is over!</p>
-			{:else if $personalState == PersonalState.NOT_INVOLVED}
-				<p>You are not in this game. The game is waiting for player input.</p>
-			{/if}
-		</div>
+		{#if $gameData.data.game}
+			<h2 class="text-2xl mb-5"> <span class="text-red-600">{$gameData.data.game.player1.username}</span> vs <span class="text-blue-600">{$gameData.data.game.player2.username}</span> </h2>
+			<div class = "flex flex-row">
+				<Board match={match} />
+				{#if $personalState == PersonalState.AWAITING_YOU}
+					<Inputs game_uuid = {uuid} relationship = {relationship} />
+				{:else if $personalState == PersonalState.AWAITING_THEM}
+					<p>Waiting for your opponent to take their turn...</p>
+				{:else if $personalState == PersonalState.FINISHED}
+					<p>The game is over!</p>
+				{:else if $personalState == PersonalState.NOT_INVOLVED}
+					<p>You are not in this game. The game is waiting for player input.</p>
+				{/if}
+			</div>
+		{:else}
+			<p>This game does not exist</p>
+		{/if}
 	{/if}
 </main>
