@@ -14,11 +14,14 @@ const HOME_PAGE = gql`
                 turn
                 state
             }
-            invites {
+            receivedInvites {
                 uuid
                 inviter {
                     username
                 }
+            }
+            sentInvites {
+                uuid
                 invitee {
                     username
                 }

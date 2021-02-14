@@ -11,7 +11,8 @@ const typeDefs = gql`
       activeGames: [Game]
       # Not implemented
       pastGames: [Game]
-      invites: [Invite]
+      sentInvites: [Invite]
+      receivedInvites: [Invite]
   }
 
   input UserInput {

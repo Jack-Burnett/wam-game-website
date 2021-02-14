@@ -13,18 +13,18 @@
 </script>
 
 <main>
-	<div class="flex-column rounded-md border border-indigo-600 p-5 m-3">
+	<div class="flex-column rounded-md border border-indigo-600 p-3 m-3 w-36">
 		<p class="text-center">{user.username}</p>
 		{#if !mutationResult}
 			<button
 				on:click="{challenge(user)}"
-				class="w-32 justify-center bg-blue-500 font-bold text-white px-4 py-1 rounded transition duration-300 ease-in-out hover:bg-blue-700">
+				class="w-full justify-center bg-blue-500 font-bold text-white px-4 py-1 rounded transition duration-300 ease-in-out hover:bg-blue-700">
 				Challenge
 			</button>
 		{:else}
 			<button
 				disabled=true
-				class="w-32 justify-center font-bold text-white px-4 py-1 rounded bg-blue-700 cursor-default">
+				class="w-full justify-center font-bold text-white px-4 py-1 rounded bg-blue-700 cursor-default">
 				Sent!
 			</button>
 		{/if}

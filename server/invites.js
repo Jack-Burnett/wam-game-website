@@ -31,7 +31,10 @@ async function respondToInvite(invite_uuid, accepted, context) {
             error: "No such invite"
         }
     }
-    if (context.user != invite.invitee) {
+    console.log("cheggers")
+    console.log(context.user)
+    console.log(invite.invitee_uuid)
+    if (context.user != invite.invitee_uuid) {
         return {
             success: false,
             gameCreated: false,

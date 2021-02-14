@@ -3,6 +3,7 @@
 	import { HOME_PAGE } from "./queries";
 	import Challenge from "./Challenge.svelte";
 	import Invite from "./Invite.svelte";
+	import SentInvite from "./SentInvite.svelte";
 	import { Link } from "svelte-routing";
 	
 	const homeData = query(HOME_PAGE);
@@ -41,7 +42,6 @@
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 										</svg>
 									</Link>
-									
 							</div>
 						</div>
 					{/each}
@@ -49,14 +49,16 @@
 				{:else}
 					You don't have any active games currently!
 				{/if}
-				{#if $homeData.data.me.invites.length > 0}
+				{#if $homeData.data.me.receivedInvites.length > 0 || $homeData.data.me.sentInvites.length > 0}
 					<h2 class="text-2xl"> Invites </h2>
 					<div class="flex flex-row flex-wrap">
-						{#each $homeData.data.me.invites as invite}
+						{#each $homeData.data.me.receivedInvites as invite}
 							<Invite {invite} />
 						{/each}
+						{#each $homeData.data.me.sentInvites as invite}
+							<SentInvite {invite} />
+						{/each}
 					</div>
-
 				{/if}
 				<h2 class="text-2xl"> Challenge someone </h2>
 				<div class="flex flex-row flex-wrap">

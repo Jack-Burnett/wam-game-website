@@ -159,9 +159,18 @@ async function get_active_games_for_user(user_uuid) {
     return res.rows
 }
 
-async function get_invites_for_user(user_uuid) {
+async function get_sent_invites_for_user(user_uuid) {
     const res = await pool.query(
-        'SELECT * FROM invites WHERE inviter_uuid = $1 OR invitee_uuid = $1',
+        'SELECT * FROM invites WHERE inviter_uuid = $1',
+         [user_uuid]
+    )
+    console.log(res.rows)
+    return res.rows
+}
+
+async function get_received_invites_for_user(user_uuid) {
+    const res = await pool.query(
+        'SELECT * FROM invites WHERE invitee_uuid = $1',
          [user_uuid]
     )
     return res.rows
@@ -236,6 +245,7 @@ exports.delete_invite_by_uuid = delete_invite_by_uuid
 exports.get_active_games_for_user = get_active_games_for_user
 exports.upsert_game = upsert_game
 exports.get_user_by_uuid = get_user_by_uuid
-exports.get_invites_for_user = get_invites_for_user
 exports.get_game_by_uuid = get_game_by_uuid
 exports.submit_move = submit_move
+exports.get_sent_invites_for_user = get_sent_invites_for_user
+exports.get_received_invites_for_user = get_received_invites_for_user
