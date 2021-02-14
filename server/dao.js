@@ -223,14 +223,15 @@ async function delete_invite_by_uuid(uuid) {
 async function upsert_game(game) {
     try {
         const res = await pool.query(
-            'INSERT INTO games (game_uuid, player1, player2, player1_turns, player2_turns, waiting_player1, waiting_player2, game_over,\
-                game_over_acknowledged_player1, game_over_acknowledged_player2, outcome)\
-             VALUES ($1, $2, $3, $4, $5, $6, $7, false, false, false, "ONGOING") RETURNING *',
+            "INSERT INTO games (game_uuid, player1, player2, player1_turns, player2_turns, waiting_player1, waiting_player2, game_over,\
+                game_over_acknowledged_player1, game_over_acknowledged_player2, outcome) \
+             VALUES ($1, $2, $3, $4, $5, $6, $7, false, false, false, 'ONGOING') RETURNING *",
                 [game.game_uuid, game.player1, game.player2, game.player1_turns, game.player2_turns, game.waiting_player1, game.waiting_player2]
         )
         const created = res.rows[0]
         return created
     } catch (err) {
+        console.log("Game upsert failed")
         console.log(err.stack)
         return null
     }
