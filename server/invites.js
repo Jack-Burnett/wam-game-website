@@ -31,7 +31,13 @@ async function respondToInvite(invite_uuid, accepted, context) {
             error: "No such invite"
         }
     }
-    // TODO validate context user matches
+    if (context.user != invite.invitee) {
+        return {
+            success: false,
+            gameCreated: false,
+            error: "Cannot accept games you are not invited to"
+        }
+    }
     // TODO this should be a transaction...
 
     await dao.delete_invite_by_uuid(invite_uuid)

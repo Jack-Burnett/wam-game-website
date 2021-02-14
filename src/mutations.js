@@ -40,6 +40,18 @@ const SEND_INVITE = gql`
   }
 `;
 
+const RESPOND_TO_INVITE = gql`
+  mutation respondToInvite($inviteUuid: String!, $accepted: Boolean!) {
+    respondToInvite(input: { inviteUuid: $inviteUuid, accepted: $accepted }) {
+      success
+      error
+      game {
+        uuid
+      }
+    }
+  }
+`;
+
 const SUBMIT_MOVE = gql`
   mutation makeMove($game_uuid: ID!, $player:Int!, $move: String!) {
     submitMove( game_uuid: $game_uuid, player: $player, move: $move ) {
@@ -53,4 +65,4 @@ const SUBMIT_MOVE = gql`
   }
 `;
 
-export { LOGIN, SIGNUP, SEND_INVITE, SUBMIT_MOVE }
+export { LOGIN, SIGNUP, SEND_INVITE, SUBMIT_MOVE, RESPOND_TO_INVITE }

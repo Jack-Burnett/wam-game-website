@@ -45,7 +45,8 @@ tests DONE
 
 issuing orders for dead units could legit happen so should NOT crash when it does :sweatsmile: DONE
 
-
+Cannot accept games in UI
+Sent and recieved invites should have different ux, duh
 
 Improve move submission UI
 Refresh board when moves change (and periodically)
