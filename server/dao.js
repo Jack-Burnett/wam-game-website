@@ -154,7 +154,7 @@ async function insert_user(uuid, username, hash) {
 
 async function get_active_games_for_user(user_uuid) {
     const res = await pool.query(
-        'SELECT * FROM games WHERE player1 = $1 OR player2 = $1',
+        'SELECT * FROM games WHERE (player1 = $1 OR player2 = $1) AND NOT game_over',
          [user_uuid]
     )
     return res.rows

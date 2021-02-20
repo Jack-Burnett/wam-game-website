@@ -55,7 +55,8 @@ Improve move submission UI  DONE
 Refresh board when moves change DONE
 Refresh board periodically DONE
 Refresh replays from start every time DONE
-Ended games still listed as active?
+Ended games still listed as active?   DONE
+
 Game previews on home page
 Nice looking navbar
 Should only be able to accept games you are the invitee of
