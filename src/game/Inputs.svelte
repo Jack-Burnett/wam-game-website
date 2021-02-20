@@ -47,6 +47,18 @@
                 }
             }
         )
+        mutationResult.then(response => {
+            // reset selections on submit (to prevent accidental repeat submissions)
+                if (response.data.submitMove.success) {
+                    moves = [
+                        { type: "Warrior", action: "MOVE_DOWN" },
+                        { type: "Warrior", action: "MOVE_DOWN" },
+                        { type: "Warrior", action: "MOVE_DOWN" },
+                        { type: "Warrior", action: "MOVE_DOWN" }
+                    ]
+                }
+            }
+        )
     }
     
     let moves = [
@@ -78,7 +90,7 @@
                 Submit Moves
             </button>
             {#if result.data.submitMove.success}
-                <p class="text-red-500">{result.data.submitMove.game}</p>
+                <p class="text-green-500">Moves submitted</p>
             {:else}
                 <p class="text-red-500">{result.data.submitMove.error}</p>
             {/if}

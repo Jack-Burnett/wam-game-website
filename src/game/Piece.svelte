@@ -10,8 +10,6 @@
 	const graphic = piece.type.toLowerCase() + "_" + piece.player
 	const isSword = type == "sword"
 
-	console.log("i am a new piece :)")
-
 </script>
 
 <main>

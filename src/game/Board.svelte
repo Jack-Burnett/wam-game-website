@@ -7,10 +7,6 @@
 	export let match
 	let pieces = match.pieces
 
-	pieces.subscribe(p => {
-		console.log("SUBSCRIPTIB")
-		console.log(p)
-	});
 </script>
 
 <main>
