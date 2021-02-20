@@ -51,11 +51,7 @@
 			if (!$gameData.data || !$gameData.data.game || $relationship == Relationship.UNKNOWN) {
 				return PersonalState.UNKNOWN
 			}
-			console.log("Player1 " +  $gameData.data.game.player1.username)
-			console.log("Player2 " +  $gameData.data.game.player2.username)
-			console.log("And you are " +  $relationship)
 			const state = $gameData.data.game.state
-			console.log("And state is " +  state)
 			if ( $relationship == Relationship.PLAYER1) {
 				if (state == "WAITING_PLAYER_1" || state == "WAITING_BOTH") {
 					return PersonalState.AWAITING_YOU
@@ -69,7 +65,6 @@
 				if (state == "WAITING_PLAYER_2" || state == "WAITING_BOTH") {
 					return PersonalState.AWAITING_YOU
 				} else if (state == "WAITING_PLAYER_1") {
-					console.log("AWAITING THEM")
 					return PersonalState.AWAITING_THEM
 				} else if (state == "FINISHED") {
 					return PersonalState.FINISHED
@@ -107,7 +102,7 @@
 	{:else}
 		{#if $gameData.data.game}
 			<h2 class="text-2xl mb-5"> <span class="text-red-600">{$gameData.data.game.player1.username}</span> vs <span class="text-blue-600">{$gameData.data.game.player2.username}</span> </h2>
-			<div class = "flex flex-row">
+			<div class = "flex flex-row flex-wrap">
 				<Board match={match} />
 				{#if $personalState == PersonalState.AWAITING_YOU}
 					<Inputs game_uuid = {uuid} relationship = {relationship} />

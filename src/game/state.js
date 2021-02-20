@@ -7,26 +7,22 @@ import { Game, Facing, Shoot, Simoultaneous, Move, Face, Die, Outcome } from '..
 export default class Match {
     constructor(actions) {
         this.pieces = writable([]);
-        this.pieces.set(
-            new Game().pieces.map(p => {
-                return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id)
-            })
-        )
 
         this.currentPromise = Promise.resolve()
         
         let unsubscribeStore = actions.subscribe((currentValue) => {
+            console.log("RESET BOYS")
+            console.log(currentValue)
             // Reset
             let game = new Game()
+            this.pieces.set([])
             this.pieces.set(
-                new Game().pieces.map(p => {
+                game.pieces.map(p => {
                     return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id)
                 })
             )
             
             this.currentPromise = Promise.resolve()
-
-            console.log("RESET")
 
             let ticks = []
             currentValue.forEach(
@@ -35,7 +31,6 @@ export default class Match {
                 }
             )
             
-            console.log(ticks)
             ticks.forEach(
                 (tick) => {
                     tick.forEach(
@@ -47,7 +42,6 @@ export default class Match {
             )
 
             let outcome = game.checkWinner()
-            console.log(outcome)
         })
 
     }

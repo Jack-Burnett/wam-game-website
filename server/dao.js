@@ -60,13 +60,14 @@ async function submit_move(game_uuid, player, moveString) {
         game_over = $6, game_over_acknowledged_player1 = $7, game_over_acknowledged_player2 = $8, outcome = $9 WHERE game_uuid = $1 RETURNING *'
         const updateValues = [game_uuid, player1_turns, player2_turns, waiting_player1, waiting_player2, gameover,
         game_over_acknowledged_player1, game_over_acknowledged_player2, outcome]
-        console.log(updateValues)
         const updatedGame = await client.query(updateQuery, updateValues)
         await client.query('COMMIT')
         return updatedGame.rows[0]
 
     } catch (e) {
         await client.query('ROLLBACK')
+        console.log("Error updating game")
+        console.log(e)
         throw e
     } finally {
         client.release()

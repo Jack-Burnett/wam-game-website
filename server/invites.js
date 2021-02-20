@@ -23,7 +23,6 @@ async function respondToInvite(invite_uuid, accepted, context) {
         }
     }
     invite = await dao.get_invite_by_uuid(invite_uuid)
-    console.log(invite)
     if (invite == null) {
         return {
             success: false,
@@ -31,9 +30,6 @@ async function respondToInvite(invite_uuid, accepted, context) {
             error: "No such invite"
         }
     }
-    console.log("cheggers")
-    console.log(context.user)
-    console.log(invite.invitee_uuid)
     if (context.user != invite.invitee_uuid) {
         return {
             success: false,

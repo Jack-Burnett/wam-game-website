@@ -4,7 +4,6 @@
 	import Promise from './Promise.svelte'
 	import Random from "seedrandom";
 	var rng = Random('hello..');
-	console.log(rng()); 
 	// public vars
 	export let name = 'Default Value';
 	export let src;

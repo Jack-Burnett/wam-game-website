@@ -8,7 +8,6 @@
 	let mutationResult = null;
 
 	function sendResponse(accepted) {
-		console.log("SEND RESPONSE")
 		mutationResult = respond({ variables: { inviteUuid: invite.uuid, accepted: accepted } } )
 	}
 </script>

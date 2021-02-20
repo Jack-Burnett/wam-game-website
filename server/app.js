@@ -60,7 +60,6 @@ server.applyMiddleware({ app });
 //});
 
 app.get(/.*/, function (req, res) {
-  console.log(__dirname)
   res.sendFile("./", options = { root: __dirname + '/../public' })
 })
 

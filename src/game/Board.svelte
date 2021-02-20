@@ -6,6 +6,11 @@
 
 	export let match
 	let pieces = match.pieces
+
+	pieces.subscribe(p => {
+		console.log("SUBSCRIPTIB")
+		console.log(p)
+	});
 </script>
 
 <main>
@@ -16,7 +21,7 @@
 		{/each}
 	</div>
 	{/each}
-	{#each $pieces as piece}
+	{#each $pieces as piece (piece)}
 		<Piece piece = {piece}/>
 	{/each}
 </main>
@@ -28,6 +33,7 @@
 	}
 	
 	.row {
+		white-space:nowrap;
 		width: fit-content;
 		padding: 0px;
 		margin: 0px;

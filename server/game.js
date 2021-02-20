@@ -299,9 +299,9 @@ class Game {
                     this.pieces = this.pieces.filter(elem => elem != unit)
                     events.push(new Die(unit.id))
                     if (unit.type == "Warrior") {
-                        sword = this.getSwordForPlayer(unit.player)
-                        this.pieces = this.pieces.filter(elem => elem != sword)
-                        events.push(new Die(sword.id))
+                        let victimsSword = this.getSwordForPlayer(unit.player)
+                        this.pieces = this.pieces.filter(elem => elem != victimsSword)
+                        events.push(new Die(victimsSword.id))
                     }
                 }
             })
@@ -619,12 +619,10 @@ class Game {
     checkWinner() {
         const player1Pieces = this.pieces.filter(p => p.type != PieceType.SWORD && p.player == Player.PLAYER1)
         const player2Pieces = this.pieces.filter(p => p.type != PieceType.SWORD && p.player == Player.PLAYER2)
-        console.log(player1Pieces)
-        console.log(player2Pieces)
+
         const player1Win = player2Pieces.length <= 1
         const player2Win = player1Pieces.length <= 1
-        console.log(player1Win)
-        console.log(player2Win)
+
         if (player1Win && player2Win) {
             return Outcome.DRAW
         } else if (player1Win) {

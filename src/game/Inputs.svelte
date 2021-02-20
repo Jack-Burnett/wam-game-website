@@ -1,6 +1,7 @@
 
 <script>
     import Input from '../game/Input.svelte'
+    import { gql } from '@apollo/client';
     
     import { SUBMIT_MOVE } from "../mutations";
     import { mutation } from "svelte-apollo";
@@ -25,16 +26,27 @@
         if ($relationship == Relationship.PLAYER2) {
             player = 2
         }
-        console.log(game_uuid)
-        console.log($relationship)
         mutationResult = submitMove(
-            { variables: {
-                game_uuid: game_uuid,
-                player: player,
-                move: JSON.stringify(moves)
-            }  }
+            { 
+                variables: {
+                    game_uuid: game_uuid,
+                    player: player,
+                    move: JSON.stringify(moves)
+                },
+                // Replace the active game in the apollo cache with the changed game
+                update(cache, { data }) {
+                    if(data.submitMove.game) {
+                        cache.modify({
+                            fields: {
+                                game(currentGame = {}) {
+                                    return data.submitMove.game
+                                }
+                            }
+                        })
+                    }
+                }
+            }
         )
-        console.log(await mutationResult)
     }
     
     let moves = [

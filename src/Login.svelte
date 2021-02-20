@@ -42,11 +42,7 @@
     }
 
     async function submit() {
-        console.log(createNew)
         if (createNew) {
-            console.log(password)
-            console.log(confirmPassword)
-            console.log(password != confirmPassword)
             if (password != confirmPassword) {
                 response = localError("Password and confirm are not equal")
                 return

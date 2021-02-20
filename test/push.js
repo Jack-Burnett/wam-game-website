@@ -49,11 +49,6 @@ describe('Game', function() {
   });
   
   it('mutual push', function() {
-    console.log(`
-      ↖ ↑ ↗
-      ← · →
-      ↙ ↓ ↘
-      `)
 
     let game = new Game([
       { x: 2, y: 4, facing: "NORTH", type: "Mage", player: 1 },
@@ -75,8 +70,6 @@ describe('Game', function() {
     move2 = { type: "Mage", player: 2, action: "PUSH_DOWN_LEFT" }
   
     game.tick(move1, move2)
-
-    console.log(game.render(true))
     
     assert.strictEqual(
       state(game.render(true)),
@@ -122,8 +115,6 @@ describe('Game', function() {
     move2 = { type: "Mage", player: 2, action: "PUSH_DOWN_RIGHT" }
   
     game.tick(move1, move2)
-
-    console.log(game.render(true))
     
     assert.strictEqual(
       state(game.render(true)),

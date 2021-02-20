@@ -3,7 +3,6 @@ var dao = require('./dao');
 async function submit_move(game_uuid, player, move) {
     try {
         const updated = await dao.submit_move(game_uuid, player, move)
-        console.log(updated)
         return {
             success: true,
             game : updated
