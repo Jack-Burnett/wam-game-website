@@ -45,11 +45,11 @@ tests DONE
 
 issuing orders for dead units could legit happen so should NOT crash when it does :sweatsmile: DONE
 
-Cannot accept games in UI
-Sent and recieved invites should have different ux, duh
-Games do not get created after invites
-Page for not-existing games is errory
-Looks like swords block wizards...
+Cannot accept games in UI  DONE
+Sent and recieved invites should have different ux, duh DONE
+Games do not get created after invites DONE
+Page for not-existing games is errory DONE
+Looks like swords block wizards... DONE
 
 Improve move submission UI
 Refresh board when moves change (and periodically)
