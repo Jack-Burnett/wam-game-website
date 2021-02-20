@@ -52,7 +52,9 @@ Page for not-existing games is errory DONE
 Looks like swords block wizards... DONE
 
 Improve move submission UI
-Refresh board when moves change (and periodically)
+Refresh board when moves change DONE
+Refresh board periodically DONE
+Refresh replays from start every time DONE
 Nice looking navbar
 Should only be able to accept games you are the invitee of
 Winning logic

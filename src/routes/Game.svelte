@@ -11,7 +11,7 @@
 	
 	const gameData = query(GAME, {
 		variables: { uuid },
-    	// pollInterval: 5000
+    	pollInterval: 5000
 	});
 
 	const Relationship = {

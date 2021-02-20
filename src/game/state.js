@@ -5,32 +5,32 @@ import { writable, get } from 'svelte/store';
 import { Game, Facing, Shoot, Simoultaneous, Move, Face, Die, Outcome } from '../../server/game.js'
 
 export default class Match {
+    restart() {
+        // Reset
+        this.game = new Game()
+        this.tick = 0
+        this.pieces.set([])
+        this.pieces.set(
+            this.game.pieces.map(p => {
+                return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id)
+            })
+        )
+        
+        this.currentPromise = Promise.resolve()
+    }
     constructor(actions) {
         this.pieces = writable([]);
 
-        this.currentPromise = Promise.resolve()
+        this.restart()
         
-        let unsubscribeStore = actions.subscribe((currentValue) => {
-            console.log("RESET BOYS")
-            console.log(currentValue)
-            // Reset
-            let game = new Game()
-            this.pieces.set([])
-            this.pieces.set(
-                game.pieces.map(p => {
-                    return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id)
-                })
+        actions.subscribe((currentValue) => {
+            // Get only new moves (on page load this will be all moves)
+            const newEntries = currentValue.slice(this.tick)
+            const ticks = newEntries.map(
+                hm => this.game.tick(hm.move1, hm.move2)
             )
-            
-            this.currentPromise = Promise.resolve()
-
-            let ticks = []
-            currentValue.forEach(
-                (hm) => {
-                    ticks.push(game.tick(hm.move1, hm.move2))
-                }
-            )
-            
+            this.tick = currentValue.length
+            // Add each move to the promise chain
             ticks.forEach(
                 (tick) => {
                     tick.forEach(
@@ -41,7 +41,7 @@ export default class Match {
                 }
             )
 
-            let outcome = game.checkWinner()
+            let outcome = this.game.checkWinner()
         })
 
     }
