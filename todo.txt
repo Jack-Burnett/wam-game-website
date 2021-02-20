@@ -49,6 +49,7 @@ Cannot accept games in UI
 Sent and recieved invites should have different ux, duh
 Games do not get created after invites
 Page for not-existing games is errory
+Looks like swords block wizards...
 
 Improve move submission UI
 Refresh board when moves change (and periodically)

@@ -520,9 +520,9 @@ class Game {
         if (target == undefined) {
             return undefined
         }
-        // TODO idk maybe you should be able to push swords
+        // If you push a sword, apply the push to it's owner
         if (target.type == "Sword") {
-            return undefined
+            return this.pieces.find(p => p.type == "Warrior" && p.player == target.player)
         }
         return target
     }

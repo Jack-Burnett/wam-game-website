@@ -90,5 +90,52 @@ describe('Game', function() {
     )
   
   });
+
+  
+  it('sword does not block push', function() {
+    console.log(`
+      ↖ ↑ ↗
+      ← · →
+      ↙ ↓ ↘
+      `)
+
+    let game = new Game([
+      { x: 3, y: 4, facing: "NORTH", type: "Mage", player: 1 },
+      { x: 3, y: 1, facing: "SOUTH", type: "Warrior", player: 2 },
+      { x: 3, y: 2, facing: "SOUTH", type: "Sword", player: 2 },
+      { x: 1, y: 4, facing: "NORTH", type: "Mage", player: 2 },
+      { x: 0, y: 0, facing: "SOUTH_EAST", type: "Warrior", player: 1 },
+      { x: 1, y: 1, facing: "SOUTH_EAST", type: "Sword", player: 1 }
+    ])
+
+    assert.strictEqual(
+      state(game.render(true)),
+      state(`
+      W1↘ .   .   .   .
+      .   S1↘ .   W2↓ . 
+      .   .   .   S2↓ . 
+      .   .   .   .   .
+      .   M2↑ .   M1↑ .
+      `)
+    )
+    move1 = { type: "Mage", player: 1, action: "PUSH_DOWN" }
+    move2 = { type: "Mage", player: 2, action: "PUSH_DOWN_RIGHT" }
+  
+    game.tick(move1, move2)
+
+    console.log(game.render(true))
+    
+    assert.strictEqual(
+      state(game.render(true)),
+      state(`
+      .   .   .   .   .
+      .   W1↘ .   .   . 
+      .   .   S1↘ W2↓ . 
+      .   .   .   S2↓ .
+      .   M2↑ .   M1↑ .
+      `)
+    )
+  
+  });
   
 });
