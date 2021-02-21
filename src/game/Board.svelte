@@ -4,6 +4,7 @@
 	const rows = 5
 	const columns = 5
 
+	export let scale = "large"
 	export let match
 	let pieces = match.pieces
 
@@ -13,12 +14,12 @@
 	{#each Array(rows) as _}
 	<div class="row">
 		{#each Array(columns) as _}
-		<div class="cell"></div>
+		<div class="cell {scale}"></div>
 		{/each}
 	</div>
 	{/each}
 	{#each $pieces as piece (piece)}
-		<Piece piece = {piece}/>
+		<Piece piece = {piece} scale = {scale}/>
 	{/each}
 </main>
 
@@ -45,10 +46,17 @@
 		border: 1px;
 		border-color: #747474;
 		border-style: solid;
-		width: 75px;
-		height:75px;
 		display: inline-block;
 		padding: 0px;
+	}
+
+	.large {
+		width: 75px;
+		height:75px;
 		margin: 1px;
+	}
+	.small {
+		width: 25px;
+		height:25px;
 	}
 </style>

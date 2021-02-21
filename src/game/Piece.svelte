@@ -1,5 +1,6 @@
 <script>
 	export let piece;
+	export let scale = "large";
 
 	const x = piece.x;
 	const y = piece.y;
@@ -10,13 +11,26 @@
 	const graphic = piece.type.toLowerCase() + "_" + piece.player
 	const isSword = type == "sword"
 
+	let multiplier = 79
+	let offset = 12.5
+	let size = 50
+	if (scale == "large") {
+		multiplier = 79
+		offset = 12.5
+		size = 50
+	} else {
+		multiplier = 25
+		offset = 3.5
+		size = 18
+	}
+
 </script>
 
 <main>
-	<img class="knight" src="../graphics/{graphic}.png" alt="{type}" width="50px" height="50px"
+	<img class="knight" src="../graphics/{graphic}.png" alt="{type}" width="{size}px" height="{size}px"
 		style="
-		top: {$y*79+12.5}px; 
-		left: {$x*79+12.5}px; 
+		top: {$y*multiplier+offset}px; 
+		left: {$x*multiplier+offset}px; 
 		transform: rotate({$rotation}deg);
 		position: absolute;
 		padding:0px;

@@ -13,6 +13,7 @@ const HOME_PAGE = gql`
                 }
                 turn
                 state
+                data
             }
             receivedInvites {
                 uuid

@@ -57,11 +57,13 @@ Refresh board periodically DONE
 Refresh replays from start every time DONE
 Ended games still listed as active?   DONE
 
-Game previews on home page
+Winning logic  DONE
+Winning UX  DONE
+
+Game previews on home page  DONE
 Nice looking navbar
 Should only be able to accept games you are the invitee of
-Winning logic
-Winning UX
+Oh wait it should show ended games until you have acknowledged they are over :skull:
 
 Live upload
 OGL integration

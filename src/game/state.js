@@ -12,14 +12,15 @@ export default class Match {
         this.pieces.set([])
         this.pieces.set(
             this.game.pieces.map(p => {
-                return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id)
+                return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id, this.speed)
             })
         )
         
         this.currentPromise = Promise.resolve()
     }
-    constructor(actions) {
+    constructor(actions, speed = 700) {
         this.pieces = writable([]);
+        this.speed = speed
 
         this.restart()
         
@@ -110,22 +111,22 @@ class Piece {
      * @param {string} type 
      * @param {number} id 
      */
-    constructor(x, y, rotation, player, type, id) {
+    constructor(x, y, rotation, player, type, id, duration) {
         this.type = type;
         this.x = tweened(x, {
-            duration: 700,
+            duration: duration,
             easing: cubicOut
         });
         this.y = tweened(y, {
-            duration: 700,
+            duration: duration,
             easing: cubicOut
         });
         this.rotation = tweened(rotation, {
-            duration: 700,
+            duration: duration,
             easing: cubicOut
         });
         this.opacity = tweened(1, {
-            duration: 700,
+            duration: duration,
             easing: cubicOut
         });
         this.player = player
