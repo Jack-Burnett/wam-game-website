@@ -62,7 +62,8 @@ Winning UX  DONE
 
 Game previews on home page  DONE
 Oh wait it should show ended games until you have acknowledged they are over :skull:  DONE
-Should only be able to accept games you are the invitee of
+Should check you are a player before letting you take a turn as them DONE
+Should only be able to accept games you are the invitee of DONE
 Learn to play page
 Previous games page
 Nice looking navbar

@@ -18,7 +18,7 @@ async function acknowledge_game_end(game_uuid, player) {
     }
 }
 
-async function submit_move(game_uuid, player, moveString) {
+async function submit_move(game_uuid, player, moveString, context) {
     if (!validateUuid(game_uuid)) {
         throw Error("Bad Game UUID")
     }
@@ -42,7 +42,12 @@ async function submit_move(game_uuid, player, moveString) {
         if (player == 2 && !waiting_player2) {
             throw Error("This game is not waiting for input from player 2")
         }
-        // TODO Should verify u are that player here
+        if (player == 1 && context.user != player1) {
+            throw Error("You cannot make moves as that player in that game")
+        }
+        if (player == 2 && context.user != player2) {
+            throw Error("You cannot make moves as that player in that game")
+        }
         const moves = JSON.parse(moveString)
         validateMoves(player1_turns, player2_turns, moves, player)
 

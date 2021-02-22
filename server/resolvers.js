@@ -37,7 +37,7 @@ const resolvers = {
             return await respondToInvite(input.inviteUuid, input.accepted, context)
         },
         submitMove: async(_, {game_uuid, player, move}, context) => {
-          return await submit_move(game_uuid, player, move)
+          return await submit_move(game_uuid, player, move, context)
         }
     },
     Query: {
