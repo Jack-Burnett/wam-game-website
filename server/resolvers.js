@@ -1,7 +1,7 @@
 const { createUser, login, getUsers } = require('./users')
 const { sendInvite, respondToInvite } = require('./invites')
-const { submit_move } = require('./games')
-const { get_user_by_uuid, get_active_games_for_user, get_sent_invites_for_user, get_received_invites_for_user, get_game_by_uuid } = require('./dao')
+const { submit_move, get_game_by_uuid } = require('./games')
+const { get_user_by_uuid, get_active_games_for_user, get_sent_invites_for_user, get_received_invites_for_user } = require('./dao')
 
 // Resolvers define the technique for fetching the types defined in the
 // schema. This resolver retrieves books from the "books" array above.
@@ -54,7 +54,7 @@ const resolvers = {
       },
 
       game: (_, params, context) => {
-        return get_game_by_uuid(params.uuid)
+        return get_game_by_uuid(params.uuid, context.user)
       },
     },
     User: {

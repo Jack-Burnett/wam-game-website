@@ -4,6 +4,20 @@ const { Game, Outcome } = require('./game')
 
 const pool = new Pool()
 
+async function acknowledge_game_end(game_uuid, player) {
+    try {
+        if (player == 1) {
+            await pool.query("UPDATE games SET game_over_acknowledged_player1 = true WHERE game_uuid = $1", [game_uuid])
+        } else if (player == 2) {
+            await pool.query("UPDATE games SET game_over_acknowledged_player2 = true WHERE game_uuid = $1", [game_uuid])
+        } else {
+            console.log("Error: Acknowledge target bad")
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 async function submit_move(game_uuid, player, moveString) {
     if (!validateUuid(game_uuid)) {
         throw Error("Bad Game UUID")
@@ -154,7 +168,7 @@ async function insert_user(uuid, username, hash) {
 
 async function get_active_games_for_user(user_uuid) {
     const res = await pool.query(
-        'SELECT * FROM games WHERE (player1 = $1 OR player2 = $1) AND NOT game_over',
+        'SELECT * FROM games WHERE (player1 = $1 AND NOT game_over_acknowledged_player1) OR (player2 = $1 AND NOT game_over_acknowledged_player2)',
          [user_uuid]
     )
     return res.rows
@@ -165,7 +179,6 @@ async function get_sent_invites_for_user(user_uuid) {
         'SELECT * FROM invites WHERE inviter_uuid = $1',
          [user_uuid]
     )
-    console.log(res.rows)
     return res.rows
 }
 
@@ -251,3 +264,4 @@ exports.get_game_by_uuid = get_game_by_uuid
 exports.submit_move = submit_move
 exports.get_sent_invites_for_user = get_sent_invites_for_user
 exports.get_received_invites_for_user = get_received_invites_for_user
+exports.acknowledge_game_end = acknowledge_game_end

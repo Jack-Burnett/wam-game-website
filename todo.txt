@@ -61,9 +61,11 @@ Winning logic  DONE
 Winning UX  DONE
 
 Game previews on home page  DONE
-Nice looking navbar
+Oh wait it should show ended games until you have acknowledged they are over :skull:  DONE
 Should only be able to accept games you are the invitee of
-Oh wait it should show ended games until you have acknowledged they are over :skull:
+Learn to play page
+Previous games page
+Nice looking navbar
 
 Live upload
 OGL integration
