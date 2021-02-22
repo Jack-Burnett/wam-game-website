@@ -15,7 +15,6 @@ function getUser(token) {
     var decoded = jwt.verify(token, 'encryption_key');
     return decoded.uuid
   } catch(err) {
-    // TODO sensible things on bad token
     return null
   }
 }

@@ -58,9 +58,7 @@ const typeDefs = gql`
 
   type Invite {
     uuid: ID
-    # TODO not implemented
     inviter: User
-    # TODO not implemented
     invitee: User
   }
 
