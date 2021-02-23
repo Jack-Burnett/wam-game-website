@@ -2,7 +2,7 @@ import { tweened } from 'svelte/motion';
 import { cubicOut } from 'svelte/easing';
 import { writable, get } from 'svelte/store';
 
-import { Game, Facing, Shoot, Simoultaneous, Move, Face, Die, Outcome } from '../../server/game.js'
+import { Game, Facing, Shoot, Simoultaneous, Move, Face, Die, Outcome } from 'server/game.js'
 
 export default class Match {
     restart() {

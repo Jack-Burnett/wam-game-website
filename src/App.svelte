@@ -1,17 +1,16 @@
 <script>
 	import { Router, Link, Route } from "svelte-routing";
-	import Home from "./routes/Home.svelte";
-	import About from "./routes/oldApp.svelte";
-	import Game from "./routes/Game.svelte";
+	import Home from "./routes/home/Home.svelte";
+	import About from "./old/oldApp.svelte";
+	import Game from "./routes/game/Game.svelte";
 	
-	import UserInfo from './UserInfo.svelte';
+	import UserInfo from './login/UserInfo.svelte';
 
 	import { client} from "./configureApollo.js"
 	import { setClient } from "svelte-apollo";
 	setClient(client);
 	
 	export let url = "";
-
   </script>
   
   <!-- https://github.com/EmilTholin/svelte-routing -->

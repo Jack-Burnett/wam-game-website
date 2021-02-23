@@ -1,6 +1,6 @@
 <script>
 	import { element } from "svelte/internal";
-	import Element from '../game/Element.svelte'
+	import Element from './Element.svelte'
 	import Promise from './Promise.svelte'
 	import Random from "seedrandom";
 	var rng = Random('hello..');

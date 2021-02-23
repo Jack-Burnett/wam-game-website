@@ -5,6 +5,7 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
 import sveltePreprocess from "svelte-preprocess";
+import builtins from 'rollup-plugin-node-builtins';
 
 
 const production = !process.env.ROLLUP_WATCH;
@@ -30,6 +31,15 @@ function serve() {
 	};
 }
 
+import includePaths from 'rollup-plugin-includepaths';
+
+let includePathOptions = {
+    include: {},
+    paths: ['src', '.'],
+    external: [],
+    extensions: ['.js', '.json', '.html', '.svelte']
+};
+
 export default {
 	input: 'src/main.js',
 	output: {
@@ -39,6 +49,8 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
+		builtins(),
+		includePaths(includePathOptions),
 		svelte({
 			compilerOptions: {
 				// enable run-time checks when not in production
@@ -65,7 +77,8 @@ export default {
 		// https://github.com/rollup/plugins/tree/master/packages/commonjs
 		resolve({
 			browser: true,
-			dedupe: ['svelte', 'svelte/transition', 'svelte/internal']
+			dedupe: ['svelte', 'svelte/transition', 'svelte/internal'],
+			preferBuiltins: true
 		}),
 		commonjs(),
 

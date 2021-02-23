@@ -1,6 +1,4 @@
 import { get, writable } from 'svelte/store';
-import { getClient } from "svelte-apollo";
-
     
 const { subscribe, set, update } = writable({
 	// Stored as string so need to parse to boolean

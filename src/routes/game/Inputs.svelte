@@ -1,9 +1,8 @@
 
 <script>
-    import Input from '../game/Input.svelte'
-    import { gql } from '@apollo/client';
+    import Input from './Input.svelte'
     
-    import { SUBMIT_MOVE } from "../mutations";
+    import { SUBMIT_MOVE } from "mutations";
     import { mutation } from "svelte-apollo";
     
 	const Relationship = {

@@ -1,5 +1,5 @@
 <script>
-	import { RESPOND_TO_INVITE } from "../mutations";
+	import { RESPOND_TO_INVITE } from "mutations";
 	import { mutation } from "svelte-apollo";
 	import { Link } from "svelte-routing";
 	

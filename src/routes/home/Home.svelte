@@ -1,9 +1,9 @@
 <script>
 	import { query } from "svelte-apollo";
-	import { HOME_PAGE } from "./queries";
+	import { HOME_PAGE } from "queries"
 	import Challenge from "./Challenge.svelte";
-	import Invite from "./Invite.svelte";
-	import SentInvite from "./SentInvite.svelte";
+	import Invite from "./Invite.svelte"
+	import SentInvite from "./SentInvite.svelte"
 	import GamePreview from "./GamePreview.svelte"
 	
 	const homeData = query(HOME_PAGE);

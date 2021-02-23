@@ -1,11 +1,11 @@
 <script>
 	import { query } from "svelte-apollo";
-	import { GAME } from "./queries";
-	import Inputs from '../game/Inputs.svelte'
-	import Board from '../game/Board.svelte'
-	import Match from '../game/state.js'
+	import { GAME } from "queries";
+	import Inputs from './Inputs.svelte'
+	import Board from './Board.svelte'
+	import Match from './state.js'
 	import { derived } from 'svelte/store';
-    import { currentUser } from "../CurrentUser.js"
+    import { currentUser } from "login/CurrentUser.js"
 
 	export let uuid
 	

@@ -1,6 +1,6 @@
 <script>
-	import { SEND_INVITE } from "../mutations";
-	import { currentUser} from "../CurrentUser.js"
+	import { SEND_INVITE } from "mutations";
+	import { currentUser} from "login/CurrentUser.js"
 	import { mutation } from "svelte-apollo";
 	
 	export let user;

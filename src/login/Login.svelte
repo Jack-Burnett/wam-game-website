@@ -1,7 +1,7 @@
 <!-- Login.svelte -->
 <script>
 	import { mutation } from "svelte-apollo";
-    import { SIGNUP, LOGIN } from "./mutations";
+    import { SIGNUP, LOGIN } from "mutations";
     import { currentUser } from "./CurrentUser.js"
     
     const signup = mutation(SIGNUP);

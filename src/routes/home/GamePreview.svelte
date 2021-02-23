@@ -1,6 +1,6 @@
 <script>
-	import Match from '../game/state.js'
-	import Board from "../game/Board.svelte";
+	import Match from 'routes/game/state.js'
+	import Board from "routes/game/Board.svelte";
 	import { writable } from 'svelte/store';
 	import { Link } from "svelte-routing";
 
