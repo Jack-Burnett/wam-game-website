@@ -2,6 +2,7 @@
 	import { Router, Link, Route } from "svelte-routing";
 	import Home from "./routes/home/Home.svelte";
 	import Learn from "./routes/learn/Learn.svelte";
+	import History from "./routes/history/History.svelte";
 	import Game from "./routes/game/Game.svelte";
 	
 	import UserInfo from './login/UserInfo.svelte';
@@ -28,22 +29,25 @@
 					<Link to="learn">Learn</Link>
 				</li>
 				<li class="pr-5">
-					<Link to="browse">Blog</Link>
+					<Link to="history">History</Link>
 				</li>
 			</ul>
 			<UserInfo />
 		</nav>	
 	</div>
 	<div class="container mx-auto p-5">
-	  <Route path="learn">
-		  <Learn/>
-	  </Route>
-	  <Route path="/">
-		<Home/>
-	  </Route>
-	  <Route path="game/:uuid" let:params>
-		<Game uuid="{params.uuid}" />
-	  </Route>
+		<Route path="/">
+			<Home/>
+		</Route>
+		<Route path="learn">
+			<Learn/>
+		</Route>
+		<Route path="history">
+			<History/>
+		</Route>
+		<Route path="game/:uuid" let:params>
+			<Game uuid="{params.uuid}" />
+		</Route>
 	</div>
   </Router>
 

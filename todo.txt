@@ -65,7 +65,7 @@ Oh wait it should show ended games until you have acknowledged they are over :sk
 Should check you are a player before letting you take a turn as them DONE
 Should only be able to accept games you are the invitee of DONE
 Learn to play page
-Previous games page
+Previous games page DONE
 Nice looking navbar
 
 Live upload

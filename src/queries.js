@@ -54,4 +54,23 @@ const GAME = gql`
     }
 `
 
-export { HOME_PAGE, GAME }
+const HISTORY = gql`
+    query HISTORY($users:[String], $includeOngoing: Boolean!, $includeFinished: Boolean!) {
+        games(search:{
+            withUsers: $users, includeFinished: $includeFinished, includeOngoing: $includeOngoing
+        }) {
+            uuid
+            player1 {
+                username
+            }
+            player2 {
+                username
+            }
+            turn
+            state
+            data
+        }
+    }
+`
+
+export { HOME_PAGE, GAME, HISTORY }
