@@ -1,5 +1,19 @@
 var dao = require('./dao');
 
+async function get_games(search) {
+    let game_over_states = []
+    if (search.includeFinished) {
+        game_over_states.push(true)
+    }
+    if (search.includeOngoing) {
+        game_over_states.push(false)
+    }
+
+    const games = dao.get_games(search.withUsers, game_over_states)
+
+    return games
+}
+
 async function get_game_by_uuid(game_uuid, user_uuid) {
 
     const game = dao.get_game_by_uuid(game_uuid, user_uuid)
@@ -37,3 +51,4 @@ async function submit_move(game_uuid, player, move, context) {
 
 exports.submit_move = submit_move
 exports.get_game_by_uuid = get_game_by_uuid
+exports.get_games = get_games

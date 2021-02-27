@@ -130,6 +130,24 @@ async function get_user_by_username(username) {
     }
 }
 
+async function get_games(user_uuids, game_over_states) {
+    let clauses = []
+    let values = []
+    if (user_uuids) {
+        clauses.push(`(player1 = ANY (${"$" + (values.length + 1)}) OR player2 = ANY (${"$" + (values.length + 1)}))`)
+        values.push(user_uuids)
+    }
+    if (game_over_states) {
+        clauses.push(`game_over = ANY (${"$" + (values.length + 1)})`)
+        values.push(game_over_states)
+    }
+    const res = await pool.query(
+        'SELECT * FROM games' + (clauses.length >= 1 ? " WHERE " : "") + clauses.join(" AND "),
+         values
+    )
+    return res.rows
+}
+
 async function get_game_by_uuid(uuid) {
     const res = await pool.query(
         'SELECT * FROM games WHERE game_uuid = $1',
@@ -270,3 +288,4 @@ exports.submit_move = submit_move
 exports.get_sent_invites_for_user = get_sent_invites_for_user
 exports.get_received_invites_for_user = get_received_invites_for_user
 exports.acknowledge_game_end = acknowledge_game_end
+exports.get_games = get_games

@@ -1,6 +1,6 @@
 const { createUser, login, getUsers } = require('./users')
 const { sendInvite, respondToInvite } = require('./invites')
-const { submit_move, get_game_by_uuid } = require('./games')
+const { submit_move, get_game_by_uuid, get_games } = require('./games')
 const { get_user_by_uuid, get_active_games_for_user, get_sent_invites_for_user, get_received_invites_for_user } = require('./dao')
 
 // Resolvers define the technique for fetching the types defined in the
@@ -55,6 +55,10 @@ const resolvers = {
 
       game: (_, params, context) => {
         return get_game_by_uuid(params.uuid, context.user)
+      },
+      
+      games: (_, {search}, context) => {
+        return get_games(search)
       },
     },
     User: {

@@ -95,14 +95,22 @@ const typeDefs = gql`
 
   type Query {
     me: User
-    game(uuid: ID): Game
+    game(uuid: ID!): Game
+    games(search: GameSearchInput!): [Game]
     users(search: UserSearchInput): [User]
+  }
+  
+  input GameSearchInput {
+    withUsers: [String]
+    includeFinished: Boolean = true
+    includeOngoing: Boolean = true
   }
 
   input UserSearchInput {
     startsWith: String = ""
     excludeSelf: Boolean = false
   }
+
 `;
 
   exports.typeDefs = typeDefs

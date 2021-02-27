@@ -1,7 +1,7 @@
 <script>
 	import { Router, Link, Route } from "svelte-routing";
 	import Home from "./routes/home/Home.svelte";
-	import About from "./old/oldApp.svelte";
+	import Learn from "./routes/learn/Learn.svelte";
 	import Game from "./routes/game/Game.svelte";
 	
 	import UserInfo from './login/UserInfo.svelte';
@@ -18,26 +18,29 @@
 	<div class="container mx-auto bg-purple-300 p-5">
 		<nav class="flex justify-between">
 			<div>
-				<a>Logo</a>
+				<a href=todo>Logo</a>
 			</div>
 			<ul class="flex flex-row">
 				<li class="pr-5">
 					<Link to="/">Home</Link>
 				</li>
 				<li class="pr-5">
-					<Link to="about">About</Link>
+					<Link to="learn">Learn</Link>
 				</li>
 				<li class="pr-5">
-					<Link to="blog">Blog</Link>
+					<Link to="browse">Blog</Link>
 				</li>
 			</ul>
 			<UserInfo />
 		</nav>	
 	</div>
 	<div class="container mx-auto p-5">
-	  <!--<Route path="blog/:id" component="{BlogPost}" />-->
-	  <Route path="about" component="{About}" />
-	  <Route path="/"><Home /></Route>
+	  <Route path="learn">
+		  <Learn/>
+	  </Route>
+	  <Route path="/">
+		<Home/>
+	  </Route>
 	  <Route path="game/:uuid" let:params>
 		<Game uuid="{params.uuid}" />
 	  </Route>
