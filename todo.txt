@@ -69,7 +69,11 @@ Previous games page DONE
 Nice looking navbar DONE
 
 Login/out does not update page without refresh DONE
-Live upload
+Live upload DONE
+If a knight is show their sword stays around
+315 degree rotations sometimes
+
+
 OGL integration
 Click to replay on previews, then we can use them in the tutorial!
 Is unit layout optimal
