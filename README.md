@@ -1,9 +1,9 @@
 # Run locally
 
 1. Pull Repo
-2. ```bash npm install```
-3. ```bash npm test```
-3. ```bash npm run dev```
+2. ```npm install```
+3. ```npm test```
+3. ```npm run dev```
 
 # Deploy to Digital Ocean
 
