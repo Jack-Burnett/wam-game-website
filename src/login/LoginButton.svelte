@@ -9,5 +9,5 @@
     };
   </script> 
    
-  <p><button on:click={showModal}>Login</button></p>
+  <p><button on:click={showModal}  class=" hover:text-gray-50 text-black cursor-pointer">Login / Register</button></p>
    

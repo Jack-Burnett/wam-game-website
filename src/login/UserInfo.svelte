@@ -9,11 +9,19 @@
 </script>
 
 {#if $currentUser.isLoggedIn}
-    <p>{$currentUser.username}</p>
-    <button on:click = "{logout}">Logout</button>
+    <a id="logout" on:click = "{logout}" class=" hover:text-gray-50 text-black cursor-pointer">
+        {$currentUser.username}
+        
+    </a>
 {:else}
     <Modal>
-        <LoginButton />
+        <LoginButton/>
     </Modal>
 {/if}
 
+<style>
+    #logout:hover::before {
+        content:"Logout ";
+        cursor: "pointer";
+    }
+</style>

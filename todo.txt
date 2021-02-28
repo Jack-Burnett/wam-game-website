@@ -66,8 +66,9 @@ Should check you are a player before letting you take a turn as them DONE
 Should only be able to accept games you are the invitee of DONE
 Learn to play Page DONE
 Previous games page DONE
-Nice looking navbar
+Nice looking navbar DONE
 
+Login/out does not update page without refresh
 Live upload
 OGL integration
 Click to replay on previews, then we can use them in the tutorial!

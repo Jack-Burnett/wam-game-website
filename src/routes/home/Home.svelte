@@ -44,7 +44,9 @@
 					{/each}
 				</div>
 			{:else}
-				<p>You are not logged in</p>
+				<p>You are not logged in!</p>
+				<p>You can use the Learn button above to find out how to play or the History button to watch others games.</p>
+				<p>When you are ready to play, press the Register / Login button!</p>
 			{/if}
 		{/if}
 </main>

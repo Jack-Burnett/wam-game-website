@@ -16,20 +16,17 @@
   
   <!-- https://github.com/EmilTholin/svelte-routing -->
   <Router url="{url}">
-	<div class="container mx-auto bg-purple-300 p-5">
-		<nav class="flex justify-between">
-			<div>
-				<a href=todo>Logo</a>
-			</div>
+	<div class="bg-blue-300">
+		<nav class="container mx-auto flex p-5 justify-between">
 			<ul class="flex flex-row">
-				<li class="pr-5">
-					<Link to="/">Home</Link>
+				<li class="pr-5 text-lg">
+					<Link to="/" class=" hover:text-gray-50 text-black">🏠 Home</Link>
 				</li>
-				<li class="pr-5">
-					<Link to="learn">Learn</Link>
+				<li class="pr-5 text-lg">
+					<Link to="learn" class="hover:text-gray-50 text-black">🎓 Learn</Link>
 				</li>
-				<li class="pr-5">
-					<Link to="history">History</Link>
+				<li class="pr-5 text-lg">
+					<Link to="history" class="hover:text-gray-50 text-black">📜 History</Link>
 				</li>
 			</ul>
 			<UserInfo />
