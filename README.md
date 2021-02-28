@@ -36,3 +36,11 @@ Maybe https://tableplus.com/blog/2018/04/postgresql-how-to-grant-access-to-users
 
 https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-18-04 helpful
 
+
+# Restart on server
+
+ps -ef | grep node
+
+kill -9 PROCESS_ID
+npm run build
+node server/app.js
