@@ -496,7 +496,7 @@ class Game {
                 if (victim.type == "Warrior") {
                     const sword = this.getSwordForPlayer(victim.player)
                     dead.push(sword)
-                    victim_ids.push(victim.id)
+                    victim_ids.push(sword.id)
                 }
             }
             events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing, victim_ids))
@@ -511,7 +511,7 @@ class Game {
                 if (victim.type == "Warrior") {
                     const sword = this.getSwordForPlayer(victim.player)
                     dead.push(sword)
-                    victim_ids.push(victim.id)
+                    victim_ids.push(sword.id)
                 }
             }
             events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing, victim_ids))
