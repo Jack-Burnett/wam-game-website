@@ -27,7 +27,7 @@
 </script>
 
 <main>
-	<img class="knight" src="../graphics/{graphic}.png" alt="{type}" width="{size}px" height="{size}px"
+	<img class="knight" src="/graphics/{graphic}.png" alt="{type}" width="{size}px" height="{size}px"
 		style="
 		top: {$y*multiplier+offset}px; 
 		left: {$x*multiplier+offset}px; 
