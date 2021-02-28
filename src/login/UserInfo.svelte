@@ -2,9 +2,14 @@
 	import LoginButton from './LoginButton.svelte';
     import Modal from 'svelte-simple-modal';
     import { currentUser } from "./CurrentUser.js"
+    import { getClient } from "svelte-apollo";
+
+    const client = getClient();
 
     function logout() {
         currentUser.logout()
+		// Forces all queries to refetch
+		client.resetStore()
     }
 </script>
 

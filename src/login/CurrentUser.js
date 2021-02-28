@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store';
-    
+
 const { subscribe, set, update } = writable({
 	// Stored as string so need to parse to boolean
 	isLoggedIn: JSON.parse(localStorage.getItem("isLoggedIn")) || false,
@@ -21,8 +21,6 @@ export const currentUser = {
 			uuid: "",
 			token: ""
 		})
-		// Forces all queries to refetch
-		// getClient().resetStore()
 	},
 	login: (username, uuid, token) => {
 		localStorage.setItem("isLoggedIn", true)
@@ -35,7 +33,6 @@ export const currentUser = {
 			uuid: uuid,
 			token: token
 		})
-		//getClient().resetStore()
 	},
 	getUser: () => get(currentUser)
 };

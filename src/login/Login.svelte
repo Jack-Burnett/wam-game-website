@@ -3,6 +3,9 @@
 	import { mutation } from "svelte-apollo";
     import { SIGNUP, LOGIN } from "mutations";
     import { currentUser } from "./CurrentUser.js"
+    import { getClient } from "svelte-apollo";
+
+    const client = getClient()
     
     const signup = mutation(SIGNUP);
     const login = mutation(LOGIN);
@@ -64,6 +67,8 @@
             data => {
                 if (data.data.login.success) {  
                     currentUser.login(username, data.data.login.user.uuid, data.data.login.token)
+                    // Forces all queries to refetch
+                    client.resetStore()
                     close();
                 }
             }

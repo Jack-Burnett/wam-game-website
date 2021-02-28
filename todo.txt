@@ -68,7 +68,7 @@ Learn to play Page DONE
 Previous games page DONE
 Nice looking navbar DONE
 
-Login/out does not update page without refresh
+Login/out does not update page without refresh DONE
 Live upload
 OGL integration
 Click to replay on previews, then we can use them in the tutorial!
