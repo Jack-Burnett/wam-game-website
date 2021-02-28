@@ -1,5 +1,10 @@
 # Run locally
 
+1. Pull Repo
+2. ```npm install```
+3. ```npm test```
+3. ```npm run dev```
+
 # Deploy to Digital Ocean
 
 The database section is a bit incomplete :(
@@ -39,8 +44,10 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgres
 
 # Restart on server
 
+```bash
 ps -ef | grep node
 
 kill -9 PROCESS_ID
 npm run build
 node server/app.js
+```
