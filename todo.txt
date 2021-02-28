@@ -72,6 +72,8 @@ Login/out does not update page without refresh DONE
 Live upload DONE
 If a knight is shot their sword stays around DONE
 
+Reduce name length limit, make sure UI can actually handle the max
+Why not just remove the PLAY button?
 
 315 degree rotations sometimes (when going from 0 to 315 or vice versa :/)
 OGL integration

@@ -35,6 +35,6 @@
 		position: absolute;
 		padding:0px;
 		opacity: {$opacity};
-		z-index: {isSword ? -100 : 100};
+		z-index: {isSword ? 1 : 2};
 		margin:0px; " />
 </main>
