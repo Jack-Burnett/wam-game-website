@@ -63,11 +63,11 @@ class Move {
 }
 
 class Shoot {
-    constructor(from, to, direction, victim) {
+    constructor(from, to, direction, victims) {
         this.from = from
         this.to = to
         this.direction = direction
-        this.victim = victim
+        this.victims = victims
     }
 }
 
@@ -488,25 +488,36 @@ class Game {
         if (isShooting1) {
             const shotSpace = this.getShotSpace(piece1)
             const victim = this.getShotVictim(piece1, shotSpace)
+            
+            let victim_ids = []
             if (victim != undefined) {
                 dead.push(victim)
+                victim_ids.push(victim.id)
+                if (victim.type == "Warrior") {
+                    const sword = this.getSwordForPlayer(victim.player)
+                    dead.push(sword)
+                    victim_ids.push(victim.id)
+                }
             }
-            events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing, victim == undefined ? undefined : victim.id))
+            events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing, victim_ids))
         }
         if (isShooting2) {
             const shotSpace = this.getShotSpace(piece2)
             const victim = this.getShotVictim(piece2, shotSpace)
+            let victim_ids = []
             if (victim != undefined) {
                 dead.push(victim)
+                victim_ids.push(victim.id)
+                if (victim.type == "Warrior") {
+                    const sword = this.getSwordForPlayer(victim.player)
+                    dead.push(sword)
+                    victim_ids.push(victim.id)
+                }
             }
-            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing, victim == undefined ? undefined : victim.id))
+            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing, victim_ids))
         }
         dead.forEach(piece => {
                 this.pieces = this.pieces.filter(elem => elem != piece)
-                if (piece.type == "Warrior") {
-                    const sword = this.getSwordForPlayer(piece.player)
-                    this.pieces = this.pieces.filter(elem => elem != sword)
-                }
             }
         )
         return new Simoultaneous(events);
