@@ -18,6 +18,7 @@ export default class Match {
         
         this.currentPromise = Promise.resolve()
     }
+
     constructor(actions, speed = 700) {
         this.pieces = writable([]);
         this.speed = speed
@@ -74,7 +75,6 @@ export default class Match {
                 } else if (move instanceof Move) {
                     return Promise.all(
                         [ piece.x.set(move.x), piece.y.set(move.y) ]
-                        // [ piece.x.set(move.x, {duration: 0}), piece.y.set(move.y, {duration: 0}) ]
                     )
                 } else if (move instanceof Shoot) {
                     let victim = get(this.pieces).find(piece => piece.id == move.victim);

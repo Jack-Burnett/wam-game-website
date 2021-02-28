@@ -8,9 +8,14 @@
 	export let match
 	let pieces = match.pieces
 
+
+	function clickBoard() {
+		// TODO this is harder than expected
+		// match.restart()
+	}
 </script>
 
-<main>
+<main on:click="{clickBoard}">
 	{#each Array(rows) as _}
 	<div class="row">
 		{#each Array(columns) as _}
