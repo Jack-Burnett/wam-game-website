@@ -33,16 +33,16 @@ async function login(username, password) {
 }
 
 async function createUser(username, password) {
-    if (username.length > 100 || username.length < 4) {
+    if (username.length > 18 || username.length < 4) {
         return {
             success: false,
-            error: "Username must be between 4 and 100 characters"
+            error: "Username must be between 4 and 18 characters"
         }
     }
     if (password.length > 50 || password.length < 4) {
         return {
             success: false,
-            error: "Password must be between 4 and 100 characters"
+            error: "Password must be between 4 and 50 characters"
         }
     }
     user = await dao.get_user_by_username(username)

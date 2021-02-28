@@ -14,7 +14,7 @@
 	<Link to="game/{game.uuid}">
 		<div class="flex flex-row rounded-md border border-indigo-600 p-5 m-3 hover:bg-blue-700">
 			<Board  match= {match} scale="small" />
-			<div class="w-40 ml-5">
+			<div class="w-40 ml-5 overflow-hidden">
 				<p>{game.player1.username} vs {game.player2.username}</p>
 				<p>Turn {game.turn}</p>
 				{#if game.state == "WAITING_PLAYER_1"}

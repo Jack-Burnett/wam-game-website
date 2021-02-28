@@ -12,8 +12,14 @@
 	}
 </script>
 
+<style>
+	#root {
+		min-width: 9rem;
+	}
+</style>
+
 <main>
-	<div class="flex-column rounded-md border border-indigo-600 p-3 m-3 w-36">
+	<div class="flex-column rounded-md border border-indigo-600 p-3 m-3" id="root">
 		<p class="text-center">{invite.inviter.username}</p>
 		{#if !mutationResult}
 			<div class="grid grid-cols-2 gap-2">
