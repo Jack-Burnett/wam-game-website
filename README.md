@@ -48,6 +48,8 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgres
 ps -ef | grep node
 
 kill -9 PROCESS_ID
+
+git pull
 npm run build
-node server/app.js
+node server/app.js &
 ```
