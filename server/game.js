@@ -650,11 +650,11 @@ class Game {
         const all_events = []
 
         const operations = [
+            () => { return this.applyMagic(action1, action2) },
+            () => { return this.applySwordKills() },
             () => { return this.applyMovements(action1, action2) },
             () => { return this.applySwordKills() },
             () => { return this.applyRotation(action1, action2) },
-            () => { return this.applySwordKills() },
-            () => { return this.applyMagic(action1, action2) },
             () => { return this.applySwordKills() },
             () => { return this.applyArchery(action1, action2) }
         ]

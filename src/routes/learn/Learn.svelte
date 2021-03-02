@@ -18,9 +18,9 @@
 	<p> Once both players have submitted the moves, they are executed simultaneously. </p>
 	<p> Each pair of moves is executed in order. Within each move, different action types are resolved in the following order: </p>
 	<ol class="list-decimal">
+		<li>Wizards Push</li>
 		<li>Pieces Move</li>
 		<li>Pieces Rotate</li>
-		<li>Wizards Push</li>
 		<li>Archers shoot</li>
 	</ol>
 	<p>If two moves would clash, such as two pieces trying to move into the same space, neither move happens.</p>
