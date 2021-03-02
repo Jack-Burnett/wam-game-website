@@ -5,8 +5,14 @@
 	import Invite from "./Invite.svelte"
 	import SentInvite from "./SentInvite.svelte"
 	import GamePreview from "./GamePreview.svelte"
+	import { onMount } from 'svelte';
 	
 	const homeData = query(HOME_PAGE);
+	
+	// Reload when you switch to this tab (as games may have been accepted or played)
+	onMount(() => {
+		homeData.refetch()
+	});
 </script>
 
 <main>

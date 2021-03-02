@@ -80,6 +80,6 @@ OGL integration
 Click to replay on previews, then we can use them in the tutorial!
 Is unit layout optimal
 
-If you accept a game, then start it, but then click back to home
-Make wizard push before movement happens
+If you accept a game, then start it, but then click back to home its stll there DONE
+Make wizard push before movement happens DONE
 Being on the top is confusion     DONE
