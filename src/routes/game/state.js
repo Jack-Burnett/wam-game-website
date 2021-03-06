@@ -77,7 +77,6 @@ export default class Match {
                         [ piece.x.set(move.x), piece.y.set(move.y) ]
                     )
                 } else if (move instanceof Shoot) {
-                    let victims = get(this.pieces).filter(piece => move.victims.includes(piece.id));
                     let arrow = new Piece(move.from.x, move.from.y, this.toRotation(move.direction), 1, "Arrow", "arrow")
                     this.pieces.update(pieces => [...pieces, arrow ])
                     return Promise.all(
@@ -85,9 +84,6 @@ export default class Match {
                     ).then(
                         (_) => {
                             this.pieces.update(pieces => pieces.filter(item => item !== arrow))
-                            Promise.all(
-                                victims.map(v => v.opacity.set(0))
-                            )
                         }
                     )
                 } else {

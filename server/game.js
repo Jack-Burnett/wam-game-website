@@ -63,13 +63,13 @@ class Move {
 }
 
 class Shoot {
-    constructor(from, to, direction, victims) {
+    constructor(from, to, direction) {
         this.from = from
         this.to = to
         this.direction = direction
-        this.victims = victims
     }
 }
+
 
 class Die {
     constructor(piece) {
@@ -499,7 +499,7 @@ class Game {
                     victim_ids.push(sword.id)
                 }
             }
-            events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing, victim_ids))
+            events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing))
         }
         if (isShooting2) {
             const shotSpace = this.getShotSpace(piece2)
@@ -514,13 +514,13 @@ class Game {
                     victim_ids.push(sword.id)
                 }
             }
-            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing, victim_ids))
+            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing))
         }
         dead.forEach(piece => {
-                this.pieces = this.pieces.filter(elem => elem != piece)
-            }
-        )
-        return new Simoultaneous(events);
+            this.pieces = this.pieces.filter(elem => elem != piece)
+        })
+        const deaths = dead.map(piece => new Die(piece.id))
+        return [new Simoultaneous(events), new Simoultaneous(deaths)];
     }
     
     // Knowing where the spell is hitting, what is that piece (if it is pushable)
@@ -662,7 +662,13 @@ class Game {
             if (this.hasGameEnded()) {
                 break
             }
-            all_events.push (operation())
+            // Push the event or events into the list
+            const events = operation()
+            if (Array.isArray(events)) {
+                Array.prototype.push.apply(all_events, events)
+            } else {
+                all_events.push (events)
+            }
         }
 
         // Assert state sensible
