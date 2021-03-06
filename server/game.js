@@ -745,3 +745,4 @@ exports.Face = Face
 exports.Shoot = Shoot
 exports.Simoultaneous = Simoultaneous
 exports.Outcome = Outcome
+exports.MoveType = MoveType

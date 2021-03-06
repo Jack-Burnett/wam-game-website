@@ -80,7 +80,7 @@ Make wizard push before movement happens DONE
 Being on the top is confusion     DONE
 
 Rejecting games show a todo haha DONE
-Oh flipped board doesn't flip your moves so is horrible oh no
+Oh flipped board doesn't flip your moves so is horrible oh no DONE
 Izzy bug (two units pushing one thing)
 Visually show mage pushes
 Random unit positions
