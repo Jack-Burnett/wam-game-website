@@ -63,10 +63,11 @@ class Move {
 }
 
 class Shoot {
-    constructor(from, to, direction) {
+    constructor(from, to, direction, type) {
         this.from = from
         this.to = to
         this.direction = direction
+        this.type = type
     }
 }
 
@@ -499,7 +500,7 @@ class Game {
                     victim_ids.push(sword.id)
                 }
             }
-            events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing))
+            events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing, "Arrow"))
         }
         if (isShooting2) {
             const shotSpace = this.getShotSpace(piece2)
@@ -514,7 +515,7 @@ class Game {
                     victim_ids.push(sword.id)
                 }
             }
-            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing))
+            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing, "Arrow"))
         }
         dead.forEach(piece => {
             this.pieces = this.pieces.filter(elem => elem != piece)
@@ -551,15 +552,20 @@ class Game {
         let pushed1 = undefined
         let pushed2 = undefined
 
+        const events = []
         if (isPushing1) {
             const shotSpace = this.getShotSpace(piece1)
             const victim = this.getMagicVictim(piece1, shotSpace)
             pushed1 = victim
+            
+            events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing, "Push"))
         }
         if (isPushing2) {
             const shotSpace = this.getShotSpace(piece2)
             const victim = this.getMagicVictim(piece2, shotSpace)
             pushed2 = victim
+            
+            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing, "Push"))
         }
 
         let push1 = { type: "NO", player: 0, action: "NOOP" }
@@ -570,7 +576,7 @@ class Game {
         if (pushed2) {
             push2 = { type: pushed2.type, player: pushed2.player, action: this.pushToMove(action2.action) }
         }
-        return this.applyMovements(push1, push2)
+        return [new Simoultaneous(events), this.applyMovements(push1, push2)]
     }
 
     validate(moves) {

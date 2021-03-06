@@ -77,7 +77,8 @@ export default class Match {
                         [ piece.x.set(move.x), piece.y.set(move.y) ]
                     )
                 } else if (move instanceof Shoot) {
-                    let arrow = new Piece(move.from.x, move.from.y, this.toRotation(move.direction), 1, "Arrow", "arrow")
+                    // The id and player are nonsense here but it does not matter :)
+                    let arrow = new Piece(move.from.x, move.from.y, this.toRotation(move.direction), 1, move.type, "arrow")
                     this.pieces.update(pieces => [...pieces, arrow ])
                     return Promise.all(
                         [ arrow.x.set(move.to.x), arrow.y.set(move.to.y) ]
