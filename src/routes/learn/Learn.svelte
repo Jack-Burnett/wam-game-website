@@ -23,7 +23,7 @@
 		<li>Pieces Rotate</li>
 		<li>Archers shoot</li>
 	</ol>
-	<p>If two moves would clash, such as two pieces trying to move into the same space, neither move happens.</p>
+	<p>If two moves would clash, such as two pieces trying to move into the same space, or two wizards pushing one piece in different directions, neither move happens.</p>
 		
 	<h1 class="text-2xl">Moving and Rotating</h1>
 	<p>All pieces can perform move ⬆️ and rotate ↪️ actions.</p>

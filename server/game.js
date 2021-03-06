@@ -619,6 +619,18 @@ class Game {
         if (pushed2) {
             push2 = { type: pushed2.type, player: pushed2.player, action: this.pushToMove(action2.action) }
         }
+        // If both push the same piece, block both
+        if (pushed1 && pushed2) {
+            if (pushed1 == pushed2) {
+                // (unless they happen to be the same direction)
+                if (action1.action != action2.action) {
+                    push1 = { type: "NO", player: 0, action: "NOOP" }
+                    push2 = { type: "NO", player: 0, action: "NOOP" }
+                } else {
+                    push2 = { type: "NO", player: 0, action: "NOOP" }
+                }
+            }
+        }
         return [new Simoultaneous(events), this.applyMovements(push1, push2)]
     }
 
