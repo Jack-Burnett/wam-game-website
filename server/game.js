@@ -87,9 +87,10 @@ class Die {
 }
 
 class Face {
-    constructor(piece, facing) {
+    constructor(piece, facing, action) {
         this.piece = piece
         this.facing = facing
+        this.action = action
     }
 }
 
@@ -243,7 +244,7 @@ class Game {
             events.push(new FailMove(piece2.id, {x: piece2.x, y: piece2.y}, {x: target2.x, y: target2.y}));
             const sword = this.getSword(piece2)
             if (sword != undefined) {
-                const swordTarget = this.getTargetSpace(sword, action1)
+                const swordTarget = this.getTargetSpace(sword, action2)
                 events.push(new FailMove(sword.id, {x: sword.x, y: sword.y}, {x: swordTarget.x, y: swordTarget.y}));
             }
         }
@@ -393,10 +394,10 @@ class Game {
         const wasRotating1 = isRotating1
         const wasRotating2 = isRotating2
         
-        if (this.rotationBlockedByWall(action1)) {
+        if (isRotating1 && this.rotationBlockedByWall(action1)) {
             isRotating1 = false
         }
-        if (this.rotationBlockedByWall(action2)) {
+        if (isRotating2 && this.rotationBlockedByWall(action2)) {
             isRotating2 = false
         }
         
@@ -468,14 +469,14 @@ class Game {
         const events = []
         let targetRot = this.getTargetRotation(piece, action)
         piece.facing = targetRot
-        events.push(new Face(piece.id, piece.facing))
+        events.push(new Face(piece.id, piece.facing, action.action))
         const sword = this.getSword(piece)
         if (sword != undefined) {
             const spaceAhead = this.getSpaceAhead(piece, targetRot)
             sword.facing = targetRot
             sword.x = spaceAhead.x
             sword.y = spaceAhead.y
-            events.push(new Face(sword.id, sword.facing))
+            events.push(new Face(sword.id, sword.facing, action.action))
             events.push(new Move(sword.id, sword.x, sword.y))
         }
         return events

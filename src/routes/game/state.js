@@ -2,7 +2,7 @@ import { tweened } from 'svelte/motion';
 import { cubicOut } from 'svelte/easing';
 import { writable, get } from 'svelte/store';
 
-import { Game, Facing, Shoot, FailMove, Simoultaneous, Move, Face, Die, Outcome } from 'server/game.js'
+import { Game, Facing, Shoot, FailMove, Simoultaneous, Move, Face, Die, Outcome, MoveType } from 'server/game.js'
 
 export default class Match {
     restart() {
@@ -71,13 +71,14 @@ export default class Match {
                 if (move instanceof Die) {
                     return piece.opacity.set(0);
                 } else if (move instanceof Face) {
-                    return piece.rotation.set(this.toRotation(move.facing));
+                    return piece.rotation.update(rot => {
+                        return rot + ((move.action == MoveType.ROTATE_LEFT) ? -45 : +45)
+                    });
                 } else if (move instanceof Move) {
                     return Promise.all(
                         [ piece.x.set(move.x), piece.y.set(move.y) ]
                     )
                 } else if (move instanceof FailMove) {
-                    console.log(move)
                     return Promise.all(
                         [ piece.x.set((move.to.x + move.from.x) * 0.5), piece.y.set((move.to.y + move.from.y) * 0.5) ]
                     ).then((_) => Promise.all(

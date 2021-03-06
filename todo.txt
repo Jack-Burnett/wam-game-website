@@ -87,6 +87,6 @@ Visually show failed movements DONE
 
 Random starting unit positions
 Izzy bug (two units pushing one thing)
-315 degree rotations sometimes (when going from 0 to 315 or vice versa :/)
+315 degree rotations sometimes (when going from 0 to 315 or vice versa :/) DONE
 Click to replay on previews, then we can use them in the tutorial!
 OGL integration
