@@ -54,6 +54,14 @@ const MoveType = {
     PUSH_UP_RIGHT: "PUSH_UP_RIGHT"
 }
 
+class FailMove {
+    constructor(piece, from, to) {
+        this.piece = piece
+        this.from = from
+        this.to = to
+    }
+}
+
 class Move {
     constructor(piece, x, y) {
         this.piece = piece
@@ -147,6 +155,7 @@ class Game {
     }
     
     applyMovements(action1, action2) {
+
         const piece1 = this.getPieceForAction(action1)
         const piece2 = this.getPieceForAction(action2)
 
@@ -190,7 +199,6 @@ class Game {
                 isPiece2Moving = false;
             }
         }
-        // Sword logic is IMMENSELY wrong bro
         // If warriors are involved, have to repeat a lot of the logic but for their swords
         const sword1 = piece1 == undefined ? undefined : this.getSwordForPlayer(piece1.player)
         const sword2 = piece2 == undefined ? undefined : this.getSwordForPlayer(piece2.player)
@@ -222,8 +230,23 @@ class Game {
             }
         }
         // Apply each movement
-
         const events = []
+        if(target1 && !isPiece1Moving) {
+            events.push(new FailMove(piece1.id, {x: piece1.x, y: piece1.y}, {x: target1.x, y: target1.y}));
+            const sword = this.getSword(piece1)
+            if (sword != undefined) {
+                const swordTarget = this.getTargetSpace(sword, action1)
+                events.push(new FailMove(sword.id, {x: sword.x, y: sword.y}, {x: swordTarget.x, y: swordTarget.y}));
+            }
+        }
+        if(target2 && !isPiece2Moving) {
+            events.push(new FailMove(piece2.id, {x: piece2.x, y: piece2.y}, {x: target2.x, y: target2.y}));
+            const sword = this.getSword(piece2)
+            if (sword != undefined) {
+                const swordTarget = this.getTargetSpace(sword, action1)
+                events.push(new FailMove(sword.id, {x: sword.x, y: sword.y}, {x: swordTarget.x, y: swordTarget.y}));
+            }
+        }
         if (isPiece1Moving) {
             piece1.x = target1.x
             piece1.y = target1.y
@@ -367,9 +390,15 @@ class Game {
         const piece2 = this.getPieceForAction(action2)
         let isRotating1 = this.getPieceForAction(action1) != undefined && action1.action.startsWith("ROTATE")
         let isRotating2 = this.getPieceForAction(action2) != undefined && action2.action.startsWith("ROTATE")
+        const wasRotating1 = isRotating1
+        const wasRotating2 = isRotating2
         
-        isRotating1 = isRotating1 && !this.rotationBlockedByWall(action1)
-        isRotating2 = isRotating2 && !this.rotationBlockedByWall(action2)
+        if (this.rotationBlockedByWall(action1)) {
+            isRotating1 = false
+        }
+        if (this.rotationBlockedByWall(action2)) {
+            isRotating2 = false
+        }
         
         // Prevent both swords being moved into one place at once
         if (isRotating1 && isRotating2) {
@@ -413,6 +442,19 @@ class Game {
             }
         }
         let events = []
+        // This is just to animate FailMoves :/
+        if (wasRotating1 && !isRotating1 && piece1.type == "Warrior") {
+            const sword = this.getSword(piece1)
+            let targetRot = this.getTargetRotation(piece1, action1)
+            const spaceAhead = this.getSpaceAhead(piece1, targetRot)
+            events.push(new FailMove(sword.id, {x: sword.x, y: sword.y}, {x: spaceAhead.x, y: spaceAhead.y}))
+        }
+        if (wasRotating2 && !isRotating2 && piece2.type == "Warrior") {
+            const sword = this.getSword(piece2)
+            let targetRot = this.getTargetRotation(piece2, action2)
+            const spaceAhead = this.getSpaceAhead(piece2, targetRot)
+            events.push(new FailMove(sword.id, {x: sword.x, y: sword.y}, {x: spaceAhead.x, y: spaceAhead.y}))
+        }
         if (isRotating1) {
             events = events.concat ( this.doRotate(piece1, action1) )
         }
@@ -751,6 +793,7 @@ class Game {
 
 exports.Game = Game
 exports.Facing = Facing
+exports.FailMove = FailMove
 exports.Move = Move
 exports.Die = Die
 exports.Face = Face

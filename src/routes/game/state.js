@@ -2,7 +2,7 @@ import { tweened } from 'svelte/motion';
 import { cubicOut } from 'svelte/easing';
 import { writable, get } from 'svelte/store';
 
-import { Game, Facing, Shoot, Simoultaneous, Move, Face, Die, Outcome } from 'server/game.js'
+import { Game, Facing, Shoot, FailMove, Simoultaneous, Move, Face, Die, Outcome } from 'server/game.js'
 
 export default class Match {
     restart() {
@@ -76,6 +76,13 @@ export default class Match {
                     return Promise.all(
                         [ piece.x.set(move.x), piece.y.set(move.y) ]
                     )
+                } else if (move instanceof FailMove) {
+                    console.log(move)
+                    return Promise.all(
+                        [ piece.x.set((move.to.x + move.from.x) * 0.5), piece.y.set((move.to.y + move.from.y) * 0.5) ]
+                    ).then((_) => Promise.all(
+                        [ piece.x.set(move.from.x), piece.y.set(move.from.y) ]
+                    ))
                 } else if (move instanceof Shoot) {
                     // The id and player are nonsense here but it does not matter :)
                     let arrow = new Piece(move.from.x, move.from.y, this.toRotation(move.direction), 1, move.type, "arrow")
