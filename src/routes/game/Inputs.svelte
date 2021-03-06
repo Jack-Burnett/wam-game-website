@@ -50,10 +50,10 @@
             // reset selections on submit (to prevent accidental repeat submissions)
                 if (response.data.submitMove.success) {
                     moves = [
-                        { type: "Warrior", action: "MOVE_DOWN" },
-                        { type: "Warrior", action: "MOVE_DOWN" },
-                        { type: "Warrior", action: "MOVE_DOWN" },
-                        { type: "Warrior", action: "MOVE_DOWN" }
+                        { type: "Warrior", action: "MOVE_UP" },
+                        { type: "Warrior", action: "MOVE_UP" },
+                        { type: "Warrior", action: "MOVE_UP" },
+                        { type: "Warrior", action: "MOVE_UP" }
                     ]
                 }
             }
@@ -61,10 +61,10 @@
     }
     
     let moves = [
-        { type: "Warrior", action: "MOVE_DOWN" },
-        { type: "Warrior", action: "MOVE_DOWN" },
-        { type: "Warrior", action: "MOVE_DOWN" },
-        { type: "Warrior", action: "MOVE_DOWN" }
+        { type: "Warrior", action: "MOVE_UP" },
+        { type: "Warrior", action: "MOVE_UP" },
+        { type: "Warrior", action: "MOVE_UP" },
+        { type: "Warrior", action: "MOVE_UP" }
     ]
     
 </script>
