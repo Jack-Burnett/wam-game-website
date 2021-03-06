@@ -5,7 +5,7 @@ import { writable, get } from 'svelte/store';
 import { Game, Facing, Shoot, FailMove, Simoultaneous, Move, Face, Die, Outcome, MoveType } from 'server/game.js'
 
 export default class Match {
-    restart() {
+    start() {
         // Reset
         this.game = new Game()
         this.tick = 0
@@ -19,31 +19,39 @@ export default class Match {
         this.currentPromise = Promise.resolve()
     }
 
+    restart() {
+        this.start()
+        this.play(get(this.actions))
+    }
+
+    play(currentValue) {
+        // Get only new moves (on page load this will be all moves)
+        const newEntries = currentValue.slice(this.tick)
+        const ticks = newEntries.map(
+            hm => this.game.tick(hm.move1, hm.move2)
+        )
+        this.tick = currentValue.length
+        // Add each move to the promise chain
+        ticks.forEach(
+            (tick) => {
+                tick.forEach(
+                    simoultaneous => {
+                        this.currentPromise = this.currentPromise.then(() => this.performTick(simoultaneous));
+                    }
+                )
+            }
+        )
+    }
+
     constructor(actions, speed = 700) {
         this.pieces = writable([]);
         this.speed = speed
+        this.actions = actions
 
-        this.restart()
+        this.start()
         
         actions.subscribe((currentValue) => {
-            // Get only new moves (on page load this will be all moves)
-            const newEntries = currentValue.slice(this.tick)
-            const ticks = newEntries.map(
-                hm => this.game.tick(hm.move1, hm.move2)
-            )
-            this.tick = currentValue.length
-            // Add each move to the promise chain
-            ticks.forEach(
-                (tick) => {
-                    tick.forEach(
-                        simoultaneous => {
-                            this.currentPromise = this.currentPromise.then(() => this.performTick(simoultaneous));
-                        }
-                    )
-                }
-            )
-
-            let outcome = this.game.checkWinner()
+            this.play(currentValue)
         })
 
     }
@@ -68,6 +76,10 @@ export default class Match {
             (move) => {
                 // Get piece with given ID
                 let piece = get(this.pieces).find(piece => piece.id == move.piece);
+                // This can happen if the game has been reset while animating
+                if (!piece) {
+                    return;
+                }
                 if (move instanceof Die) {
                     return piece.opacity.set(0);
                 } else if (move instanceof Face) {
@@ -85,8 +97,9 @@ export default class Match {
                         [ piece.x.set(move.from.x), piece.y.set(move.from.y) ]
                     ))
                 } else if (move instanceof Shoot) {
+                    console.log("SHOT")
                     // The id and player are nonsense here but it does not matter :)
-                    let arrow = new Piece(move.from.x, move.from.y, this.toRotation(move.direction), 1, move.type, "arrow")
+                    let arrow = new Piece(move.from.x, move.from.y, this.toRotation(move.direction), 1, move.type, this.makeid(15))
                     this.pieces.update(pieces => [...pieces, arrow ])
                     return Promise.all(
                         [ arrow.x.set(move.to.x), arrow.y.set(move.to.y) ]
@@ -102,6 +115,16 @@ export default class Match {
         );
         return Promise.all(promiseSet);
     }
+    
+    makeid(length) {
+        var result           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+           result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+     }
 }
 
 

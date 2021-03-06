@@ -11,7 +11,7 @@
 
 	function clickBoard() {
 		// TODO this is harder than expected
-		// match.restart()
+		match.restart()
 	}
 </script>
 

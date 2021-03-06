@@ -71,7 +71,8 @@ class Move {
 }
 
 class Shoot {
-    constructor(from, to, direction, type) {
+    constructor(piece, from, to, direction, type) {
+        this.piece = piece
         this.from = from
         this.to = to
         this.direction = direction
@@ -108,8 +109,19 @@ class Piece {
         this.facing = facing;
         this.type = type;
         this.player = player
-        this.id = type.toLowerCase() + "_" + player;
+        // This ID is to correlate pieces between the UI and game
+        this.id = this.makeid(15);
     }
+
+    makeid(length) {
+        var result           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+           result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+     }
 }
 
 class Game {
@@ -543,7 +555,7 @@ class Game {
                     victim_ids.push(sword.id)
                 }
             }
-            events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing, "Arrow"))
+            events.push(new Shoot(piece1.id, {x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing, "Arrow"))
         }
         if (isShooting2) {
             const shotSpace = this.getShotSpace(piece2)
@@ -558,7 +570,7 @@ class Game {
                     victim_ids.push(sword.id)
                 }
             }
-            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing, "Arrow"))
+            events.push(new Shoot(piece2.id, {x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing, "Arrow"))
         }
         dead.forEach(piece => {
             this.pieces = this.pieces.filter(elem => elem != piece)
@@ -601,14 +613,14 @@ class Game {
             const victim = this.getMagicVictim(piece1, shotSpace)
             pushed1 = victim
             
-            events.push(new Shoot({x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing, "Push"))
+            events.push(new Shoot(piece1.id, {x : piece1.x, y: piece1.y}, { x: shotSpace.x, y: shotSpace.y}, piece1.facing, "Push"))
         }
         if (isPushing2) {
             const shotSpace = this.getShotSpace(piece2)
             const victim = this.getMagicVictim(piece2, shotSpace)
             pushed2 = victim
             
-            events.push(new Shoot({x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing, "Push"))
+            events.push(new Shoot(piece2.id, {x : piece2.x, y: piece2.y}, { x: shotSpace.x, y: shotSpace.y}, piece2.facing, "Push"))
         }
 
         let push1 = { type: "NO", player: 0, action: "NOOP" }
