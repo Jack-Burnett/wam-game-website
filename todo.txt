@@ -75,11 +75,17 @@ If a knight is shot their sword stays around DONE
 Reduce name length limit, make sure UI can actually handle the max DONE
 Why not just remove the PLAY button? DONE
 
+If you accept a game, then start it, but then click back to home its stll there DONE
+Make wizard push before movement happens DONE
+Being on the top is confusion     DONE
+
+Rejecting games show a todo haha DONE
+Oh flipped board doesn't flip your moves so is horrible oh no
+Izzy bug (two units pushing one thing)
+Visually show mage pushes
+Random unit positions
+
 315 degree rotations sometimes (when going from 0 to 315 or vice versa :/)
 OGL integration
 Click to replay on previews, then we can use them in the tutorial!
 Is unit layout optimal
-
-If you accept a game, then start it, but then click back to home its stll there DONE
-Make wizard push before movement happens DONE
-Being on the top is confusion     DONE

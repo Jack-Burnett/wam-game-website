@@ -3,12 +3,30 @@
 	import { mutation } from "svelte-apollo";
 	import { Link } from "svelte-routing";
 	
+	export let me;
 	export let invite;
 	const respond = mutation(RESPOND_TO_INVITE);
 	let mutationResult = null;
 
 	function sendResponse(accepted) {
-		mutationResult = respond({ variables: { inviteUuid: invite.uuid, accepted: accepted } } )
+		mutationResult = respond({ 
+			variables: { inviteUuid: invite.uuid, accepted: accepted },
+			// Remove rejected invites from the cache (also removes from the UI)
+			update(cache, { data }) {
+				if(data.respondToInvite.success && !accepted) {
+					cache.modify({
+						id: cache.identify(me),
+						fields: {
+							receivedInvites(current, { readField }) {
+								return current.filter(
+									ref => invite.uuid !== readField('uuid', ref)
+								);
+							}
+						}
+					})
+				}
+			}
+		 } )
 	}
 </script>
 
@@ -50,8 +68,6 @@
 								Start Game!
 							</button>
 						</Link>
-					{:else}
-						Rejected TODO just delete form UI
 					{/if}
 				{:else}
 					<button

@@ -3,12 +3,15 @@ import { gql } from '@apollo/client';
 const HOME_PAGE = gql`
     query HOME_PAGE {
         me {
+            uuid
             activeGames {
                 uuid
                 player1 {
+                    uuid
                     username
                 }
                 player2 {
+                    uuid
                     username
                 }
                 turn
@@ -18,12 +21,14 @@ const HOME_PAGE = gql`
             receivedInvites {
                 uuid
                 inviter {
+                    uuid
                     username
                 }
             }
             sentInvites {
                 uuid
                 invitee {
+                    uuid
                     username
                 }
             }
@@ -61,9 +66,11 @@ const HISTORY = gql`
         }) {
             uuid
             player1 {
+                uuid
                 username
             }
             player2 {
+                uuid
                 username
             }
             turn

@@ -13,6 +13,7 @@
 	onMount(() => {
 		homeData.refetch()
 	});
+
 </script>
 
 <main>
@@ -35,10 +36,10 @@
 				{#if $homeData.data.me.receivedInvites.length > 0 || $homeData.data.me.sentInvites.length > 0}
 					<h2 class="text-2xl"> Invites </h2>
 					<div class="flex flex-row flex-wrap">
-						{#each $homeData.data.me.receivedInvites as invite}
-							<Invite {invite} />
+						{#each $homeData.data.me.receivedInvites as invite (invite.uuid)}
+							<Invite me={$homeData.data.me} {invite} />
 						{/each}
-						{#each $homeData.data.me.sentInvites as invite}
+						{#each $homeData.data.me.sentInvites as invite (invite.uuid)}
 							<SentInvite {invite} />
 						{/each}
 					</div>
