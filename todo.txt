@@ -90,5 +90,6 @@ Izzy bug (two units pushing one thing) DONE
 Click to replay on previews, then we can use them in the tutorial! DONE
 Random starting unit positions DONE
 
+Says undefined above the names in game
 Show dates on GamePreview
 OGL integration
