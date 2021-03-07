@@ -17,6 +17,7 @@ const HOME_PAGE = gql`
                 turn
                 state
                 data
+                config
             }
             receivedInvites {
                 uuid
@@ -55,6 +56,7 @@ const GAME = gql`
             turn
             state
             data
+            config
         }
     }
 `
@@ -76,6 +78,7 @@ const HISTORY = gql`
             turn
             state
             data
+            config
         }
     }
 `

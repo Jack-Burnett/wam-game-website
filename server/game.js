@@ -124,23 +124,41 @@ class Piece {
      }
 }
 
+function randomConfig() {
+    let pieceTypes =  [PieceType.MAGE, PieceType.ARCHER, PieceType.WARRIOR]
+    
+    let shuffled = pieceTypes
+    .map((a) => ({sort: Math.random(), value: a}))
+    .sort((a, b) => a.sort - b.sort)
+    .map((a) => a.value)
+
+    return { pieceTypes: shuffled }
+}
+
 class Game {
-    constructor(pieces) {
-        if (pieces === undefined) {
+    constructor(config) {
+        if (config.testPieces === undefined) {
+            let pieceTypes = config.pieceTypes
             this.pieces = [
-                new Piece(0, 0, Facing.SOUTH, PieceType.MAGE, Player.PLAYER1),
-                new Piece(2, 0, Facing.SOUTH, PieceType.ARCHER, Player.PLAYER1),
-                new Piece(4, 0, Facing.SOUTH, PieceType.WARRIOR, Player.PLAYER1),
-                new Piece(4, 1, Facing.SOUTH, PieceType.SWORD, Player.PLAYER1),
-                new Piece(4, LEVEL_HEIGHT, Facing.NORTH, PieceType.MAGE, Player.PLAYER2),
-                new Piece(2, LEVEL_HEIGHT, Facing.NORTH, PieceType.ARCHER, Player.PLAYER2),
-                new Piece(0, LEVEL_HEIGHT, Facing.NORTH, PieceType.WARRIOR, Player.PLAYER2),
-                new Piece(0, LEVEL_HEIGHT - 1, Facing.NORTH, PieceType.SWORD, Player.PLAYER2)
+                new Piece(0, 0, Facing.SOUTH, pieceTypes[0], Player.PLAYER1),
+                new Piece(2, 0, Facing.SOUTH, pieceTypes[1], Player.PLAYER1),
+                new Piece(4, 0, Facing.SOUTH, pieceTypes[2], Player.PLAYER1),
+                new Piece(4, LEVEL_HEIGHT, Facing.NORTH, pieceTypes[0], Player.PLAYER2),
+                new Piece(2, LEVEL_HEIGHT, Facing.NORTH, pieceTypes[1], Player.PLAYER2),
+                new Piece(0, LEVEL_HEIGHT, Facing.NORTH, pieceTypes[2], Player.PLAYER2)
             ]
+            // Place swords in front of the warriors
+            const swords = this.pieces.filter(p => p.type == "Warrior")
+            .map(piece => { 
+                const space = this.getSpaceAhead(piece, piece.facing);
+
+                return new Piece(space.x, space.y, piece.facing, PieceType.SWORD, piece.player)
+            })
+            Array.prototype.push.apply(this.pieces, swords)
             this.ignoreWinning = false
         } else {
             // Used for testing!
-            this.pieces = pieces
+            this.pieces = config.testPieces
             this.ignoreWinning = true
         }
     }
@@ -826,3 +844,5 @@ exports.Shoot = Shoot
 exports.Simoultaneous = Simoultaneous
 exports.Outcome = Outcome
 exports.MoveType = MoveType
+exports.PieceType = PieceType
+exports.randomConfig = randomConfig

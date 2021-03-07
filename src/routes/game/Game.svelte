@@ -90,7 +90,13 @@
 		}
 	);
 
-	let match = new Match(actions)
+	let match = undefined;
+
+	function initMatch(game) {
+		if (match == undefined) {
+			match = new Match(game.config, actions)
+		}
+	}
 
 </script>
 
@@ -108,6 +114,7 @@
 		<p>ERROR: {$gameData.error.message}</p>
 	{:else}
 		{#if $gameData.data.game}
+			{initMatch($gameData.data.game)}
 			<h2 class="text-2xl mb-5"> <span class="text-red-600">{$gameData.data.game.player1.username}</span> vs <span class="text-blue-600">{$gameData.data.game.player2.username}</span> </h2>
 			<div class = "flex flex-row flex-wrap" >
 				<div class:flipped="{$relationship === Relationship.PLAYER1}">

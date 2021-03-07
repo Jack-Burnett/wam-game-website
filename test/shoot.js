@@ -10,13 +10,13 @@ describe('Game', function() {
   describe('#new()', function() {
     
     it('shooting works', function() {
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 2, y: 4, facing: "NORTH", type: "Archer", player: 1 },
         { x: 2, y: 0, facing: "EAST", type: "Mage", player: 2 },
         { x: 0, y: 0, facing: "SOUTH_EAST", type: "Archer", player: 2 },
         { x: 4, y: 4, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 4, y: 3, facing: "NORTH", type: "Sword", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render(true)),
@@ -47,7 +47,7 @@ describe('Game', function() {
     });
     
     it('swords block arrows', function() {
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 2, y: 4, facing: "NORTH", type: "Archer", player: 1 },
         { x: 2, y: 0, facing: "EAST", type: "Mage", player: 2 },
         { x: 0, y: 0, facing: "SOUTH_EAST", type: "Archer", player: 2 },
@@ -55,7 +55,7 @@ describe('Game', function() {
         { x: 3, y: 3, facing: "NORTH_WEST", type: "Sword", player: 2 },
         { x: 3, y: 1, facing: "WEST", type: "Warrior", player: 1 },
         { x: 2, y: 1, facing: "WEST", type: "Sword", player: 1 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render(true)),
@@ -86,12 +86,12 @@ describe('Game', function() {
     });
     
     it('facing blocks arrows', function() {
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 2, y: 4, facing: "NORTH", type: "Archer", player: 1 },
         { x: 2, y: 0, facing: "SOUTH", type: "Mage", player: 2 },
         { x: 0, y: 0, facing: "SOUTH_EAST", type: "Archer", player: 2 },
         { x: 4, y: 4, facing: "NORTH_WEST", type: "Mage", player: 1 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render(true)),
@@ -122,12 +122,12 @@ describe('Game', function() {
     });
     
     it('getting shot twice', function() {
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 2, y: 4, facing: "NORTH", type: "Archer", player: 1 },
         { x: 0, y: 0, facing: "SOUTH_EAST", type: "Archer", player: 2 },
         { x: 2, y: 2, facing: "NORTH", type: "Warrior", player: 1 },
         { x: 2, y: 1, facing: "NORTH", type: "Sword", player: 1 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render(true)),
@@ -160,11 +160,11 @@ describe('Game', function() {
   });
   
   it('can shoot as you get shot', function() {
-    let game = new Game([
+    let game = new Game({testPieces: [
       { x: 2, y: 4, facing: "NORTH", type: "Archer", player: 1 },
       { x: 2, y: 2, facing: "EAST", type: "Archer", player: 2 },
       { x: 4, y: 2, facing: "NORTH", type: "Mage", player: 1 }
-    ])
+    ]})
 
     assert.strictEqual(
       state(game.render(true)),

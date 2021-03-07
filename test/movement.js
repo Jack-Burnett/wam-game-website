@@ -1,5 +1,5 @@
 var assert = require('assert');
-const {Game} = require('../server/game');
+const {Game, PieceType} = require('../server/game');
 
 function state(s) {
   // Remove leading AND trailing spaces
@@ -9,8 +9,10 @@ function state(s) {
 describe('Game', function() {
   describe('#new()', function() {
     it('should start in the default game state', function() {
-
-      let game = new Game()
+      let config = {
+        pieceTypes: [PieceType.MAGE, PieceType.ARCHER, PieceType.WARRIOR]
+      }
+      let game = new Game(config)
           
       assert.strictEqual(
         state(game.render(true)),
@@ -22,15 +24,17 @@ describe('Game', function() {
         W2↑ .   A2↑ .   M2↑
         `)
       )
+      console.log("YOWZA")
+      console.log(JSON.stringify(config))
     
     });
 
     it('should allow setting initial state', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 1, y: 1, facing: "NORTH", type: "Mage", player: 1 },
         { x: 3, y: 3, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -47,10 +51,10 @@ describe('Game', function() {
 
     it('should allow basic movement', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 1, y: 1, facing: "NORTH", type: "Mage", player: 1 },
         { x: 3, y: 3, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -83,10 +87,10 @@ describe('Game', function() {
     
     it('should not allow moving into walls', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 0, y: 1, facing: "NORTH", type: "Mage", player: 1 },
         { x: 3, y: 4, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -118,11 +122,11 @@ describe('Game', function() {
 
     it('should not allow moving into pieces', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 0, y: 1, facing: "NORTH", type: "Mage", player: 1 },
         { x: 0, y: 2, facing: "NORTH", type: "Archer", player: 2 },
         { x: 1, y: 1, facing: "NORTH", type: "Warrior", player: 3 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -154,10 +158,10 @@ describe('Game', function() {
 
     it('should not allow both moving into the same space', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 0, y: 1, facing: "NORTH", type: "Mage", player: 1 },
         { x: 0, y: 3, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -189,10 +193,10 @@ describe('Game', function() {
 
     it('should be able to move into a space as its vacated', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 0, y: 1, facing: "NORTH", type: "Mage", player: 1 },
         { x: 0, y: 2, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -224,10 +228,10 @@ describe('Game', function() {
 
     it('should be able to swap positions by moving past each other', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 0, y: 1, facing: "NORTH", type: "Mage", player: 1 },
         { x: 0, y: 2, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -259,10 +263,10 @@ describe('Game', function() {
     
     it('should allow diagonal movement', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 0, y: 1, facing: "NORTH", type: "Mage", player: 1 },
         { x: 3, y: 3, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -294,12 +298,12 @@ describe('Game', function() {
 
     it('knights own sword should block their movement', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 1, y: 1, facing: "NORTH", type: "Warrior", player: 1 },
         { x: 0, y: 0, facing: "NORTH", type: "Sword", player: 1 },
         { x: 3, y: 3, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 4, y: 3, facing: "NORTH", type: "Sword", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -331,12 +335,12 @@ describe('Game', function() {
 
     it('knights should move with their own swords', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 1, y: 1, facing: "NORTH", type: "Warrior", player: 1 },
         { x: 0, y: 0, facing: "NORTH", type: "Sword", player: 1 },
         { x: 3, y: 3, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 4, y: 3, facing: "NORTH", type: "Sword", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -368,13 +372,13 @@ describe('Game', function() {
 
     it('knights cant move swords into swords', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 1, y: 2, facing: "NORTH", type: "Warrior", player: 1 },
         { x: 2, y: 2, facing: "NORTH", type: "Sword", player: 1 },
         { x: 3, y: 3, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 3, y: 2, facing: "NORTH", type: "Sword", player: 2 },
         { x: 0, y: 4, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -407,13 +411,13 @@ describe('Game', function() {
     
     it('two swords cant be moved into the same space at once', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 0, y: 2, facing: "NORTH", type: "Warrior", player: 1 },
         { x: 1, y: 2, facing: "NORTH", type: "Sword", player: 1 },
         { x: 3, y: 3, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 3, y: 2, facing: "NORTH", type: "Sword", player: 2 },
         { x: 0, y: 4, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -445,11 +449,11 @@ describe('Game', function() {
     
     it('prevented sword moves do not block other moves', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 3, y: 3, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 4, y: 2, facing: "NORTH", type: "Sword", player: 2 },
         { x: 4, y: 4, facing: "NORTH", type: "Archer", player: 1 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -481,12 +485,12 @@ describe('Game', function() {
     
     it('moving a sword into an enemy kills them', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 3, y: 3, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 3, y: 2, facing: "NORTH", type: "Sword", player: 2 },
         { x: 3, y: 1, facing: "NORTH", type: "Archer", player: 1 },
         { x: 0, y: 4, facing: "NORTH", type: "Mage", player: 1 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -518,12 +522,12 @@ describe('Game', function() {
     
     it('moving into a sword kills you', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 3, y: 3, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 3, y: 2, facing: "NORTH", type: "Sword", player: 2 },
         { x: 3, y: 1, facing: "NORTH", type: "Archer", player: 1 },
         { x: 0, y: 4, facing: "NORTH", type: "Mage", player: 1 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -555,11 +559,11 @@ describe('Game', function() {
     
     it('moving into a sword as it moves kills you', function() {
 
-      let game = new Game([
+      let game = new Game({ testPieces: [
         { x: 3, y: 3, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 3, y: 2, facing: "NORTH", type: "Sword", player: 2 },
         { x: 3, y: 0, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -591,13 +595,13 @@ describe('Game', function() {
 
     it('killing a warrior removes their sword', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 3, y: 3, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 3, y: 2, facing: "NORTH", type: "Sword", player: 2 },
         { x: 1, y: 3, facing: "NORTH", type: "Warrior", player: 1 },
         { x: 2, y: 3, facing: "NORTH", type: "Sword", player: 1 },
         { x: 0, y: 0, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -629,13 +633,13 @@ describe('Game', function() {
     
     it('can kill whilst dying', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 3, y: 3, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 3, y: 2, facing: "NORTH", type: "Sword", player: 2 },
         { x: 1, y: 3, facing: "NORTH", type: "Warrior", player: 1 },
         { x: 2, y: 3, facing: "NORTH", type: "Sword", player: 1 },
         { x: 3, y: 1, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),
@@ -667,11 +671,11 @@ describe('Game', function() {
     
     it('this behaviour seems very wrong', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 2, y: 3, facing: "NORTH", type: "Warrior", player: 1 },
         { x: 3, y: 3, facing: "NORTH", type: "Sword", player: 1 },
         { x: 4, y: 3, facing: "NORTH", type: "Archer", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render()),

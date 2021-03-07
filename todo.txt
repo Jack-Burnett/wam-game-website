@@ -87,6 +87,8 @@ Visually show failed movements DONE
 
 315 degree rotations sometimes (when going from 0 to 315 or vice versa :/) DONE
 Izzy bug (two units pushing one thing) DONE
-Random starting unit positions
 Click to replay on previews, then we can use them in the tutorial! DONE
+Random starting unit positions DONE
+
+Show dates on GamePreview
 OGL integration

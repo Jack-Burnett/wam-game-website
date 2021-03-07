@@ -10,10 +10,10 @@ describe('Game', function() {
   describe('#new()', function() {
     
     it('basic rotation works', function() {
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 2, y: 3, facing: "NORTH_WEST", type: "Mage", player: 1 },
         { x: 4, y: 4, facing: "SOUTH_EAST", type: "Mage", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render(true)),
@@ -45,12 +45,12 @@ describe('Game', function() {
     
     it('warriors swords move as they rotate', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 2, y: 3, facing: "NORTH_WEST", type: "Warrior", player: 1 },
         { x: 1, y: 2, facing: "NORTH_WEST", type: "Sword", player: 1 },
         { x: 4, y: 4, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 4, y: 3, facing: "NORTH", type: "Sword", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render(true)),
@@ -81,12 +81,12 @@ describe('Game', function() {
     });
 
     it('swords cannot rotate into walls', function() {
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
         { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
         { x: 4, y: 4, facing: "NORTH", type: "Warrior", player: 2 },
         { x: 4, y: 3, facing: "NORTH", type: "Sword", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render(true)),
@@ -117,13 +117,13 @@ describe('Game', function() {
     });
     
     it('swords cannot rotate into swords', function() {
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
         { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
         { x: 2, y: 3, facing: "WEST", type: "Warrior", player: 2 },
         { x: 1, y: 3, facing: "WEST", type: "Sword", player: 2 },
         { x: 4, y: 4, facing: "NORTH", type: "Mage", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render(true)),
@@ -154,12 +154,12 @@ describe('Game', function() {
     });
     
     it('swords can simoultaneously rotate into a space as it is rotated out of', function() {
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
         { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
         { x: 2, y: 3, facing: "WEST", type: "Warrior", player: 2 },
         { x: 1, y: 3, facing: "WEST", type: "Sword", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render(true)),
@@ -190,12 +190,12 @@ describe('Game', function() {
 
     
     it('attempting to rotate two swords into the same space at once should not rotate either', function() {
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
         { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
         { x: 2, y: 2, facing: "WEST", type: "Warrior", player: 2 },
         { x: 1, y: 2, facing: "WEST", type: "Sword", player: 2 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render(true)),
@@ -226,11 +226,11 @@ describe('Game', function() {
 
 
     it('rotating a sword into someone kills them', function() {
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 0, y: 4, facing: "EAST", type: "Warrior", player: 1 },
         { x: 1, y: 4, facing: "EAST", type: "Sword", player: 1 },
         { x: 1, y: 3, facing: "WEST", type: "Archer", player: 2 },
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render(true)),

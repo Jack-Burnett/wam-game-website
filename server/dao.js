@@ -32,7 +32,7 @@ async function submit_move(game_uuid, player, moveString, context) {
         if (gameRes.rows.length !== 1) {
             throw Error("No game with that UUID exists")
         }
-        let {player1, player2, player1_turns, player2_turns, waiting_player1, waiting_player2 } = gameRes.rows[0]
+        let { config, player1, player2, player1_turns, player2_turns, waiting_player1, waiting_player2 } = gameRes.rows[0]
         if (player != 1 && player != 2){
             throw Error("Player must be either 1 or 2")
         }
@@ -49,7 +49,7 @@ async function submit_move(game_uuid, player, moveString, context) {
             throw Error("You cannot make moves as that player in that game")
         }
         const moves = JSON.parse(moveString)
-        validateMoves(player1_turns, player2_turns, moves, player)
+        validateMoves(config, player1_turns, player2_turns, moves, player)
 
         // only do on correct player
         if (player == 1) {
@@ -62,7 +62,7 @@ async function submit_move(game_uuid, player, moveString, context) {
         waiting_player2 = player2_turns.length <= player1_turns.length
 
         // check for end
-        const outcome = checkForEnd(player1_turns, player2_turns)
+        const outcome = checkForEnd(config, player1_turns, player2_turns)
         let game_over_acknowledged_player1 = false
         let game_over_acknowledged_player2 = false
         let gameover = false
@@ -93,9 +93,9 @@ async function submit_move(game_uuid, player, moveString, context) {
     }
 }
 
-function checkForEnd(player1_turns, player2_turns) {
+function checkForEnd(config, player1_turns, player2_turns) {
     const completeTurns = Math.min(player1_turns.length, player2_turns.length)
-    const game = new Game()
+    const game = new Game(config)
     for (let i = 0; i < completeTurns; i++) {
         game.tick(player1_turns[i], player2_turns[i])
     }
@@ -103,10 +103,10 @@ function checkForEnd(player1_turns, player2_turns) {
     return outcome
 }
 
-function validateMoves(player1_turns, player2_turns, moves, player) {
+function validateMoves(config, player1_turns, player2_turns, moves, player) {
     const completeTurns = Math.min(player1_turns.length, player2_turns.length)
 
-    const game = new Game()
+    const game = new Game(config)
     for (let i = 0; i < completeTurns; i++) {
         game.tick(player1_turns[i], player2_turns[i])
     }
@@ -131,21 +131,26 @@ async function get_user_by_username(username) {
 }
 
 async function get_games(user_uuids, game_over_states) {
-    let clauses = []
-    let values = []
-    if (user_uuids) {
-        clauses.push(`(player1 = ANY (${"$" + (values.length + 1)}) OR player2 = ANY (${"$" + (values.length + 1)}))`)
-        values.push(user_uuids)
+    try {
+        let clauses = []
+        let values = []
+        if (user_uuids) {
+            clauses.push(`(player1 = ANY (${"$" + (values.length + 1)}) OR player2 = ANY (${"$" + (values.length + 1)}))`)
+            values.push(user_uuids)
+        }
+        if (game_over_states) {
+            clauses.push(`game_over = ANY (${"$" + (values.length + 1)})`)
+            values.push(game_over_states)
+        }
+        const res = await pool.query(
+            'SELECT * FROM games' + (clauses.length >= 1 ? " WHERE " : "") + clauses.join(" AND "),
+            values
+        )
+        return res.rows
+    } catch (err) {
+        console.log(err)
+        throw err
     }
-    if (game_over_states) {
-        clauses.push(`game_over = ANY (${"$" + (values.length + 1)})`)
-        values.push(game_over_states)
-    }
-    const res = await pool.query(
-        'SELECT * FROM games' + (clauses.length >= 1 ? " WHERE " : "") + clauses.join(" AND "),
-         values
-    )
-    return res.rows
 }
 
 async function get_game_by_uuid(uuid) {
@@ -261,9 +266,9 @@ async function upsert_game(game) {
     try {
         const res = await pool.query(
             "INSERT INTO games (game_uuid, player1, player2, player1_turns, player2_turns, waiting_player1, waiting_player2, game_over,\
-                game_over_acknowledged_player1, game_over_acknowledged_player2, outcome) \
-             VALUES ($1, $2, $3, $4, $5, $6, $7, false, false, false, 'ONGOING') RETURNING *",
-                [game.game_uuid, game.player1, game.player2, game.player1_turns, game.player2_turns, game.waiting_player1, game.waiting_player2]
+                game_over_acknowledged_player1, game_over_acknowledged_player2, outcome, config) \
+             VALUES ($1, $2, $3, $4, $5, $6, $7, false, false, false, 'ONGOING', $8) RETURNING *",
+                [game.game_uuid, game.player1, game.player2, game.player1_turns, game.player2_turns, game.waiting_player1, game.waiting_player2, game.config]
         )
         const created = res.rows[0]
         return created

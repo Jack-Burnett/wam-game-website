@@ -1,5 +1,6 @@
 var dao = require('./dao');
 const { v4: uuidv4, validate: uuidValidate } = require('uuid');
+const { randomConfig } = require('./game')
 
 async function sendInvite(inviter, invitee) {
     invite = await dao.insert_invite(inviter, invitee)
@@ -55,7 +56,8 @@ async function respondToInvite(invite_uuid, accepted, context) {
         player1_turns: [],
         player2_turns: [],
         waiting_player1: true,
-        waiting_player2: true
+        waiting_player2: true,
+        config: randomConfig()
     }
     await dao.upsert_game(game)
     return {

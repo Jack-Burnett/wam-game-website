@@ -53,7 +53,8 @@ CREATE TABLE public.games (
     game_over boolean NOT NULL,
     game_over_acknowledged_player1 boolean NOT NULL,
     game_over_acknowledged_player2 boolean NOT NULL,
-    outcome public."Outcome" NOT NULL
+    outcome public."Outcome" NOT NULL,
+    config json NOT NULL
 );
 
 

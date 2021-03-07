@@ -42,6 +42,7 @@ const typeDefs = gql`
     success: Boolean!
     error: String
     game: Game
+    
   }
 
   type InviteResponseResult {
@@ -91,6 +92,7 @@ const typeDefs = gql`
     state: State
 
     data: String
+    config: String
   }
 
   type Query {

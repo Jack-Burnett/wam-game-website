@@ -7,7 +7,7 @@ import { Game, Facing, Shoot, FailMove, Simoultaneous, Move, Face, Die, Outcome,
 export default class Match {
     start() {
         // Reset
-        this.game = new Game()
+        this.game = new Game(this.config)
         this.tick = 0
         this.pieces.set([])
         this.pieces.set(
@@ -43,10 +43,11 @@ export default class Match {
         )
     }
 
-    constructor(actions, speed = 700) {
+    constructor(config, actions, speed = 700) {
         this.pieces = writable([]);
         this.speed = speed
         this.actions = actions
+        this.config = JSON.parse(config)
 
         this.start()
         
@@ -97,7 +98,6 @@ export default class Match {
                         [ piece.x.set(move.from.x), piece.y.set(move.from.y) ]
                     ))
                 } else if (move instanceof Shoot) {
-                    console.log("SHOT")
                     // The id and player are nonsense here but it does not matter :)
                     let arrow = new Piece(move.from.x, move.from.y, this.toRotation(move.direction), 1, move.type, this.makeid(15))
                     this.pieces.update(pieces => [...pieces, arrow ])

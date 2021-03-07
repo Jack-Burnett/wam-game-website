@@ -126,6 +126,9 @@ const resolvers = {
         }
 
         return JSON.stringify(data)
+      },
+      config: (input) => {
+        return JSON.stringify(input.config)
       }
       
     }

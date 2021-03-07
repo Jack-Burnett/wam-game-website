@@ -11,12 +11,12 @@ describe('Game', function() {
     
     it('pushing a mage while their pushing', function() {
 
-      let game = new Game([
+      let game = new Game({testPieces: [
         { x: 4, y: 0, facing: "WEST", type: "Archer", player: 1 },
         { x: 2, y: 0, facing: "EAST", type: "Mage", player: 2 },
         { x: 2, y: 2, facing: "WEST", type: "Archer", player: 2 },
         { x: 2, y: 4, facing: "NORTH", type: "Mage", player: 1 }
-      ])
+      ]})
 
       assert.strictEqual(
         state(game.render(true)),
@@ -50,11 +50,11 @@ describe('Game', function() {
   
   it('mutual push', function() {
 
-    let game = new Game([
+    let game = new Game({testPieces: [
       { x: 2, y: 4, facing: "NORTH", type: "Mage", player: 1 },
       { x: 2, y: 0, facing: "EAST", type: "Mage", player: 2 },
       { x: 4, y: 0, facing: "WEST", type: "Archer", player: 1 }
-    ])
+    ]})
 
     assert.strictEqual(
       state(game.render(true)),
@@ -92,14 +92,14 @@ describe('Game', function() {
       ↙ ↓ ↘
       `)
 
-    let game = new Game([
+    let game = new Game({testPieces: [
       { x: 3, y: 4, facing: "NORTH", type: "Mage", player: 1 },
       { x: 3, y: 1, facing: "SOUTH", type: "Warrior", player: 2 },
       { x: 3, y: 2, facing: "SOUTH", type: "Sword", player: 2 },
       { x: 1, y: 4, facing: "NORTH", type: "Mage", player: 2 },
       { x: 0, y: 0, facing: "SOUTH_EAST", type: "Warrior", player: 1 },
       { x: 1, y: 1, facing: "SOUTH_EAST", type: "Sword", player: 1 }
-    ])
+    ]})
 
     assert.strictEqual(
       state(game.render(true)),

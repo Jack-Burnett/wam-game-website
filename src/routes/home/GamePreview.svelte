@@ -7,7 +7,7 @@
 	export let game;
 
 	const actions = writable(JSON.parse(game.data))
-	const match = new Match(actions, 200)
+	const match = new Match(game.config, actions, 200)
 </script>
 
 <main>
