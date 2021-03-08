@@ -90,6 +90,10 @@ Izzy bug (two units pushing one thing) DONE
 Click to replay on previews, then we can use them in the tutorial! DONE
 Random starting unit positions DONE
 
-Says undefined above the names in game
+Says undefined above the names in game DONE
 Show dates on GamePreview
+wizard + archer is bleak
+Replay from any turn DONE
+
+
 OGL integration

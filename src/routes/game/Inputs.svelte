@@ -54,8 +54,6 @@
                 }
             )
         }
-        console.log(moves)
-        console.log(moveCopy)
         if ($relationship == Relationship.PLAYER2) {
             player = 2
         }

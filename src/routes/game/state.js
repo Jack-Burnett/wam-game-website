@@ -1,15 +1,21 @@
 import { tweened } from 'svelte/motion';
 import { cubicOut } from 'svelte/easing';
 import { writable, get } from 'svelte/store';
+import { derived } from 'svelte/store';
 
 import { Game, Facing, Shoot, FailMove, Simoultaneous, Move, Face, Die, Outcome, MoveType } from 'server/game.js'
 
 export default class Match {
-    start() {
+    start(fastforward = 0) {
         // Reset
         this.game = new Game(this.config)
         this.tick = 0
         this.pieces.set([])
+        
+        const ticks = get(this.actions).slice(0, fastforward).map(
+            hm => this.game.tick(hm.move1, hm.move2)
+        )
+        this.tick = ticks.length
         this.pieces.set(
             this.game.pieces.map(p => {
                 return new Piece(p.x, p.y, this.toRotation(p.facing), p.player, p.type, p.id, this.speed)
@@ -19,8 +25,9 @@ export default class Match {
         this.currentPromise = Promise.resolve()
     }
 
-    restart() {
-        this.start()
+    restart(fromTurn) {
+        // x 4 as there are 4 actions per turn
+        this.start(fromTurn * 4)
         this.play(get(this.actions))
     }
 
@@ -48,6 +55,16 @@ export default class Match {
         this.speed = speed
         this.actions = actions
         this.config = JSON.parse(config)
+        
+        this.turnCount = derived(
+            [actions],
+            ([$actions]) => {
+                if (!$actions) {
+                    return 0
+                }
+                return $actions.length / 4
+            }
+        );
 
         this.start()
         
