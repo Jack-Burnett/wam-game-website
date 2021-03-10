@@ -53,3 +53,5 @@ git pull
 npm run build
 node server/app.js &
 ```
+
+ssh root@139.59.182.112
