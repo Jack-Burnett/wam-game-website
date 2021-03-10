@@ -119,10 +119,12 @@
 			<h2 class="text-2xl mb-5"> <span class="text-red-600">{$gameData.data.game.player1.username}</span> vs <span class="text-blue-600">{$gameData.data.game.player2.username}</span> </h2>
 			<div class = "flex flex-row flex-wrap" >
 				<div>
-					<div class:flipped="{$relationship === Relationship.PLAYER1}" class="pb-5">
+					<div class:flipped="{$relationship === Relationship.PLAYER1}">
 						<Board match={match} />
 					</div>	
-					<Replay match={match}/>
+					<div class="pt-5">
+						<Replay match={match}/>
+					</div>
 				</div>	
 				{#if $personalState == PersonalState.AWAITING_YOU}
 					<Inputs game_uuid = {uuid} relationship = {relationship} />

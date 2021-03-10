@@ -11,11 +11,11 @@
 	const graphic = piece.type.toLowerCase() + "_" + piece.player
 	const isSword = type == "sword"
 
-	let multiplier = 79
-	let offset = 12.5
-	let size = 50
+	let multiplier 
+	let offset
+	let size
 	if (scale == "large") {
-		multiplier = 79
+		multiplier = 77
 		offset = 12.5
 		size = 50
 	} else {
