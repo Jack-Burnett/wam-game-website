@@ -45,10 +45,7 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgres
 # Restart on server
 
 ```bash
-ps -ef | grep node
-
-kill -9 PROCESS_ID
-
+pkill node
 git pull
 npm run build
 node server/app.js &
